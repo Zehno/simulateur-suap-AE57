@@ -55,10 +55,9 @@
  </div></main>
  <section id="controlPanel" class="layout hidden" style="margin-top:12px">
   <section class="panel"><h2>Pilotage formateur — constantes</h2>
-   <div id="sliders"></div>
    <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> Activer / désactiver</label></div>
    <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> Activer / désactiver</label></div>
-   <div class="field"><label>HbCO (0 à 100 %)</label><input id="hbcoControl" type="number" min="0" max="100" step="1" value="0"></div>
+   <div id="sliders"></div>
    <div class="field"><label>FC irrégulière</label><label><input id="irregularFCToggle" type="checkbox"> Activer l’irrégularité du rythme</label></div>
    <div class="field"><label>Rythme FC — tracé unique du moniteur</label><select id="rhythm"><option value="sinusal">Sinusal</option><option value="brady">Bradycardie sinusale</option><option value="tachy">Tachycardie sinusale</option><option value="fa">Fibrillation atriale (FA)</option><option value="flutter">Flutter atrial</option><option value="svt">Tachycardie supraventriculaire (TSV)</option><option value="tv">Tachycardie ventriculaire (TV)</option><option value="fv">Fibrillation ventriculaire (FV)</option><option value="asystole">Asystolie</option></select></div>
    <div class="field"><label>Affection / évolution clinique</label><select id="condition"><option value="normal">État stable — constantes normales</option><option value="sepsis">Sepsis avec aggravation</option><option value="hemorrhage">Hémorragie / choc hypovolémique</option><option value="cardiogenic">Choc cardiogénique</option><option value="respiratory">Détresse respiratoire aiguë</option><option value="asthma">Crise d’asthme sévère</option><option value="copd">Exacerbation BPCO</option><option value="pneumonia">Pneumonie avec hypoxémie</option><option value="pe">Embolie pulmonaire</option><option value="anaphylaxis">Anaphylaxie</option><option value="acs">Syndrome coronarien aigu</option><option value="stroke">AVC avec aggravation neurologique</option><option value="decomp">Décompensation cardiaque</option><option value="heat_exhaustion">Épuisement lié à la chaleur</option><option value="heatstroke">Coup de chaleur / insolation</option><option value="hypothermia_moderate">Hypothermie modérée</option><option value="hypothermia_severe">Hypothermie grave / sévère</option><option value="alcohol">Intoxication alcoolique</option><option value="opioid">Intoxication morphinique</option><option value="drugs">Intoxication par autres drogues</option><option value="co">Intoxication au monoxyde de carbone (CO)</option><option value="hypoglycemia">Hypoglycémie grave</option><option value="ketoacidosis">Hyperglycémie avec acidocétose</option></select></div>
@@ -66,6 +65,7 @@
    <div class="row"><button id="worsenBtn">⚠ Déclencher une aggravation progressive</button><button class="warn" id="resetAllBtn">↺ Réinitialiser toutes les valeurs</button></div>
    <div class="field"><label>Valeurs de tension à appliquer (mmHg)</label><div class="row"><label>TAS <input id="manualSys" type="number" min="0" max="300" value="120" aria-label="Tension artérielle systolique"></label><label>TAD <input id="manualDia" type="number" min="0" max="200" value="80" aria-label="Tension artérielle diastolique"></label><button class="primary" id="applyTA">Appliquer T.A.</button></div></div>
    <p class="muted">Saisis la TAS et la TAD, puis applique-les : les valeurs sont mises à jour immédiatement sur le moniteur stagiaire.</p>
+   <div class="field"><label>HbCO (0 à 100 %)</label><input id="hbcoControl" type="number" min="0" max="100" step="1" value="0"></div>
    <div class="row"><button class="warn" id="cardiacArrestBtn">ARRÊT CARDIAQUE — tout désactiver</button></div>
    <p class="muted">Force la FC à 0, la SpO₂ à 0, désactive leurs variations et affiche une asystolie. La dernière tension affichée reste celle de la dernière mesure.</p>
    <h3>NOTE PATIENT</h3><textarea id="controlNotes" rows="3" placeholder="Informations à transmettre aux stagiaires…" style="width:100%;background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:10px;resize:vertical"></textarea>
@@ -75,6 +75,7 @@
    <div class="field"><label>TA systolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowSys" type="number" value="90" min="0" max="300"><input id="highSys" type="number" value="180" min="1" max="350"></div></div>
    <div class="field"><label>TA diastolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowDia" type="number" value="50" min="0" max="200"><input id="highDia" type="number" value="110" min="1" max="250"></div></div>
    <div class="field"><label>SpO₂ — seuil bas / haut (%)</label><div class="row"><input id="lowSpo" type="number" value="90" min="0" max="100"><input id="highSpo" type="number" value="100" min="1" max="100"></div></div>
+   <div class="field"><label>HbCO — seuil haut uniquement (%)</label><div class="row"><input id="highHbco" type="number" value="10" min="10" max="100"></div></div>
    <div class="row"><button id="applyLimits">Appliquer seuils</button><label><input id="soundToggle" type="checkbox" checked> Son ON/OFF</label><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button></div>
   </section>
  </section>
@@ -84,7 +85,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=id=>document.getElementById(id);
-const defaults={fc:72,sys:120,dia:80,spo:98,hbco:0,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:50,highFC:130,lowSys:90,highSys:180,lowDia:50,highDia:110,lowSpo:90,highSpo:100,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:''};
+const defaults={fc:72,sys:120,dia:80,spo:98,hbco:0,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:50,highFC:130,lowSys:90,highSys:180,lowDia:50,highDia:110,lowSpo:90,highSpo:100,highHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:''};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -92,7 +93,7 @@ if(!requestedMode && !sessionStorage.getItem('scopeRoleChosen')) $('roleChooser'
 $('choosePilot').onclick=()=>{sessionStorage.setItem('scopeRoleChosen','1');location.replace(location.pathname+'?mode=control')};
 $('chooseTrainee').onclick=()=>{sessionStorage.setItem('scopeRoleChosen','1');location.replace(location.pathname+'?mode=display')};
 let sb=null,channel=null,room='',timer=null,history=[];
-let smoothTarget={fc:72,spo:98},lastTargetAt=0,lastSmoothRender=0,worseningTimer=null;
+let smoothTarget={fc:72,spo:98},lastTargetAt=0,lastSmoothRender=0,worseningTimer=null,transitionActive=false;
 let phase=0,audioEnabled=true,audioCtx=null,lastBeep=0,lastHeartBeat=0,flatOsc=null,flatGain=null,taHistory=[];
 const fmt=n=>Math.round(n);
 function pam(){return Math.round((state.sys+2*state.dia)/3)}
@@ -102,13 +103,14 @@ function render(){
  $('alarmText').classList.toggle('off',!alarmActive());$('alarmText').textContent=alarmActive()?'ALARME':'';$('alarmText').classList.toggle('alarm-zone',alarmActive());$('monitorPage').querySelector('.screen').classList.toggle('alarm-frame',alarmActive());
  document.querySelector('[data-metric="FC"]').classList.toggle('metric-alarm',state.alarms&&(Number(state.fc)===0||state.fc<state.lowFC||state.fc>state.highFC||['asystole','fv'].includes(state.rhythm)));
  document.querySelector('[data-metric="SpO₂"]').classList.toggle('metric-alarm',state.alarms&&(Number(state.spo)===0||state.spo<state.lowSpo||state.spo>state.highSpo));
+  document.querySelector('[data-metric="HbCO"]').classList.toggle('metric-alarm',state.alarms&&Number(state.hbco??0)>=Number(state.highHbco??10));
  document.querySelector('[data-metric="TA"]').classList.toggle('metric-alarm',state.alarms&&(state.sys<state.lowSys||state.sys>state.highSys||state.dia<state.lowDia||state.dia>state.highDia));
  if($('irregularFCToggle'))$('irregularFCToggle').checked=!!state.irregularFC;
  if($('variationFCToggle'))$('variationFCToggle').checked=!!state.variationFCEnabled;
  if($('variationSpoToggle'))$('variationSpoToggle').checked=!!state.variationSpoEnabled;
  if($('manualSys')&&document.activeElement!==$('manualSys'))$('manualSys').value=state.sys;
  if($('manualDia')&&document.activeElement!==$('manualDia'))$('manualDia').value=state.dia;
- ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>{if($(id)&&document.activeElement!==$(id))$(id).value=state[id]});
+ ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo','highHbco'].forEach(id=>{if($(id)&&document.activeElement!==$(id))$(id).value=state[id]});
  if(document.activeElement!==$('controlNotes'))$('controlNotes').value=state.notes||'';
  $('patient').value=state.patient;$('rhythm').value=state.rhythm;if($('condition'))$('condition').value=state.condition||'normal';
  renderSliders();if($('soundToggle'))$('soundToggle').checked=audioEnabled;renderEvents();
@@ -120,23 +122,29 @@ function alarmActive(){
   
   state.sys<state.lowSys||state.sys>state.highSys||
   state.dia<state.lowDia||state.dia>state.highDia||
-  state.spo<state.lowSpo||state.spo>state.highSpo
+  state.spo<state.lowSpo||state.spo>state.highSpo||Number(state.hbco??0)>=Number(state.highHbco??10)
  );
 }
 function renderSliders(){
  // Ne pas reconstruire les champs pendant que le formateur est en train de saisir une valeur.
  if($('sliders').contains(document.activeElement))return;
  const defs=[['fc','FC',0,240,'bpm'],['spo','SpO₂',0,100,'%']];
- $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l} (${u})</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${fmt(state[k])}"></div>`).join('')+
- `<div class="field"><label>Plage de variation FC — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`+
- `<div class="field"><label>Plage de variation SpO₂ — minimum / maximum (%)</label><div class="row"><input id="spoMin" type="number" min="0" max="100" value="${state.spoMin}"><input id="spoMax" type="number" min="0" max="100" value="${state.spoMax}"></div></div>`;
- $('sliders').querySelectorAll('input[data-key]').forEach(el=>el.addEventListener('change',e=>{state[e.target.dataset.key]=Number(e.target.value);render();publish()}));
- ['fcMin','fcMax','spoMin','spoMax'].forEach(id=>$(id).onchange=e=>{
-  state[id]=Number(e.target.value);
-  if(state.fcMin>state.fcMax){if(id==='fcMin')state.fcMax=state.fcMin;else state.fcMin=state.fcMax}
-  if(state.spoMin>state.spoMax){if(id==='spoMin')state.spoMax=state.spoMin;else state.spoMin=state.spoMax}
-  $('fcMin').value=state.fcMin;$('fcMax').value=state.fcMax;$('spoMin').value=state.spoMin;$('spoMax').value=state.spoMax;publish()
- });
+ const markupKey=[state.fcMin,state.fcMax,state.spoMin,state.spoMax].join('|');
+ if(markupKey!==slidersMarkupCache){
+  slidersMarkupCache=markupKey;
+  $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l} (${u})</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${fmt(state[k])}"></div>`).join('')+
+  `<div class="field"><label>Plage de variation FC — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`+
+  `<div class="field"><label>Plage de variation SpO₂ — minimum / maximum (%)</label><div class="row"><input id="spoMin" type="number" min="0" max="100" value="${state.spoMin}"><input id="spoMax" type="number" min="0" max="100" value="${state.spoMax}"></div></div>`;
+  $('sliders').querySelectorAll('input[data-key]').forEach(el=>el.addEventListener('change',e=>{state[e.target.dataset.key]=Number(e.target.value);render();publish()}));
+  ['fcMin','fcMax','spoMin','spoMax'].forEach(id=>$(id).onchange=e=>{
+   state[id]=Number(e.target.value);
+   if(state.fcMin>state.fcMax){if(id==='fcMin')state.fcMax=state.fcMin;else state.fcMin=state.fcMax}
+   if(state.spoMin>state.spoMax){if(id==='spoMin')state.spoMax=state.spoMin;else state.spoMin=state.spoMax}
+   $('fcMin').value=state.fcMin;$('fcMax').value=state.fcMax;$('spoMin').value=state.spoMin;$('spoMax').value=state.spoMax;publish()
+  });
+ }
+ $('sliders').querySelectorAll('input[data-key]').forEach(el=>{if(document.activeElement!==el)el.value=fmt(state[el.dataset.key])});
+ ['fcMin','fcMax','spoMin','spoMax'].forEach(id=>{if($(id)&&document.activeElement!==$(id))$(id).value=state[id]});
 }
 
 function renderEvents(){$('events').innerHTML=(state.events||[]).map(e=>`<div class="event"><span class="muted">${e.t}</span> — ${escapeHtml(e.msg)}</div>`).join('')||'<p class="muted">Aucun événement enregistré.</p>'}
@@ -159,8 +167,8 @@ $('patient').onchange=e=>{state.patient=e.target.value;if(state.condition!=='nor
 $('patientName').onchange=e=>{state.name=e.target.value||'PATIENT SIMULÉ';render();publish()};
 function setRhythm(id){state.rhythm=id;state.irregularFC=id==='fa';if(id==='brady'){state.fc=45;state.variationFCEnabled=false}else if(id==='tachy'){state.fc=145;state.variationFCEnabled=false}else if(id==='svt'){state.fc=170;state.variationFCEnabled=false}else if(id==='tv'){state.fc=180;state.variationFCEnabled=false}else if(id==='flutter'){state.fc=150;state.variationFCEnabled=false}else if(id==='fv'||id==='asystole'){state.fc=0;state.spo=0;state.variationFCEnabled=false;state.variationSpoEnabled=false}else if(id==='sinusal'){state.irregularFC=false;if(Number(state.fc)<=0)state.fc=72;if(Number(state.spo)<=0)state.spo=98}lastHeartBeat=0;log('Rythme sélectionné : '+id);render();publish()}
 $('rhythm').onchange=e=>setRhythm(e.target.value);
-$('variationFCToggle').onchange=e=>{state.variationFCEnabled=e.target.checked;log('Variation FC '+(e.target.checked?'activée':'désactivée'));render();publish()};
-$('variationSpoToggle').onchange=e=>{state.variationSpoEnabled=e.target.checked;log('Variation SpO₂ '+(e.target.checked?'activée':'désactivée'));render();publish()};
+$('variationFCToggle').onchange=e=>{state.variationFCEnabled=e.target.checked;if(e.target.checked)transitionActive=false;log('Variation FC '+(e.target.checked?'activée':'désactivée'));render();publish()};
+$('variationSpoToggle').onchange=e=>{state.variationSpoEnabled=e.target.checked;if(e.target.checked)transitionActive=false;log('Variation SpO₂ '+(e.target.checked?'activée':'désactivée'));render();publish()};
 
 const conditions={
  normal:{label:'État stable',fc:[68,82],spo:[96,99],base:[74,98],sys:[110,130],dia:[70,85],desc:'Constantes stables : FC 68–82 bpm, SpO₂ 96–99 %. Variations discrètes.'},
@@ -188,15 +196,15 @@ const conditions={
  ketoacidosis:{label:'Hyperglycémie avec acidocétose',fc:[110,155],spo:[92,100],base:[132,96],hbco:0,desc:'Simulation pédagogique : tachycardie et polypnée ; SpO₂ souvent préservée en l’absence de complication respiratoire.'}
 };
 function applyAlarmThresholds(){if(state.condition==='normal')return;const pediatric=state.patient==='pediatrie';state.lowFC=pediatric?70:60;state.highFC=pediatric?140:100;state.lowSys=90;state.highSys=140;state.lowDia=70;state.highDia=90;state.lowSpo=94;state.highSpo=100;}
-function applyCondition(id){if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}const c=conditions[id]||conditions.normal;state.condition=id;$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';state.fcMin=c.fc[0];state.fcMax=c.fc[1];state.spoMin=c.spo[0];state.spoMax=c.spo[1];state.fc=c.base[0];state.spo=c.base[1];state.hbco=c.hbco??0;if(id==='normal'){state.lowFC=defaults.lowFC;state.highFC=defaults.highFC;state.lowSys=defaults.lowSys;state.highSys=defaults.highSys;state.lowDia=defaults.lowDia;state.highDia=defaults.highDia;state.lowSpo=defaults.lowSpo;state.highSpo=defaults.highSpo}else{applyAlarmThresholds()}state.variationFCEnabled=id!=='normal';state.variationSpoEnabled=id!=='normal';smoothTarget={fc:state.fc,spo:state.spo};lastTargetAt=0;$('clinicalInfo').textContent=c.desc;log('Affection sélectionnée : '+c.label+' — seuils d’alarme '+(id==='normal'?'conservés':'standards adaptés au mode patient')+', variations '+(id==='normal'?'désactivées':'activées'));render();publish()}
+function applyCondition(id){if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}const c=conditions[id]||conditions.normal;state.condition=id;$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';state.fcMin=c.fc[0];state.fcMax=c.fc[1];state.spoMin=c.spo[0];state.spoMax=c.spo[1];smoothTarget={fc:c.base[0],spo:c.base[1]};transitionActive=true;state.hbco=c.hbco??0;if(id==='normal'){state.lowFC=defaults.lowFC;state.highFC=defaults.highFC;state.lowSys=defaults.lowSys;state.highSys=defaults.highSys;state.lowDia=defaults.lowDia;state.highDia=defaults.highDia;state.lowSpo=defaults.lowSpo;state.highSpo=defaults.highSpo}else{applyAlarmThresholds()}state.variationFCEnabled=false;state.variationSpoEnabled=false;lastTargetAt=Date.now();$('clinicalInfo').textContent=c.desc;log('Affection sélectionnée : '+c.label+' — seuils d’alarme '+(id==='normal'?'conservés':'standards adaptés au mode patient')+', variations '+(id==='normal'?'désactivées':'activées'));render();publish()}
 $('condition').onchange=e=>applyCondition(e.target.value);
 $('hbcoControl').onchange=e=>{state.hbco=Math.max(0,Math.min(100,Math.round(Number(e.target.value)||0)));e.target.value=state.hbco;log('HbCO réglée à '+state.hbco+' %');render();publish()};
-$('worsenBtn').onclick=()=>{if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null;$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';log('Aggravation progressive interrompue');return}if(!state.condition||state.condition==='normal'){alert('Sélectionne d’abord une affection pour déclencher son aggravation.');return}$('worsenBtn').textContent='Arrêter l’aggravation';log('Aggravation progressive déclenchée : tendance à la tachycardie et à la désaturation');worseningTimer=setInterval(()=>{const c=conditions[state.condition]||conditions.normal;state.fc=Math.min(c.fc[1],Number(state.fc)+2);state.spo=Math.max(c.spo[0],Number(state.spo)-1);smoothTarget={fc:state.fc,spo:state.spo};render();publish();if(state.fc>=c.fc[1]&&state.spo<=c.spo[0]){clearInterval(worseningTimer);worseningTimer=null;$('worsenBtn').textContent='Aggravation maximale atteinte';log('Aggravation maximale atteinte pour cette affection')}},1800)};
+$('worsenBtn').onclick=()=>{if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null;$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';log('Aggravation progressive interrompue');return}if(!state.condition||state.condition==='normal'){alert('Sélectionne d’abord une affection pour déclencher son aggravation.');return}$('worsenBtn').textContent='Arrêter l’aggravation';log('Aggravation progressive déclenchée : tendance à la tachycardie et à la désaturation');transitionActive=true;worseningTimer=setInterval(()=>{const c=conditions[state.condition]||conditions.normal;smoothTarget.fc=Math.min(c.fc[1],Number(smoothTarget.fc)+2);smoothTarget.spo=Math.max(c.spo[0],Number(smoothTarget.spo)-1);if(smoothTarget.fc>=c.fc[1]&&smoothTarget.spo<=c.spo[0]){clearInterval(worseningTimer);worseningTimer=null;$('worsenBtn').textContent='Aggravation maximale atteinte';log('Aggravation maximale atteinte pour cette affection')}},3500)};
 
-$('resetAllBtn').onclick=()=>{if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}state={...defaults,events:[],condition:'normal'};$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';audioEnabled=true;state.soundEnabled=true;smoothTarget={fc:72,spo:98};state.hbco=0;lastTargetAt=0;lastHeartBeat=0;stopFlatlineTone();$('clinicalInfo').textContent=conditions.normal.desc;$('patientName').value=state.name;$('condition').value='normal';log('Réinitialisation générale : constantes normales');render();publish()};
+$('resetAllBtn').onclick=()=>{if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}state={...defaults,events:[],condition:'normal'};$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';audioEnabled=true;state.soundEnabled=true;smoothTarget={fc:72,spo:98};transitionActive=true;state.hbco=0;lastTargetAt=0;lastHeartBeat=0;stopFlatlineTone();$('clinicalInfo').textContent=conditions.normal.desc;$('patientName').value=state.name;$('condition').value='normal';log('Réinitialisation générale : constantes normales');render();publish()};
 $('cardiacArrestBtn').onclick=()=>{state.variationFCEnabled=false;state.variationSpoEnabled=false;state.fc=0;state.spo=0;state.rhythm='asystole';state.irregularFC=false;lastHeartBeat=0;log('Simulation d’arrêt cardiaque : variations désactivées, FC 0, SpO₂ 0, asystolie');render();publish()};
 $('applyLimits').onclick=()=>{
- ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>state[id]=Number($(id).value));
+ ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>state[id]=Number($(id).value));state.highHbco=Math.max(10,Math.min(100,Number($('highHbco').value)||10));$('highHbco').value=state.highHbco;
  log('Seuils hauts et bas des alarmes modifiés par le formateur');render();publish()
 };
 $('irregularFCToggle').onchange=e=>{state.irregularFC=e.target.checked;lastHeartBeat=0;log('FC irrégulière '+(state.irregularFC?'activée':'désactivée'));render();publish()};
@@ -233,7 +241,9 @@ function leadMorphology(t,leadName='II',idx=0){
 function draw(canvas,type){
  if(!canvas||!canvas.clientWidth||!canvas.clientHeight)return;
  const ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;
- const w=canvas.width=Math.floor(canvas.clientWidth*dpr),h=canvas.height=Math.floor(canvas.clientHeight*dpr);
+ const targetW=Math.floor(canvas.clientWidth*dpr),targetH=Math.floor(canvas.clientHeight*dpr);
+ if(canvas.width!==targetW||canvas.height!==targetH){canvas.width=targetW;canvas.height=targetH;}
+ const w=canvas.width,h=canvas.height;
  ctx.clearRect(0,0,w,h);ctx.strokeStyle='#193328';ctx.lineWidth=1*dpr;
  for(let x=0;x<w;x+=w/10){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
  for(let y=0;y<h;y+=h/4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
@@ -280,9 +290,10 @@ function beepAlarm(){
 function stopFlatlineTone(){if(flatOsc){try{flatOsc.stop()}catch(e){}flatOsc=null;flatGain=null}}
 function syncFlatlineTone(){if(!audioEnabled||!audioCtx||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
 function beepHeart(){if(!audioEnabled||!audioCtx||state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)<=0)return;let now=Date.now(),base=60000/Math.max(1,Number(state.fc)),interval=base;if(state.irregularFC||state.rhythm==='fa')interval=base*(.72+Math.random()*.56);if(now-lastHeartBeat>=interval){lastHeartBeat=now;shortTone(720,.075,.045)}}
-function animate(){phase+=1/60;syncFlatlineTone();beepHeart();beepAlarm();draw($('ecgCanvas'),'ecg','II');draw($('plethCanvas'),'pleth');$('clock').textContent=new Date().toLocaleTimeString('fr-FR');requestAnimationFrame(animate)}
+function animate(){phase+=1/60;syncFlatlineTone();beepHeart();beepAlarm();draw($('ecgCanvas'),'ecg','II');draw($('plethCanvas'),'pleth');requestAnimationFrame(animate)}
+setInterval(()=>$('clock').textContent=new Date().toLocaleTimeString('fr-FR'),1000);
 function updateRole(){
- ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>{if($(id))$(id).value=state[id]});
+ ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo','highHbco'].forEach(id=>{if($(id))$(id).value=state[id]});
  let control=role==='control';
  state.alarms=true;audioEnabled=state.soundEnabled!==false;if($('soundToggle'))$('soundToggle').checked=audioEnabled;
  $('controlPanel').classList.toggle('hidden',!control);
@@ -311,7 +322,7 @@ document.addEventListener('pointerdown',async()=>{
  catch(e){audioEnabled=false;render()}
 },{once:true});
 requestAnimationFrame(animate);setInterval(()=>{if(role==='control'&&room)publish();},2500);
-setInterval(()=>{if(role!=='control')return;const now=Date.now(),rnd=(a,b)=>a+Math.random()*(b-a);if(now-lastTargetAt>3200){if(state.variationFCEnabled)smoothTarget.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));else smoothTarget.fc=Number(state.fc);if(state.variationSpoEnabled)smoothTarget.spo=rnd(Math.min(state.spoMin,state.spoMax),Math.max(state.spoMin,state.spoMax));else smoothTarget.spo=Number(state.spo);lastTargetAt=now;}let changed=false;if(state.variationFCEnabled){state.fc+=(smoothTarget.fc-state.fc)*.10;changed=true}if(state.variationSpoEnabled){state.spo+=(smoothTarget.spo-state.spo)*.10;changed=true}if(changed&&now-lastSmoothRender>250){lastSmoothRender=now;render();}},100);
+setInterval(()=>{if(role!=='control')return;const now=Date.now(),rnd=(a,b)=>a+Math.random()*(b-a);if(!transitionActive&&now-lastTargetAt>4000){if(state.variationFCEnabled)smoothTarget.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));if(state.variationSpoEnabled)smoothTarget.spo=rnd(Math.min(state.spoMin,state.spoMax),Math.max(state.spoMin,state.spoMax));lastTargetAt=now;}let changed=false;if(transitionActive){state.fc+=(smoothTarget.fc-state.fc)*.045;state.spo+=(smoothTarget.spo-state.spo)*.045;if(Math.abs(smoothTarget.fc-state.fc)<.25&&Math.abs(smoothTarget.spo-state.spo)<.25){state.fc=smoothTarget.fc;state.spo=smoothTarget.spo;transitionActive=false;}changed=true;}else{if(state.variationFCEnabled){state.fc+=(smoothTarget.fc-state.fc)*.045;changed=true}if(state.variationSpoEnabled){state.spo+=(smoothTarget.spo-state.spo)*.045;changed=true}}if(changed&&now-lastSmoothRender>250){lastSmoothRender=now;render();publish();}},100);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(err=>console.warn('Service worker non enregistré',err)));}
 </script>
 </body></html>
