@@ -55,6 +55,7 @@
  <section id="controlPanel" class="layout hidden" style="margin-top:12px">
   <section class="panel"><h2>Pilotage formateur — constantes</h2>
    <div id="sliders"></div>
+   <div class="field"><label>Constantes manuelles — FC / SpO₂</label><div class="row"><label>FC (bpm) <input id="manualFC" type="number" min="0" max="300" value="72"></label><label>SpO₂ (%) <input id="manualSpo" type="number" min="0" max="100" value="98"></label><button class="primary" id="applyVitals">Appliquer FC / SpO₂</button></div></div>
    <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> Activer / désactiver</label></div>
    <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> Activer / désactiver</label></div>
    <div class="field"><label>FC irrégulière</label><label><input id="irregularFCToggle" type="checkbox"> Activer l’irrégularité du rythme</label></div>
@@ -105,6 +106,8 @@ function render(){
  if($('variationSpoToggle'))$('variationSpoToggle').checked=!!state.variationSpoEnabled;
  if($('manualSys')&&document.activeElement!==$('manualSys'))$('manualSys').value=state.sys;
  if($('manualDia')&&document.activeElement!==$('manualDia'))$('manualDia').value=state.dia;
+ if($('manualFC')&&document.activeElement!==$('manualFC'))$('manualFC').value=state.fc;
+ if($('manualSpo')&&document.activeElement!==$('manualSpo'))$('manualSpo').value=state.spo;
  $('patient').value=state.patient;$('rhythm').value=state.activePathology||state.rhythm;
  renderSliders();if($('soundToggle'))$('soundToggle').checked=audioEnabled;renderEvents();
 }
@@ -121,11 +124,8 @@ function alarmActive(){
 function renderSliders(){
  // Ne pas reconstruire les champs pendant que le formateur est en train de saisir une valeur.
  if($('sliders').contains(document.activeElement))return;
- const defs=[['fc','FC',0,240,'bpm'],['spo','SpO₂',0,100,'%']];
- $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l} (${u})</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${state[k]}"></div>`).join('')+
- `<div class="field"><label>Plage de variation FC — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`+
+ $('sliders').innerHTML=`<div class="field"><label>Plage de variation FC — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`+
  `<div class="field"><label>Plage de variation SpO₂ — minimum / maximum (%)</label><div class="row"><input id="spoMin" type="number" min="0" max="100" value="${state.spoMin}"><input id="spoMax" type="number" min="0" max="100" value="${state.spoMax}"></div></div>`;
- $('sliders').querySelectorAll('input[data-key]').forEach(el=>el.addEventListener('change',e=>{state[e.target.dataset.key]=Number(e.target.value);render();publish()}));
  ['fcMin','fcMax','spoMin','spoMax'].forEach(id=>$(id).onchange=e=>{
   state[id]=Number(e.target.value);
   if(state.fcMin>state.fcMax){if(id==='fcMin')state.fcMax=state.fcMin;else state.fcMin=state.fcMax}
@@ -138,6 +138,18 @@ function renderEvents(){$('events').innerHTML=(state.events||[]).map(e=>`<div cl
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function setPage(p){['monitor','events','settings'].forEach(x=>$(x+'Page').classList.toggle('hidden',x!==p));['Monitor','Events','Settings'].forEach(x=>$('tab'+x).classList.toggle('active',x.toLowerCase()===p))}
 $('tabMonitor').onclick=()=>setPage('monitor');$('tabEvents').onclick=()=>setPage('events');$('tabSettings').onclick=()=>setPage('settings');
+$('applyVitals').onclick=()=>{
+ const fc=$('manualFC').value.trim(),spo=$('manualSpo').value.trim();
+ if(fc===''||spo===''||!Number.isFinite(Number(fc))||!Number.isFinite(Number(spo))){alert('Saisis une FC et une SpO₂ valides.');return}
+ state.fc=Math.max(0,Math.min(300,Number(fc)));state.spo=Math.max(0,Math.min(100,Number(spo)));
+ // Une saisie manuelle arrête le scénario automatique et les variations pour conserver les valeurs saisies.
+ state.activePathology=null;state.pathologyRunning=false;state.pathologyElapsed=0;
+ state.variationFCEnabled=false;state.variationSpoEnabled=false;
+ if(state.fc>0&&['asystole','fv'].includes(state.rhythm))state.rhythm='sinusal';
+ if(state.fc===0)state.rhythm='asystole';
+ if(state.spo>0&&state.rhythm==='asystole'&&state.fc>0)state.rhythm='sinusal';
+ lastHeartBeat=0;log(`Constantes manuelles appliquées : FC ${state.fc} bpm · SpO₂ ${state.spo} %`);render();publish();
+};
 $('applyTA').onclick=()=>{const sys=$('manualSys').value.trim(),dia=$('manualDia').value.trim();if(sys===''||dia===''||!Number.isFinite(Number(sys))||!Number.isFinite(Number(dia))){alert('Saisis une TAS et une TAD valides.');return}state.sys=Math.max(0,Math.min(300,Number(sys)));state.dia=Math.max(0,Math.min(200,Number(dia)));log(`Tension appliquée : ${state.sys}/${state.dia} mmHg`);render();publish()};
 $('soundToggle').onchange=e=>{audioEnabled=e.target.checked;state.soundEnabled=audioEnabled;if(!audioEnabled)stopFlatlineTone();publish()};
 $('menuBtn').onclick=()=>setPage('settings');
@@ -235,7 +247,7 @@ function draw(canvas,type){
  for(let x=0;x<w;x++){
   const t=x/w*windowSec+offset;let y=h*.5;
   if(type==='ecg'){
-   const v=leadMorphology(t,'II',0);y=h*.5-v*h*.72;
+   const v=leadMorphology(t,'II',0);y=h*.5-v*h*.82;
   }else{
    const beat=60/Math.max(1,Number(state.fc)||60),p=(t%beat)/beat;y=h*.78;
    if(Number(state.fc)>0&&Number(state.spo)>0&&p>.05&&p<.45)y-=Math.pow(Math.sin((p-.05)/.4*Math.PI),2)*h*.55*(state.spo/100);
@@ -303,6 +315,7 @@ document.addEventListener('pointerdown',async()=>{
  try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();await audioCtx.resume();lastHeartBeat=0;render()}
  catch(e){audioEnabled=false;render()}
 },{once:true});
+window.addEventListener('resize',()=>{draw($('ecgCanvas'),'ecg');draw($('plethCanvas'),'pleth')});
 requestAnimationFrame(animate);setInterval(()=>{if(role==='control'&&room)publish();},2500);setInterval(()=>{if(role==='control'){if(state.pathologyRunning){applyPathologyProgress();return}const rnd=(a,b)=>Math.round(a+Math.random()*(b-a));let changed=false;if(state.variationFCEnabled){state.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));changed=true}if(state.variationSpoEnabled){state.spo=rnd(Math.min(state.spoMin,state.spoMax),Math.max(state.spoMin,state.spoMax));changed=true}if(changed){render();publish()}}},2200);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(err=>console.warn('Service worker non enregistré',err)));}
 </script>
