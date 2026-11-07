@@ -24,6 +24,35 @@
 /* Flèches des champs numériques visibles en blanc sur fond sombre */
 input[type="number"]{color-scheme:dark}
 input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{filter:invert(1);opacity:1}
+
+/* Moniteur simplifié : uniquement les quatre constantes et l'auscultation */
+.monitor-grid{display:block}
+.numbers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
+.metric{min-height:145px;padding:16px}
+.metric .name{font-size:14px;letter-spacing:.08em}
+.metric .thresholds{font-size:11px;right:12px;top:12px}
+.metric .value{font-size:clamp(36px,5vw,52px);margin-top:12px}
+.metric .unit,.metric .subvalue{font-size:14px}
+.ta-wide{grid-column:1/-1;min-height:270px;cursor:pointer}
+.ta-main{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.ta-main .value{font-size:clamp(34px,4vw,48px)}
+.ta-history{margin-top:14px;background:#111a20;border:1px solid #8b9aa3;border-radius:9px;padding:12px;min-height:130px;text-align:left}
+.ta-history-head{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:13px;font-weight:850;letter-spacing:.06em;color:#fff;border-bottom:1px solid #50606a;padding-bottom:8px}
+.ta-history-head span{font-size:10px;color:#c4d0d7;font-weight:600}
+.ta-history-list{max-height:130px;overflow-y:auto;padding-top:5px}
+.ta-history-row{display:grid;grid-template-columns:100px 1fr auto;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid #2c3a43;font-size:15px}
+.ta-history-row strong{font-size:18px;color:#fff;font-variant-numeric:tabular-nums}
+.ta-history-row .pam{font-size:11px;color:#b5c2ca}
+.ta-empty{padding:14px 4px;color:#b5c2ca;font-size:13px}
+.breath-card{min-height:145px;background:#101b23;border:1px solid #526674;border-radius:9px;padding:15px;display:flex;flex-direction:column;gap:9px}
+.breath-title{font-size:14px;font-weight:850;letter-spacing:.07em;color:#bfe2f4}
+.breath-card label{font-size:12px;color:#c5d2d9}
+.breath-card select{width:100%;min-height:42px;background:#071017;border:1px solid #526674;color:#fff;border-radius:7px;padding:8px;font-size:15px}
+.breath-buttons{display:flex;gap:7px}.breath-buttons button{flex:1;padding:9px 6px}
+.breath-status{font-size:11px;color:#b4c2cb;line-height:1.35;min-height:28px}
+.breath-source{font-size:10px;color:#8fa2ae;line-height:1.4}.breath-source a{color:#8fcaff}
+@media(max-width:650px){.app{padding:7px}.numbers{gap:8px}.metric{min-height:120px;padding:10px}.metric .value{font-size:34px}.metric .name{font-size:11px}.ta-wide{min-height:255px}.ta-history-row{grid-template-columns:76px 1fr auto;font-size:13px}.ta-history-row strong{font-size:16px}.breath-card{padding:11px}}
+
 </style>
 </head>
 <body>
@@ -41,15 +70,12 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   <section class="screen">
    <div class="monitor-head"><span id="patientLabel">ADULTE · PATIENT SIMULÉ</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
    <div class="monitor-grid">
-    <div class="traces">
-     <div class="trace"><span class="trace-label" style="color:var(--green)">ECG · II</span><canvas id="ecgCanvas"></canvas></div>
-     <div class="trace"><span class="trace-label" style="color:var(--blue)">SpO₂ · PLETH</span><canvas id="plethCanvas"></canvas></div>
-    </div>
     <div class="numbers">
      <button class="metric fc" data-metric="FC"><div class="name">FC / HR</div><div class="thresholds" id="thFC">Bas 50 · Haut 130</div><div class="value" id="vFC">72</div><div class="unit">bpm</div></button>
-     <button class="metric ta" data-metric="TA"><div class="name">T.A / P.N.I.</div><div class="thresholds" id="thTA">TAS 90–180<br>TAD 50–110</div><div class="value" id="vTA">120/80</div><div class="subvalue" id="vPAM">PAM 93 mmHg</div></button>
      <button class="metric spo" data-metric="SpO₂"><div class="name">SpO₂</div><div class="thresholds" id="thSpo">Bas 90 · Haut 100</div><div class="value" id="vSpO2">98</div><div class="unit">%</div></button>
-     <button class="metric co2" data-metric="HbCO"><div class="name">HbCO</div><div class="thresholds" id="thHbco">Bas 10</div><div class="value" id="vHbCO">0</div><div class="unit">%</div></button>
+     <button class="metric ta ta-wide" data-metric="TA"><div class="ta-main"><div><div class="name">T.A / P.N.I.</div><div class="value" id="vTA">120/80</div><div class="subvalue" id="vPAM">PAM 93 mmHg</div></div><div class="thresholds" id="thTA">TAS 90–180<br>TAD 50–110</div></div><div class="ta-history"><div class="ta-history-head">HISTORIQUE DES TENSIONS <span>HEURE · mmHg</span></div><div id="taHistoryList" class="ta-history-list"><div class="ta-empty">En attente de la première mesure du formateur</div></div></div></button>
+     <button class="metric co2" data-metric="HbCO"><div class="name">HbCO</div><div class="thresholds" id="thHbco">Seuil bas 10</div><div class="value" id="vHbCO">0</div><div class="unit">%</div></button>
+     <section class="breath-card" aria-label="Bruits respiratoires"><div class="breath-title">BRUITS RESPIRATOIRES</div><label for="breathSound">Sélectionner un bruit</label><select id="breathSound"><option value="none">Rien</option><option value="rhonchi">Ronchis</option><option value="rales">Râles</option><option value="crackles">Crépitements</option><option value="wheeze">Sifflement</option></select><div class="breath-buttons"><button type="button" class="primary" id="breathEnable">Activer le son</button><button type="button" id="breathStop">Arrêter</button></div><div id="breathStatus" class="breath-status">Le son sera diffusé sur cet appareil après activation.</div><div class="breath-source">Échantillons pulmonaires : <a href="https://commons.wikimedia.org/wiki/File:Crackles_pneumoniaO.ogg" target="_blank" rel="noopener">crépitements</a> et <a href="https://commons.wikimedia.org/wiki/File:Wheeze2O.ogg" target="_blank" rel="noopener">sifflements</a> — James Heilman, CC BY-SA 3.0.</div></section>
     </div>
    </div>
    <div class="bottom"><button id="menuBtn">Réglages</button></div>
@@ -93,11 +119,12 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
  </section>
  <div class="footer">Scope SUAP · Simulation pédagogique uniquement · Ne pas utiliser pour une décision médicale réelle</div>
 </div>
+<audio id="breathAudio" preload="none" loop></audio>
 <div id="modal" class="modal hidden"><div class="modalbox"><h3 id="modalTitle">Détail</h3><div id="modalBody"></div><div style="text-align:right;margin-top:12px"><button id="closeModal">Fermer</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=id=>document.getElementById(id);
-const defaults={fc:72,sys:120,dia:80,spo:98,hbco:0,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:50,highFC:130,lowSys:90,highSys:180,lowDia:50,highDia:110,lowSpo:90,highSpo:100,lowHbco:0,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:''};
+const defaults={fc:72,sys:120,dia:80,spo:98,hbco:0,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:50,highFC:130,lowSys:90,highSys:180,lowDia:50,highDia:110,lowSpo:90,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],respiratorySound:'none'};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -119,7 +146,7 @@ function updateLiveReadouts(){
  document.querySelector('[data-metric="SpO₂"]').classList.toggle('metric-alarm',state.alarms&&(Number(state.spo)===0||state.spo<state.lowSpo||state.spo>state.highSpo));
 }
 function render(){
- $('vFC').textContent=fmt(state.fc);$('vTA').textContent=`${fmt(state.sys)}/${fmt(state.dia)}`;$('vPAM').textContent=`PAM ${pam()} mmHg`;$('vSpO2').textContent=fmt(state.spo);$('vHbCO').textContent=fmt(state.hbco??0);$('thFC').textContent=`Bas ${state.lowFC} · Haut ${state.highFC}`;$('thTA').innerHTML=`TAS ${state.lowSys}–${state.highSys}<br>TAD ${state.lowDia}–${state.highDia}`;$('thSpo').textContent=`Bas ${state.lowSpo} · Haut ${state.highSpo}`;$('thHbco').textContent=`Bas ${state.lowHbco??0}`;if($('hbcoControl')&&document.activeElement!==$('hbcoControl'))$('hbcoControl').value=fmt(state.hbco??0);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;
+ $('vFC').textContent=fmt(state.fc);$('vTA').textContent=`${fmt(state.sys)}/${fmt(state.dia)}`;$('vPAM').textContent=`PAM ${pam()} mmHg`;$('vSpO2').textContent=fmt(state.spo);$('vHbCO').textContent=fmt(state.hbco??0);$('thFC').textContent=`Bas ${state.lowFC} · Haut ${state.highFC}`;$('thTA').innerHTML=`TAS ${state.lowSys}–${state.highSys}<br>TAD ${state.lowDia}–${state.highDia}`;$('thSpo').textContent=`Bas ${state.lowSpo} · Haut ${state.highSpo}`;$('thHbco').textContent=`Bas ${state.lowHbco??0}`;if($('hbcoControl')&&document.activeElement!==$('hbcoControl'))$('hbcoControl').value=fmt(state.hbco??0);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;renderTAHistory();if($('breathSound')&&document.activeElement!==$('breathSound'))$('breathSound').value=state.respiratorySound||'none';
  $('alarmText').classList.toggle('off',!alarmActive());$('alarmText').textContent=alarmActive()?'ALARME':'';$('alarmText').classList.toggle('alarm-zone',alarmActive());$('monitorPage').querySelector('.screen').classList.toggle('alarm-frame',alarmActive());
  document.querySelector('[data-metric="FC"]').classList.toggle('metric-alarm',state.alarms&&(Number(state.fc)===0||state.fc<state.lowFC||state.fc>state.highFC||['asystole','fv'].includes(state.rhythm)));
  document.querySelector('[data-metric="SpO₂"]').classList.toggle('metric-alarm',state.alarms&&(Number(state.spo)===0||state.spo<state.lowSpo||state.spo>state.highSpo));
@@ -164,17 +191,19 @@ function renderSliders(){
 function renderEvents(){$('events').innerHTML=(state.events||[]).map(e=>`<div class="event"><span class="muted">${e.t}</span> — ${escapeHtml(e.msg)}</div>`).join('')||'<p class="muted">Aucun événement enregistré.</p>'}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function openModal(title,body){$('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modal').classList.remove('hidden')}
-function showMetric(k){if(k==='TA'){showTAHistory();return}let detail={FC:`Fréquence cardiaque : ${fmt(state.fc)} bpm.`,SpO2:`Saturation simulée : ${fmt(state.spo)} %.`,HbCO:`Carboxyhémoglobine simulée : ${fmt(state.hbco??0)} %.`};openModal(k,`<p>${detail[k]||'Valeur simulée.'}</p><p class="muted">Valeur pilotée par le formateur.</p>`)}
+function showMetric(k){if(k==='TA'){return}let detail={FC:`Fréquence cardiaque : ${fmt(state.fc)} bpm.`,SpO2:`Saturation simulée : ${fmt(state.spo)} %.`,HbCO:`Carboxyhémoglobine simulée : ${fmt(state.hbco??0)} %.`};openModal(k,`<p>${detail[k]||'Valeur simulée.'}</p><p class="muted">Valeur pilotée par le formateur.</p>`)}
 document.querySelectorAll('[data-metric]').forEach(b=>b.addEventListener('click',()=>showMetric(b.dataset.metric)));
 function setPage(p){['monitor','events','settings'].forEach(x=>$(x+'Page').classList.toggle('hidden',x!==p));['Monitor','Events','Settings'].forEach(x=>$('tab'+x).classList.toggle('active',x.toLowerCase()===p))}
 $('tabMonitor').onclick=()=>setPage('monitor');$('tabEvents').onclick=()=>setPage('events');$('tabSettings').onclick=()=>setPage('settings');
 $('closeModal').onclick=()=>$('modal').classList.add('hidden');
 function taHistoryKey(){return 'scopeSuapTaHistory:'+(room||$('roomCode').value.trim()||'local')}
-function loadTaHistory(){try{const parsed=JSON.parse(localStorage.getItem(taHistoryKey())||'[]');taHistory=Array.isArray(parsed)?parsed.slice(0,10):[]}catch(e){taHistory=[]}}
-function saveTaHistory(){try{localStorage.setItem(taHistoryKey(),JSON.stringify(taHistory.slice(0,10)))}catch(e){console.warn('Historique TA non enregistré localement',e)}}
-function taHistoryMarkup(){if(!taHistory.length)return '<p class="muted">Aucune mesure enregistrée. Appuie sur « MESURE T.A » pour ajouter la première mesure.</p>';return '<div>'+taHistory.map((m,i)=>`<div class="event"><b>${escapeHtml(m.time)}</b> — ${m.sys}/${m.dia} mmHg <span class="muted">· PAM ${m.pam} mmHg${i===0?' · dernière mesure':''}</span></div>`).join('')+'</div>'}
+function loadTaHistory(){try{const parsed=JSON.parse(localStorage.getItem(taHistoryKey())||'[]');state.taHistory=Array.isArray(state.taHistory)&&state.taHistory.length?state.taHistory:(Array.isArray(parsed)?parsed.slice(0,30):[])}catch(e){state.taHistory=Array.isArray(state.taHistory)?state.taHistory:[]}renderTAHistory()}
+function saveTaHistory(){try{localStorage.setItem(taHistoryKey(),JSON.stringify((state.taHistory||[]).slice(0,30)))}catch(e){console.warn('Historique TA non enregistré localement',e)}}
+function recordTA(){state.taHistory=Array.isArray(state.taHistory)?state.taHistory:[];const entry={time:new Date().toLocaleTimeString('fr-FR'),sys:fmt(state.sys),dia:fmt(state.dia),pam:pam()};state.taHistory.unshift(entry);state.taHistory=state.taHistory.slice(0,30);saveTaHistory();renderTAHistory()}
+function renderTAHistory(){const el=$('taHistoryList');if(!el)return;const rows=state.taHistory||[];el.innerHTML=rows.length?rows.map(m=>`<div class="ta-history-row"><span>${escapeHtml(m.time||'--:--:--')}</span><strong>${m.sys}/${m.dia}</strong><span class="pam">PAM ${m.pam??'—'}</span></div>`).join(''):'<div class="ta-empty">En attente de la première mesure du formateur</div>'}
+function taHistoryMarkup(){return (state.taHistory||[]).length?'<div>'+(state.taHistory||[]).map((m,i)=>`<div class="event"><b>${escapeHtml(m.time)}</b> — ${m.sys}/${m.dia} mmHg <span class="muted">· PAM ${m.pam} mmHg${i===0?' · dernière mesure':''}</span></div>`).join('')+'</div>':'<p class="muted">Aucune mesure enregistrée.</p>'}
 function showTAHistory(){openModal('Historique T.A / P.N.I.',taHistoryMarkup())}
-$('applyTA').onclick=()=>{const sys=$('manualSys').value.trim(),dia=$('manualDia').value.trim();if(sys===''||dia===''||!Number.isFinite(Number(sys))||!Number.isFinite(Number(dia))){alert('Saisis une TAS et une TAD valides.');return}state.sys=Math.max(0,Math.min(300,Number(sys)));state.dia=Math.max(0,Math.min(200,Number(dia)));log(`Tension appliquée : ${state.sys}/${state.dia} mmHg`);render();publish()};
+$('applyTA').onclick=()=>{const sys=$('manualSys').value.trim(),dia=$('manualDia').value.trim();if(sys===''||dia===''||!Number.isFinite(Number(sys))||!Number.isFinite(Number(dia))){alert('Saisis une TAS et une TAD valides.');return}state.sys=Math.max(0,Math.min(300,Number(sys)));state.dia=Math.max(0,Math.min(200,Number(dia)));recordTA();log(`Tension appliquée : ${state.sys}/${state.dia} mmHg`);render();publish()};
 $('soundToggle').onchange=e=>{audioEnabled=e.target.checked;state.soundEnabled=audioEnabled;if(!audioEnabled)stopFlatlineTone();publish()};
 $('menuBtn').onclick=()=>setPage('settings');
 $('patient').onchange=e=>{state.patient=e.target.value;if(state.condition!=='normal')applyAlarmThresholds();log(`Mode patient : ${state.patient} — seuils d’alarme adaptés`);render();publish()};
@@ -320,7 +349,18 @@ function beepAlarm(){
 function stopFlatlineTone(){if(flatOsc){try{flatOsc.stop()}catch(e){}flatOsc=null;flatGain=null}}
 function syncFlatlineTone(){if(!audioEnabled||!audioCtx||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
 function beepHeart(){if(!audioEnabled||!audioCtx||state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)<=0)return;let now=Date.now(),base=60000/Math.max(1,Number(state.fc)),interval=base;if(state.irregularFC||state.rhythm==='fa')interval=base*(.72+Math.random()*.56);if(now-lastHeartBeat>=interval){lastHeartBeat=now;shortTone(720,.075,.045)}}
-function animate(){phase+=1/60;syncFlatlineTone();beepHeart();beepAlarm();draw($('ecgCanvas'),'ecg','II');draw($('plethCanvas'),'pleth');$('clock').textContent=new Date().toLocaleTimeString('fr-FR');requestAnimationFrame(animate)}
+function animate(){syncFlatlineTone();beepHeart();beepAlarm();$('clock').textContent=new Date().toLocaleTimeString('fr-FR');requestAnimationFrame(animate)}
+const respiratorySources={
+ rhonchi:{src:'https://upload.wikimedia.org/wikipedia/commons/4/47/Wheeze2O.ogg',rate:0.62,label:'Ronchis (échantillon sifflant ralenti pour accentuer les basses fréquences)'},
+ rales:{src:'https://upload.wikimedia.org/wikipedia/commons/c/c7/Crackles_pneumoniaO.ogg',rate:0.82,label:'Râles crépitants'},
+ crackles:{src:'https://upload.wikimedia.org/wikipedia/commons/c/c7/Crackles_pneumoniaO.ogg',rate:1,label:'Crépitements'},
+ wheeze:{src:'https://upload.wikimedia.org/wikipedia/commons/4/47/Wheeze2O.ogg',rate:1,label:'Sifflements'}
+};
+let respiratoryAudioUnlocked=false;
+async function syncRespiratorySound(){const kind=state.respiratorySound||'none',audio=$('breathAudio');if(!audio)return;if(kind==='none'){audio.pause();audio.removeAttribute('src');audio.load();if($('breathStatus'))$('breathStatus').textContent='Aucun bruit respiratoire.';return}if(!respiratoryAudioUnlocked){if($('breathStatus'))$('breathStatus').textContent='Choix enregistré. Appuie sur « Activer le son » sur l’appareil diffuseur.';return}const item=respiratorySources[kind];if(!item)return;if(audio.dataset.kind!==kind){audio.pause();audio.src=item.src;audio.playbackRate=item.rate;audio.dataset.kind=kind;audio.load()}try{await audio.play();if($('breathStatus'))$('breathStatus').textContent='Lecture : '+item.label}catch(e){if($('breathStatus'))$('breathStatus').textContent='Appuie à nouveau sur « Activer le son » pour autoriser la lecture.'}}
+$('breathSound').onchange=()=>{state.respiratorySound=$('breathSound').value;publish();syncRespiratorySound()};
+$('breathEnable').onclick=async()=>{respiratoryAudioUnlocked=true;await syncRespiratorySound();if((state.respiratorySound||'none')==='none'&&$('breathStatus'))$('breathStatus').textContent='Audio prêt. Choisis un bruit dans la liste.'};
+$('breathStop').onclick=()=>{state.respiratorySound='none';$('breathSound').value='none';syncRespiratorySound();publish()};
 function updateRole(){
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo','lowHbco'].forEach(id=>{if($(id))$(id).value=state[id]});
  let control=role==='control';
@@ -334,10 +374,10 @@ function updateRole(){
 function config(){return {url:localStorage.sbUrl||'',key:localStorage.sbKey||''}}
 function initSupabase(){let c=config();if(!c.url||!c.key||!window.supabase){$('status').textContent='Mode local — configure Supabase pour la liaison distante';return}try{sb=window.supabase.createClient(c.url,c.key);$('status').textContent='Supabase prêt — code de session requis'}catch(e){$('status').textContent='Configuration Supabase invalide'}}
 function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room,state:state,updated_at:new Date().toISOString()},{onConflict:'code'}).then(({error})=>{if(error)$('status').textContent='Erreur de synchronisation : '+error.message})}
-async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}loadTaHistory();if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,alarms:true};audioEnabled=state.soundEnabled!==false;loadTaHistory();render()}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
+async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}loadTaHistory();if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,alarms:true};audioEnabled=state.soundEnabled!==false;loadTaHistory();render();syncRespiratorySound()}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
  if(!payload.new?.state)return;
  const incoming=payload.new.state;
- if(role==='display'){state={...defaults,...incoming,alarms:true};audioEnabled=state.soundEnabled!==false;render()}
+ if(role==='display'){const oldTA=`${state.sys}/${state.dia}`;state={...defaults,...incoming,alarms:true};if(`${state.sys}/${state.dia}`!==oldTA)recordTA();audioEnabled=state.soundEnabled!==false;render();syncRespiratorySound()}
  else if(role==='control'){state={...state,...incoming};render();}
 }).subscribe();$('status').textContent=`Connecté · session ${room} · ${role==='control'?'formateur':'stagiaire'}`;log('Connexion à la session '+room)}
 $('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value=String(Math.floor(100000+Math.random()*900000))};
