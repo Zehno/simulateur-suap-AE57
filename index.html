@@ -28,7 +28,7 @@
  </div>
 </div>
 <div class="app">
- <header class="top"><div><div class="brand">SCOPE SUAP <span class="tag">SIMULATION PÉDAGOGIQUE</span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
+ <header class="top"><div><div class="brand">MONITORING DE MSP <span class="tag"> VSAV </span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
  <main id="monitorPage">
   <section class="screen">
    <div class="monitor-head"><span id="patientLabel">ADULTE · PATIENT SIMULÉ</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
@@ -69,14 +69,14 @@
    <h3>NOTE PATIENT</h3><textarea id="controlNotes" rows="3" placeholder="Informations à transmettre aux stagiaires…" style="width:100%;background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:10px;resize:vertical"></textarea>
   </section>
   <section class="panel"><h2>Alarmes & seuils</h2>
-   <div class="field"><label>FC — seuil bas / haut (bpm)</label><div class="row"><input id="lowFC" type="number" value="50" min="0" max="250"><input id="highFC" type="number" value="130" min="1" max="300"></div></div>
-   <div class="field"><label>TA systolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowSys" type="number" value="90" min="0" max="300"><input id="highSys" type="number" value="180" min="1" max="350"></div></div>
-   <div class="field"><label>TA diastolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowDia" type="number" value="50" min="0" max="200"><input id="highDia" type="number" value="110" min="1" max="250"></div></div>
-   <div class="field"><label>SpO₂ — seuil bas / haut (%)</label><div class="row"><input id="lowSpo" type="number" value="90" min="0" max="100"><input id="highSpo" type="number" value="100" min="1" max="100"></div></div>
+   <div class="field"><label>FC — seuil bas / haut (bpm)</label><div class="row"><input id="lowFC" type="number" value="60" min="0" max="250"><input id="highFC" type="number" value="100" min="1" max="300"></div></div>
+   <div class="field"><label>TA systolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowSys" type="number" value="90" min="0" max="300"><input id="highSys" type="number" value="140" min="1" max="350"></div></div>
+   <div class="field"><label>TA diastolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowDia" type="number" value="60" min="0" max="200"><input id="highDia" type="number" value="90" min="1" max="250"></div></div>
+   <div class="field"><label>SpO₂ — seuil bas / haut (%)</label><div class="row"><input id="lowSpo" type="number" value="94" min="0" max="100"><input id="highSpo" type="number" value="100" min="1" max="100"></div></div>
    <div class="row"><button id="applyLimits">Appliquer seuils</button><label><input id="soundToggle" type="checkbox" checked> Son ON/OFF</label><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button></div>
   </section>
  </section>
- <div class="footer">Scope SUAP · Simulation pédagogique uniquement · Ne pas utiliser pour une décision médicale réelle</div>
+ <div class="footer"> SUAP · Simulation pédagogique  · Créer par Aurélien E</div>
 </div>
 <div id="modal" class="modal hidden"><div class="modalbox"><h3 id="modalTitle">Détail</h3><div id="modalBody"></div><div style="text-align:right;margin-top:12px"><button id="closeModal">Fermer</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -106,6 +106,7 @@ function render(){
  if($('variationSpoToggle'))$('variationSpoToggle').checked=!!state.variationSpoEnabled;
  if($('manualSys')&&document.activeElement!==$('manualSys'))$('manualSys').value=state.sys;
  if($('manualDia')&&document.activeElement!==$('manualDia'))$('manualDia').value=state.dia;
+ ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>{if($(id)&&document.activeElement!==$(id))$(id).value=state[id]});
  if(document.activeElement!==$('controlNotes'))$('controlNotes').value=state.notes||'';
  $('patient').value=state.patient;$('rhythm').value=state.rhythm;if($('condition'))$('condition').value=state.condition||'normal';
  renderSliders();if($('soundToggle'))$('soundToggle').checked=audioEnabled;renderEvents();
@@ -124,7 +125,7 @@ function renderSliders(){
  // Ne pas reconstruire les champs pendant que le formateur est en train de saisir une valeur.
  if($('sliders').contains(document.activeElement))return;
  const defs=[['fc','FC',0,240,'bpm'],['spo','SpO₂',0,100,'%']];
- $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l} (${u})</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${state[k]}"></div>`).join('')+
+ $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l} (${u})</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${fmt(state[k])}"></div>`).join('')+
  `<div class="field"><label>Plage de variation FC — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`+
  `<div class="field"><label>Plage de variation SpO₂ — minimum / maximum (%)</label><div class="row"><input id="spoMin" type="number" min="0" max="100" value="${state.spoMin}"><input id="spoMax" type="number" min="0" max="100" value="${state.spoMax}"></div></div>`;
  $('sliders').querySelectorAll('input[data-key]').forEach(el=>el.addEventListener('change',e=>{state[e.target.dataset.key]=Number(e.target.value);render();publish()}));
@@ -174,7 +175,7 @@ const conditions={
  stroke:{label:'AVC avec aggravation neurologique',fc:[75,115],spo:[90,97],base:[95,95],sys:[140,190],dia:[80,110],desc:'FC variable ; hypertension possible. La SpO₂ peut rester normale hors complication respiratoire.'},
  decomp:{label:'Décompensation cardiaque',fc:[100,135],spo:[86,94],base:[118,90],sys:[95,145],dia:[60,90],desc:'Tachycardie et désaturation possibles en cas de congestion/œdème pulmonaire.'}
 };
-function applyCondition(id){if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}const c=conditions[id]||conditions.normal;state.condition=id;$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';state.fcMin=c.fc[0];state.fcMax=c.fc[1];state.spoMin=c.spo[0];state.spoMax=c.spo[1];state.fc=c.base[0];state.spo=c.base[1];state.lowSys=c.sys[0];state.highSys=c.sys[1];state.lowDia=c.dia[0];state.highDia=c.dia[1];state.lowSpo=Math.max(0,c.spo[0]-3);state.highSpo=Math.min(100,c.spo[1]+2);state.lowFC=Math.max(0,c.fc[0]-15);state.highFC=c.fc[1]+15;state.variationFCEnabled=id!=='normal';state.variationSpoEnabled=id!=='normal';smoothTarget={fc:state.fc,spo:state.spo};lastTargetAt=0;$('clinicalInfo').textContent=c.desc;log('Affection sélectionnée : '+c.label+' — plages FC/SpO₂ adaptées, variations '+(id==='normal'?'désactivées':'activées'));render();publish()}
+function applyCondition(id){if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}const c=conditions[id]||conditions.normal;state.condition=id;$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';state.fcMin=c.fc[0];state.fcMax=c.fc[1];state.spoMin=c.spo[0];state.spoMax=c.spo[1];state.fc=c.base[0];state.spo=c.base[1];if(id==='normal'){state.lowFC=defaults.lowFC;state.highFC=defaults.highFC;state.lowSys=defaults.lowSys;state.highSys=defaults.highSys;state.lowDia=defaults.lowDia;state.highDia=defaults.highDia;state.lowSpo=defaults.lowSpo;state.highSpo=defaults.highSpo}else{state.lowFC=Math.max(0,c.fc[0]-15);state.highFC=c.fc[1]+15;state.lowSys=c.sys[0];state.highSys=c.sys[1];state.lowDia=c.dia[0];state.highDia=c.dia[1];state.lowSpo=Math.max(0,c.spo[0]-3);state.highSpo=Math.min(100,c.spo[1]+2)}state.variationFCEnabled=id!=='normal';state.variationSpoEnabled=id!=='normal';smoothTarget={fc:state.fc,spo:state.spo};lastTargetAt=0;$('clinicalInfo').textContent=c.desc;log('Affection sélectionnée : '+c.label+' — seuils FC/TAS/TAD/SpO₂ adaptés automatiquement, variations '+(id==='normal'?'désactivées':'activées'));render();publish()}
 $('condition').onchange=e=>applyCondition(e.target.value);
 $('worsenBtn').onclick=()=>{if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null;$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';log('Aggravation progressive interrompue');return}if(!state.condition||state.condition==='normal'){alert('Sélectionne d’abord une affection pour déclencher son aggravation.');return}$('worsenBtn').textContent='Arrêter l’aggravation';log('Aggravation progressive déclenchée : tendance à la tachycardie et à la désaturation');worseningTimer=setInterval(()=>{const c=conditions[state.condition]||conditions.normal;state.fc=Math.min(c.fc[1],Number(state.fc)+2);state.spo=Math.max(c.spo[0],Number(state.spo)-1);smoothTarget={fc:state.fc,spo:state.spo};render();publish();if(state.fc>=c.fc[1]&&state.spo<=c.spo[0]){clearInterval(worseningTimer);worseningTimer=null;$('worsenBtn').textContent='Aggravation maximale atteinte';log('Aggravation maximale atteinte pour cette affection')}},1800)};
 
