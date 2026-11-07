@@ -14,7 +14,7 @@
 <title>Scope SUAP — Simulateur pédagogique</title>
 <style>
 :root{--bg:#05090d;--panel:#101820;--line:#26333d;--muted:#8da0ad;--green:#53f28b;--blue:#4aa8ff;--yellow:#ffe16a;--orange:#ff9d45;--red:#ff5555;--white:#e8eef2}
-*{box-sizing:border-box}body{margin:0;background:#080d12;color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{border:1px solid #344653;background:#18242d;color:#eef5f8;border-radius:9px;padding:10px 12px;cursor:pointer}button:active{transform:scale(.98)}button.primary{background:#12683c;border-color:#218c56}button.warn{background:#662b2b;border-color:#a74444}.app{max-width:1400px;margin:auto;padding:12px}.top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}.brand{font-weight:800;letter-spacing:.06em}.tag{font-size:11px;color:#9fb0bb;border:1px solid #33434e;padding:4px 7px;border-radius:20px}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button.active{background:#284052;border-color:#5d8298}.screen{background:#020507;border:1px solid #2d3942;border-radius:12px;padding:10px;box-shadow:0 8px 30px #0008}.screen.alarm-frame{border:4px solid #ff2525;animation:alarmFrame .55s steps(2,start) infinite;box-shadow:0 0 18px #ff2525,0 0 36px #ff252588}@keyframes alarmFrame{50%{border-color:#450000;box-shadow:0 0 3px #ff2525}}.monitor-head{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#aab8c0;font-size:12px;padding:2px 4px 8px}.monitor-grid{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:10px}.traces{min-width:0;display:flex;flex-direction:column;gap:7px}.trace{height:94px;background:#06100d;border:1px solid #13251c;border-radius:6px;position:relative;overflow:hidden}.trace canvas{width:100%;height:100%;display:block}.trace-label{position:absolute;left:8px;top:5px;font-size:11px;font-weight:700;z-index:1;text-shadow:0 1px 3px #000}.numbers{display:grid;grid-template-columns:1fr;gap:7px}.metric{min-height:80px;background:#10171c;border:1px solid #27343d;border-radius:7px;padding:8px;cursor:pointer;text-align:left}.metric .name{font-size:11px;color:#a9b6bd;letter-spacing:.06em}.metric .value{font-size:29px;font-weight:750;line-height:1.2;font-variant-numeric:tabular-nums}.metric .unit{font-size:11px;color:#a9b6bd}.metric.fc{background:#07552f;border-color:#16804b}.metric.fc .name,.metric.fc .value,.metric.fc .unit{color:#fff}.metric.spo{background:#07508a;border-color:#1678bd}.metric.spo .name,.metric.spo .value,.metric.spo .unit{color:#fff}.metric.ta{background:#41484e;border-color:#66717a}.metric.ta .name,.metric.ta .value,.metric.ta .unit,.metric.ta .subvalue{color:#fff}.metric.rr .value{color:var(--yellow)}.metric.co2 .value{color:var(--red)}.metric.temp .value{color:var(--orange)}.metric.ta .value{color:#e5e8eb}.metric.metric-alarm{background:#b00000!important;border:3px solid #ff2525;animation:metricAlarm .55s steps(2,start) infinite;box-shadow:0 0 12px #ff252588}.metric.metric-alarm .name,.metric.metric-alarm .value,.metric.metric-alarm .unit,.metric.metric-alarm .subvalue{color:#fff!important}@keyframes metricAlarm{50%{border-color:#450000;box-shadow:0 0 2px #ff2525}}.alarm-zone{border:2px solid #ff2525;border-radius:7px;padding:3px 8px;animation:metricAlarm .55s steps(2,start) infinite}.subvalue{font-size:11px;color:#b7c2c9}.bottom{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.alarm{color:#ff7777;font-weight:800;letter-spacing:.1em;animation:blink 1s steps(2,start) infinite}.alarm.off{visibility:hidden}@keyframes blink{to{visibility:hidden}}.layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.panel{background:#111a21;border:1px solid #293944;border-radius:12px;padding:12px}.panel h2{font-size:16px;margin:0 0 10px}.field{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:10px 0}.field input[type=range]{grid-column:1/-1;width:100%;accent-color:#4dca87}.field output{font-weight:700;font-variant-numeric:tabular-nums}.field select,.field input[type=number],.field input[type=text]{background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:8px;max-width:180px}.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.muted{color:var(--muted);font-size:12px}.hidden{display:none!important}.leadgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.ecg-tabs{border-bottom:1px solid #31414c;padding-bottom:8px}.ecg-tabs button.active{background:#284052;border-color:#5d8298}.ecg-preset{padding:8px 10px;font-size:13px}.lead{height:120px}.lead{height:110px;background:#050d0a;border:1px solid #24372c;border-radius:7px;position:relative}.lead b{position:absolute;top:5px;left:7px;font-size:11px;color:var(--green)}.lead canvas{width:100%;height:100%}.event{padding:8px;border-bottom:1px solid #26343d;font-size:13px}.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:15px;z-index:10}.modalbox{background:#111c24;border:1px solid #496070;border-radius:12px;padding:18px;max-width:430px;width:100%}.modalbox h3{margin-top:0}.modalbox button{margin:4px}.danger-note{font-size:11px;color:#ffbf8b;line-height:1.45;margin-top:10px}.code{font-family:ui-monospace,monospace;letter-spacing:.12em;font-weight:800}.footer{color:#81919b;font-size:11px;text-align:center;padding:12px}
+*{box-sizing:border-box}body{margin:0;background:#080d12;color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{border:1px solid #344653;background:#18242d;color:#eef5f8;border-radius:9px;padding:10px 12px;cursor:pointer}button:active{transform:scale(.98)}button.primary{background:#12683c;border-color:#218c56}button.warn{background:#662b2b;border-color:#a74444}.app{max-width:1400px;margin:auto;padding:12px}.top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}.brand{font-weight:800;letter-spacing:.06em}.tag{font-size:11px;color:#9fb0bb;border:1px solid #33434e;padding:4px 7px;border-radius:20px}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button.active{background:#284052;border-color:#5d8298}.screen{background:#020507;border:1px solid #2d3942;border-radius:12px;padding:10px;box-shadow:0 8px 30px #0008}.screen.alarm-frame{border:4px solid #ff2525;animation:alarmFrame .55s steps(2,start) infinite;box-shadow:0 0 18px #ff2525,0 0 36px #ff252588}@keyframes alarmFrame{50%{border-color:#450000;box-shadow:0 0 3px #ff2525}}.monitor-head{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#aab8c0;font-size:13px;font-variant-numeric:tabular-nums;padding:2px 4px 8px}.monitor-grid{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:10px}.traces{min-width:0;display:flex;flex-direction:column;gap:7px}.trace{height:94px;background:#06100d;border:1px solid #13251c;border-radius:6px;position:relative;overflow:hidden}.trace canvas{width:100%;height:100%;display:block}.trace-label{position:absolute;left:8px;top:5px;font-size:11px;font-weight:700;z-index:1;text-shadow:0 1px 3px #000}.numbers{display:grid;grid-template-columns:1fr;gap:7px}.metric{min-height:80px;background:#10171c;border:1px solid #27343d;border-radius:7px;padding:8px;cursor:pointer;text-align:left}.metric .name{font-size:11px;color:#a9b6bd;letter-spacing:.06em}.metric .value{font-size:29px;font-weight:750;line-height:1.2;font-variant-numeric:tabular-nums}.metric .unit{font-size:11px;color:#a9b6bd}.metric.fc{background:#07552f;border-color:#16804b}.metric.fc .name,.metric.fc .value,.metric.fc .unit{color:#fff}.metric.spo{background:#07508a;border-color:#1678bd}.metric.spo .name,.metric.spo .value,.metric.spo .unit{color:#fff}.metric.ta{background:#41484e;border-color:#66717a}.metric.ta .name,.metric.ta .value,.metric.ta .unit,.metric.ta .subvalue{color:#fff}.metric.rr .value{color:var(--yellow)}.metric.co2 .value{color:var(--red)}.metric.temp .value{color:var(--orange)}.metric.ta .value{color:#e5e8eb}.metric.metric-alarm{background:#b00000!important;border:3px solid #ff2525;animation:metricAlarm .55s steps(2,start) infinite;box-shadow:0 0 12px #ff252588}.metric.metric-alarm .name,.metric.metric-alarm .value,.metric.metric-alarm .unit,.metric.metric-alarm .subvalue{color:#fff!important}@keyframes metricAlarm{50%{border-color:#450000;box-shadow:0 0 2px #ff2525}}.alarm-zone{border:2px solid #ff2525;border-radius:7px;padding:3px 8px;animation:metricAlarm .55s steps(2,start) infinite}.subvalue{font-size:11px;color:#b7c2c9}.bottom{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.alarm{color:#ff7777;font-weight:800;letter-spacing:.1em;animation:blink 1s steps(2,start) infinite}.alarm.off{visibility:hidden}@keyframes blink{to{visibility:hidden}}.layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.panel{background:#111a21;border:1px solid #293944;border-radius:12px;padding:12px}.panel h2{font-size:16px;margin:0 0 10px}.field{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:10px 0}.field input[type=range]{grid-column:1/-1;width:100%;accent-color:#4dca87}.field output{font-weight:700;font-variant-numeric:tabular-nums}.field select,.field input[type=number],.field input[type=text]{background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:8px;max-width:180px}.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.muted{color:var(--muted);font-size:12px}.hidden{display:none!important}.leadgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.ecg-tabs{border-bottom:1px solid #31414c;padding-bottom:8px}.ecg-tabs button.active{background:#284052;border-color:#5d8298}.ecg-preset{padding:8px 10px;font-size:13px}.lead{height:120px}.lead{height:110px;background:#050d0a;border:1px solid #24372c;border-radius:7px;position:relative}.lead b{position:absolute;top:5px;left:7px;font-size:11px;color:var(--green)}.lead canvas{width:100%;height:100%}.event{padding:8px;border-bottom:1px solid #26343d;font-size:13px}.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:15px;z-index:10}.modalbox{background:#111c24;border:1px solid #496070;border-radius:12px;padding:18px;max-width:430px;width:100%}.modalbox h3{margin-top:0}.modalbox button{margin:4px}.danger-note{font-size:11px;color:#ffbf8b;line-height:1.45;margin-top:10px}.code{font-family:ui-monospace,monospace;letter-spacing:.12em;font-weight:800}.footer{color:#81919b;font-size:11px;text-align:center;padding:12px}
 @media(max-width:650px){.app{padding:7px}.monitor-grid{grid-template-columns:minmax(0,1fr) 118px;gap:5px}.trace{height:75px}.metric{min-height:66px;padding:6px}.metric .value{font-size:23px}.metric .name{font-size:9px}.metric .unit{font-size:9px}.layout{grid-template-columns:1fr}.leadgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.screen{padding:6px}}
 </style>
 </head>
@@ -28,45 +28,61 @@
  </div>
 </div>
 <div class="app">
- <header class="top"><div><div class="brand">SIMULATEUR DE MONITORING <span class="tag"> VSAV </span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEcg">ECG 12D</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
+ <header class="top"><div><div class="brand">SCOPE SUAP <span class="tag">SIMULATION PÉDAGOGIQUE</span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
  <main id="monitorPage">
   <section class="screen">
    <div class="monitor-head"><span id="patientLabel">ADULTE · PATIENT SIMULÉ</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
    <div class="monitor-grid">
     <div class="traces">
-     <div class="trace"><span class="trace-label" style="color:var(--green)">F.C · II</span><canvas id="ecgCanvas"></canvas></div>
+     <div class="trace"><span class="trace-label" style="color:var(--green)">ECG · II</span><canvas id="ecgCanvas"></canvas></div>
      <div class="trace"><span class="trace-label" style="color:var(--blue)">SpO₂ · PLETH</span><canvas id="plethCanvas"></canvas></div>
     </div>
     <div class="numbers">
-     <button class="metric fc" data-metric="FC"><div class="name">F.C / HR</div><div class="value" id="vFC">72</div><div class="unit">bpm</div></button>
-     <button class="metric ta" data-metric="TA"><div class="name">T.A / P.N.I</div><div class="value" id="vTA">120/80</div><div class="subvalue" id="vPAM">PAM 93 mmHg</div></button>
+     <button class="metric fc" data-metric="FC"><div class="name">FC / HR</div><div class="value" id="vFC">72</div><div class="unit">bpm</div></button>
+     <button class="metric ta" data-metric="TA"><div class="name">T.A / P.N.I.</div><div class="value" id="vTA">120/80</div><div class="subvalue" id="vPAM">PAM 93 mmHg</div></button>
      <button class="metric spo" data-metric="SpO₂"><div class="name">SpO₂</div><div class="value" id="vSpO2">98</div><div class="unit">%</div></button>
     </div>
    </div>
    <div class="bottom"><button id="nibpBtn">MESURE T.A</button><button id="menuBtn">Réglages</button></div>
   </section>
  </main>
- <main id="ecgPage" class="hidden"><section class="panel"><h2>ECG 12 dérivations</h2><div class="muted">ECG synthétique à visée pédagogique : morphologies et territoires simplifiés, non destiné au diagnostic ni à remplacer un ECG médical.</div><div class="row ecg-tabs" id="ecgTabs"><button class="active" data-group="rhythms">Rythmes</button><button data-group="ischemia">SCA / ischémie</button><button data-group="conduction">Conduction</button></div><div id="ecgPresets" class="row" style="margin:8px 0"></div><div class="row" style="margin:8px 0"><b id="ecgPatternLabel">Rythme sinusal</b><span class="muted" id="ecgPatternHint">12 dérivations simultanées · vitesse 25 mm/s</span></div><div class="leadgrid" id="leadGrid"></div><div class="row" style="margin-top:10px"><button id="ecgToMonitor">Retour moniteur</button></div></section></main>
+ 
  <main id="eventsPage" class="hidden"><section class="panel"><h2>Historique des événements</h2><div id="events"></div><button id="clearEvents">Effacer l'historique local</button></section></main>
  <main id="settingsPage" class="hidden"><div class="layout">
   <section class="panel"><h2>Configuration du patient</h2><div class="field"><label>Mode patient</label><select id="patient"><option value="adulte">Adulte</option><option value="pediatrie">Pédiatrie</option></select></div><div class="field"><label>Identifiant affiché</label><input id="patientName" type="text" value="PATIENT SIMULÉ"></div><p class="muted">Le mode pédiatrie adapte les plages de référence affichées dans l'interface, sans validation clinique automatique.</p></section>
   <section class="panel"><h2>Connexion formateur / stagiaire</h2><div class="field"><label>Code de session</label><input id="roomCode" type="text" maxlength="8" placeholder="Ex. 482731"></div><div class="row"><button class="primary" id="connectBtn">Connecter / rejoindre</button><button id="newCodeBtn">Nouveau code</button></div><div class="field"><label>URL Supabase</label><input id="sbUrl" type="text" placeholder="https://xxxx.supabase.co"></div><div class="field"><label>Clé anon / publishable</label><input id="sbKey" type="text" placeholder="Clé publique du projet"></div><button id="saveConfig">Enregistrer la configuration</button><p class="danger-note">La clé publique anon est destinée au navigateur. Ne place jamais de clé service_role ici. La V1 utilise une table publique de simulation : ne saisis aucune donnée nominative ou médicale réelle. Le code de session sert à rejoindre une simulation, ce n'est pas une authentification sécurisée.</p></section>
  </div></main>
  <section id="controlPanel" class="layout hidden" style="margin-top:12px">
-  <section class="panel"><h2>Pilotage formateur — constantes</h2><div id="sliders"></div><div class="field"><label>FC irrégulière</label><label><input id="irregularFCToggle" type="checkbox"> Activée — rythme irrégulier (arythmie simulée)</label></div><div class="field"><label>Rythme ECG</label><select id="rhythm"><option value="sinusal">Sinusal</option><option value="brady">Bradycardie sinusale</option><option value="tachy">Tachycardie sinusale</option><option value="fa">Fibrillation atriale</option><option value="flutter">Flutter atrial</option><option value="svt">Tachycardie supraventriculaire</option><option value="tv">Tachycardie ventriculaire</option><option value="fv">Fibrillation ventriculaire</option><option value="asystole">Asystolie</option><option value="stemi_inf">ST+ inférieur</option><option value="stemi_ant">ST+ antérieur</option><option value="stemi_lat">ST+ latéral</option><option value="ischemia">Ischémie sous-endocardique</option><option value="bbb_r">Bloc de branche droit</option><option value="bbb_l">Bloc de branche gauche</option></select></div><div class="field"><label>Valeurs de tension à afficher (mmHg) — TAS / TAD</label><div class="row"><input id="manualSys" type="number" min="0" max="300" value="120" aria-label="TAS"><input id="manualDia" type="number" min="0" max="200" value="80" aria-label="TAD"></div></div><p class="muted">Le stagiaire appuie sur MESURE T.A : la valeur TAS/TAD définie ici s'affiche immédiatement.</p><div class="field"><label>Scénario</label><select id="scenario"><option value="custom">Manuel</option><option value="choc">Dégradation hémodynamique</option><option value="detresse">Détresse respiratoire</option><option value="retablissement">Amélioration progressive</option></select></div><div class="row"><button class="primary" id="startScenario">Lancer scénario</button><button id="stopScenario">Arrêter</button><button id="addStep">Ajouter étape actuelle</button></div><p class="muted">Scénario automatique : les étapes prédéfinies évoluent dans le temps. Le mode manuel permet de modifier les valeurs directement.</p><h3>NOTE PATIENT</h3><textarea id="controlNotes" rows="3" placeholder="Informations à transmettre aux stagiaires…" style="width:100%;background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:10px;resize:vertical"></textarea></section>
-  <section class="panel"><h2>Chronologie & alarmes</h2><div class="field"><label>Intervalle entre étapes</label><select id="interval"><option value="15">15 secondes</option><option value="30" selected>30 secondes</option><option value="60">1 minute</option><option value="120">2 minutes</option></select></div><div class="field"><label>FC — seuil bas / haut (bpm)</label><div class="row"><input id="lowFC" type="number" value="50" min="0" max="250"><input id="highFC" type="number" value="130" min="1" max="300"></div></div>
-    <div class="field"><label>TA systolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowSys" type="number" value="90" min="0" max="300"><input id="highSys" type="number" value="180" min="1" max="350"></div></div>
-    <div class="field"><label>TA diastolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowDia" type="number" value="50" min="0" max="200"><input id="highDia" type="number" value="110" min="1" max="250"></div></div>
-    <div class="field"><label>SpO₂ — seuil bas / haut (%)</label><div class="row"><input id="lowSpo" type="number" value="90" min="0" max="100"><input id="highSpo" type="number" value="100" min="1" max="100"></div></div>
-    <div class="row"><button id="applyLimits">Appliquer seuils</button><label><input id="soundToggle" type="checkbox" checked> Son ON/OFF</label><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button><button id="exportScenario">Exporter scénario JSON</button><label><input id="importScenario" type="file" accept="application/json" hidden><button onclick="document.getElementById('importScenario').click()">Importer JSON</button></label></div><div id="timeline" class="muted" style="margin-top:10px">Aucune étape personnalisée.</div></section>
+  <section class="panel"><h2>Pilotage formateur — constantes</h2>
+   <div id="sliders"></div>
+   <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> Activer / désactiver</label></div>
+   <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> Activer / désactiver</label></div>
+   <div class="field"><label>FC irrégulière</label><label><input id="irregularFCToggle" type="checkbox"> Activer l’irrégularité du rythme</label></div>
+   <div class="field"><label>Rythme FC — tracé unique du moniteur</label><select id="rhythm"><option value="sinusal">Sinusal</option><option value="brady">Bradycardie sinusale</option><option value="tachy">Tachycardie sinusale</option><option value="fa">Fibrillation atriale (FA)</option><option value="flutter">Flutter atrial</option><option value="svt">Tachycardie supraventriculaire (TSV)</option><option value="tv">Tachycardie ventriculaire (TV)</option><option value="fv">Fibrillation ventriculaire (FV)</option><option value="asystole">Asystolie</option></select></div>
+   <div class="field"><label>Valeurs de tension à appliquer (mmHg)</label><div class="row"><label>TAS <input id="manualSys" type="number" min="0" max="300" value="120" aria-label="Tension artérielle systolique"></label><label>TAD <input id="manualDia" type="number" min="0" max="200" value="80" aria-label="Tension artérielle diastolique"></label><button class="primary" id="applyTA">Appliquer T.A.</button></div></div>
+   <p class="muted">Saisis la TAS et la TAD, puis applique-les : les valeurs sont mises à jour immédiatement sur le moniteur stagiaire.</p>
+   <div class="row"><button class="warn" id="cardiacArrestBtn">ARRÊT CARDIAQUE — tout désactiver</button></div>
+   <p class="muted">Force la FC à 0, la SpO₂ à 0, désactive leurs variations et affiche une asystolie. La dernière tension affichée reste celle de la dernière mesure.</p>
+   <div class="field"><label>Scénario</label><select id="scenario"><option value="custom">Manuel</option><option value="choc">Dégradation hémodynamique</option><option value="detresse">Détresse respiratoire</option><option value="retablissement">Amélioration progressive</option></select></div>
+   <div class="row"><button class="primary" id="startScenario">Lancer scénario</button><button id="stopScenario">Arrêter</button><button id="addStep">Ajouter étape actuelle</button></div>
+   <p class="muted">Scénario automatique : les étapes prédéfinies évoluent dans le temps. Le mode manuel permet de modifier les valeurs directement.</p>
+   <h3>NOTE PATIENT</h3><textarea id="controlNotes" rows="3" placeholder="Informations à transmettre aux stagiaires…" style="width:100%;background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:10px;resize:vertical"></textarea>
+  </section>
+  <section class="panel"><h2>Chronologie & alarmes</h2><div class="field"><label>Intervalle entre étapes</label><select id="interval"><option value="15">15 secondes</option><option value="30" selected>30 secondes</option><option value="60">1 minute</option><option value="120">2 minutes</option></select></div>
+   <div class="field"><label>FC — seuil bas / haut (bpm)</label><div class="row"><input id="lowFC" type="number" value="50" min="0" max="250"><input id="highFC" type="number" value="130" min="1" max="300"></div></div>
+   <div class="field"><label>TA systolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowSys" type="number" value="90" min="0" max="300"><input id="highSys" type="number" value="180" min="1" max="350"></div></div>
+   <div class="field"><label>TA diastolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowDia" type="number" value="50" min="0" max="200"><input id="highDia" type="number" value="110" min="1" max="250"></div></div>
+   <div class="field"><label>SpO₂ — seuil bas / haut (%)</label><div class="row"><input id="lowSpo" type="number" value="90" min="0" max="100"><input id="highSpo" type="number" value="100" min="1" max="100"></div></div>
+   <div class="row"><button id="applyLimits">Appliquer seuils</button><label><input id="soundToggle" type="checkbox" checked> Son ON/OFF</label><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button><button id="exportScenario">Exporter scénario JSON</button><label><input id="importScenario" type="file" accept="application/json" hidden><button onclick="document.getElementById('importScenario').click()">Importer JSON</button></label></div><div id="timeline" class="muted" style="margin-top:10px">Aucune étape personnalisée.</div>
+  </section>
  </section>
- <div class="footer">Simulateur de monitoring - Create by Aurélien E</div>
+ <div class="footer">Scope SUAP · Simulation pédagogique uniquement · Ne pas utiliser pour une décision médicale réelle</div>
 </div>
 <div id="modal" class="modal hidden"><div class="modalbox"><h3 id="modalTitle">Détail</h3><div id="modalBody"></div><div style="text-align:right;margin-top:12px"><button id="closeModal">Fermer</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=id=>document.getElementById(id);
-const defaults={fc:72,sys:120,dia:80,spo:98,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',ecgPattern:'sinusal',alarms:true,soundEnabled:true,freeze:false,speed:25,lowFC:50,highFC:130,lowSys:90,highSys:180,lowDia:50,highDia:110,lowSpo:90,highSpo:100,irregular:false,irregularFC:false,taTrend:'stable',taStep:5,taSysMin:70,taSysMax:180,taDiaMin:40,taDiaMax:110,taRequest:0,taRequestHandled:0,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:''};
+const defaults={fc:72,sys:120,dia:80,spo:98,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',alarms:true,soundEnabled:true,lowFC:50,highFC:130,lowSys:90,highSys:180,lowDia:50,highDia:110,lowSpo:90,highSpo:100,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:''};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -74,12 +90,25 @@ if(!requestedMode && !sessionStorage.getItem('scopeRoleChosen')) $('roleChooser'
 $('choosePilot').onclick=()=>{sessionStorage.setItem('scopeRoleChosen','1');location.replace(location.pathname+'?mode=control')};
 $('chooseTrainee').onclick=()=>{sessionStorage.setItem('scopeRoleChosen','1');location.replace(location.pathname+'?mode=display')};
 let sb=null,channel=null,room='',timer=null,scenarioTimer=null,scenarioSteps=[],scenarioIndex=0,history=[];
-let phase=0,leadRhythm='sinusal',ecgGroup='rhythms',audioEnabled=true,audioCtx=null,lastBeep=0,lastHeartBeat=0,flatOsc=null,flatGain=null;
+let phase=0,audioEnabled=true,audioCtx=null,lastBeep=0,lastHeartBeat=0,flatOsc=null,flatGain=null,taHistory=[];
 const fmt=n=>Math.round(n);
 function pam(){return Math.round((state.sys+2*state.dia)/3)}
 function log(msg){state.events.unshift({t:new Date().toLocaleTimeString('fr-FR'),msg});state.events=state.events.slice(0,100);renderEvents();publish()}
-function render(){ $('vFC').textContent=fmt(state.fc);$('vTA').textContent=`${fmt(state.sys)}/${fmt(state.dia)}`;$('vPAM').textContent=`PAM ${pam()} mmHg`;$('vSpO2').textContent=fmt(state.spo);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;$('alarmText').classList.toggle('off',!alarmActive());$('alarmText').textContent=alarmActive()?'ALARME':'';$('alarmText').classList.toggle('alarm-zone',alarmActive());$('monitorPage').querySelector('.screen').classList.toggle('alarm-frame',alarmActive());document.querySelector('[data-metric="FC"]').classList.toggle('metric-alarm',state.alarms&&(state.fc===0||state.fc<state.lowFC||state.fc>state.highFC||['asystole','fv'].includes(state.rhythm)));document.querySelector('[data-metric="SpO₂"]').classList.toggle('metric-alarm',state.alarms&&(state.spo===0||state.spo<state.lowSpo||state.spo>state.highSpo));document.querySelector('[data-metric="TA"]').classList.toggle('metric-alarm',state.alarms&&(state.sys<state.lowSys||state.sys>state.highSys||state.dia<state.lowDia||state.dia>state.highDia));if($('irregularFCToggle'))$('irregularFCToggle').checked=!!state.irregularFC;if(document.activeElement!==$('controlNotes'))$('controlNotes').value=state.notes||'';
-$('patient').value=state.patient;$('rhythm').value=state.rhythm;$('ecgPatternLabel').textContent=patternInfo[state.ecgPattern||state.rhythm]?.label||'ECG simulé';renderSliders();if($('soundToggle'))$('soundToggle').checked=audioEnabled;renderEvents();renderTimeline(); }
+function render(){
+ $('vFC').textContent=fmt(state.fc);$('vTA').textContent=`${fmt(state.sys)}/${fmt(state.dia)}`;$('vPAM').textContent=`PAM ${pam()} mmHg`;$('vSpO2').textContent=fmt(state.spo);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;
+ $('alarmText').classList.toggle('off',!alarmActive());$('alarmText').textContent=alarmActive()?'ALARME':'';$('alarmText').classList.toggle('alarm-zone',alarmActive());$('monitorPage').querySelector('.screen').classList.toggle('alarm-frame',alarmActive());
+ document.querySelector('[data-metric="FC"]').classList.toggle('metric-alarm',state.alarms&&(Number(state.fc)===0||state.fc<state.lowFC||state.fc>state.highFC||['asystole','fv'].includes(state.rhythm)));
+ document.querySelector('[data-metric="SpO₂"]').classList.toggle('metric-alarm',state.alarms&&(Number(state.spo)===0||state.spo<state.lowSpo||state.spo>state.highSpo));
+ document.querySelector('[data-metric="TA"]').classList.toggle('metric-alarm',state.alarms&&(state.sys<state.lowSys||state.sys>state.highSys||state.dia<state.lowDia||state.dia>state.highDia));
+ if($('irregularFCToggle'))$('irregularFCToggle').checked=!!state.irregularFC;
+ if($('variationFCToggle'))$('variationFCToggle').checked=!!state.variationFCEnabled;
+ if($('variationSpoToggle'))$('variationSpoToggle').checked=!!state.variationSpoEnabled;
+ if($('manualSys')&&document.activeElement!==$('manualSys'))$('manualSys').value=state.sys;
+ if($('manualDia')&&document.activeElement!==$('manualDia'))$('manualDia').value=state.dia;
+ if(document.activeElement!==$('controlNotes'))$('controlNotes').value=state.notes||'';
+ $('patient').value=state.patient;$('rhythm').value=state.rhythm;
+ renderSliders();if($('soundToggle'))$('soundToggle').checked=audioEnabled;renderEvents();renderTimeline();
+}
 function alarmActive(){
  return state.alarms && (
   state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)===0||Number(state.spo)===0||
@@ -91,38 +120,46 @@ function alarmActive(){
  );
 }
 function renderSliders(){
+ // Ne pas reconstruire les champs pendant que le formateur est en train de saisir une valeur.
+ if($('sliders').contains(document.activeElement))return;
  const defs=[['fc','FC',0,240,'bpm'],['spo','SpO₂',0,100,'%']];
- $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l}</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${state[k]}"></div>`).join('')+
- `<div class="field"><label>Variation FC activée automatiquement — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`+
- `<div class="field"><label>Variation SpO₂ activée automatiquement — minimum / maximum (%)</label><div class="row"><input id="spoMin" type="number" min="0" max="100" value="${state.spoMin}"><input id="spoMax" type="number" min="0" max="100" value="${state.spoMax}"></div></div>`+
- `<div class="field"><label>Tension artérielle — TAS / TAD (mmHg)</label><div class="row"><input id="manualSys" type="number" min="0" max="300" value="${state.sys}"><input id="manualDia" type="number" min="0" max="200" value="${state.dia}"></div></div>`;
+ $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l} (${u})</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${state[k]}"></div>`).join('')+
+ `<div class="field"><label>Plage de variation FC — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`+
+ `<div class="field"><label>Plage de variation SpO₂ — minimum / maximum (%)</label><div class="row"><input id="spoMin" type="number" min="0" max="100" value="${state.spoMin}"><input id="spoMax" type="number" min="0" max="100" value="${state.spoMax}"></div></div>`;
  $('sliders').querySelectorAll('input[data-key]').forEach(el=>el.addEventListener('change',e=>{state[e.target.dataset.key]=Number(e.target.value);render();publish()}));
- ['fcMin','fcMax','spoMin','spoMax'].forEach(id=>$(id).onchange=e=>{state[id]=Number(e.target.value);if(state.fcMin>state.fcMax)state.fcMin=state.fcMax;if(state.spoMin>state.spoMax)state.spoMin=state.spoMax;publish()});
- ['manualSys','manualDia'].forEach(id=>$(id).onchange=e=>{state[id==='manualSys'?'sys':'dia']=Number(e.target.value);render();publish()});
+ ['fcMin','fcMax','spoMin','spoMax'].forEach(id=>$(id).onchange=e=>{
+  state[id]=Number(e.target.value);
+  if(state.fcMin>state.fcMax){if(id==='fcMin')state.fcMax=state.fcMin;else state.fcMin=state.fcMax}
+  if(state.spoMin>state.spoMax){if(id==='spoMin')state.spoMax=state.spoMin;else state.spoMin=state.spoMax}
+  $('fcMin').value=state.fcMin;$('fcMax').value=state.fcMax;$('spoMin').value=state.spoMin;$('spoMax').value=state.spoMax;publish()
+ });
 }
 
 function renderEvents(){$('events').innerHTML=(state.events||[]).map(e=>`<div class="event"><span class="muted">${e.t}</span> — ${escapeHtml(e.msg)}</div>`).join('')||'<p class="muted">Aucun événement enregistré.</p>'}
 function renderTimeline(){$('timeline').textContent=scenarioSteps.length?scenarioSteps.map((s,i)=>`${i+1}. FC ${s.fc} · TA ${s.sys}/${s.dia} · SpO₂ ${s.spo}%`).join('  |  '):'Aucune étape personnalisée.'}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function openModal(title,body){$('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modal').classList.remove('hidden')}
-function showMetric(k){let detail={FC:`Fréquence cardiaque : ${fmt(state.fc)} bpm.`,TA:`Dernière pression : ${fmt(state.sys)}/${fmt(state.dia)} mmHg. PAM calculée : ${pam()} mmHg.`,SpO2:`Saturation simulée : ${fmt(state.spo)} %.`,EtCO2:`EtCO₂ simulé : ${fmt(state.co2)} mmHg.`,Température:`Température simulée : ${Number(state.temp).toFixed(1)} °C.`};openModal(k,`<p>${detail[k]}</p><p class="muted">Valeur pilotée par le formateur.</p>`)}
+function showMetric(k){if(k==='TA'){showTAHistory();return}let detail={FC:`Fréquence cardiaque : ${fmt(state.fc)} bpm.`,SpO2:`Saturation simulée : ${fmt(state.spo)} %.`};openModal(k,`<p>${detail[k]||'Valeur simulée.'}</p><p class="muted">Valeur pilotée par le formateur.</p>`)}
 document.querySelectorAll('[data-metric]').forEach(b=>b.addEventListener('click',()=>showMetric(b.dataset.metric)));
-function setPage(p){['monitor','ecg','events','settings'].forEach(x=>$(x+'Page').classList.toggle('hidden',x!==p));['Monitor','Ecg','Events','Settings'].forEach(x=>$('tab'+x).classList.toggle('active',x.toLowerCase()===p))}
-$('tabMonitor').onclick=()=>setPage('monitor');$('tabEcg').onclick=()=>setPage('ecg');$('tabEvents').onclick=()=>setPage('events');$('tabSettings').onclick=()=>setPage('settings');
+function setPage(p){['monitor','events','settings'].forEach(x=>$(x+'Page').classList.toggle('hidden',x!==p));['Monitor','Events','Settings'].forEach(x=>$('tab'+x).classList.toggle('active',x.toLowerCase()===p))}
+$('tabMonitor').onclick=()=>setPage('monitor');$('tabEvents').onclick=()=>setPage('events');$('tabSettings').onclick=()=>setPage('settings');
 $('closeModal').onclick=()=>$('modal').classList.add('hidden');
-$('nibpBtn').onclick=()=>{
- if(role==='display'){
-   openModal('Mesure de tension',`<p>Mesure simulée : <b>${fmt(state.sys)}/${fmt(state.dia)} mmHg</b></p><p>PAM : ${pam()} mmHg</p>`);
- }else{
-   state.sys=Number($('manualSys')?.value??state.sys);state.dia=Number($('manualDia')?.value??state.dia);render();publish();
-   openModal('Mesure NIBP',`<p>Mesure simulée : <b>${fmt(state.sys)}/${fmt(state.dia)} mmHg</b></p><p>PAM : ${pam()} mmHg</p>`);
- }
-};
+function taHistoryKey(){return 'scopeSuapTaHistory:'+(room||$('roomCode').value.trim()||'local')}
+function loadTaHistory(){try{const parsed=JSON.parse(localStorage.getItem(taHistoryKey())||'[]');taHistory=Array.isArray(parsed)?parsed.slice(0,10):[]}catch(e){taHistory=[]}}
+function saveTaHistory(){try{localStorage.setItem(taHistoryKey(),JSON.stringify(taHistory.slice(0,10)))}catch(e){console.warn('Historique TA non enregistré localement',e)}}
+function taHistoryMarkup(){if(!taHistory.length)return '<p class="muted">Aucune mesure enregistrée. Appuie sur « MESURE T.A » pour ajouter la première mesure.</p>';return '<div>'+taHistory.map((m,i)=>`<div class="event"><b>${escapeHtml(m.time)}</b> — ${m.sys}/${m.dia} mmHg <span class="muted">· PAM ${m.pam} mmHg${i===0?' · dernière mesure':''}</span></div>`).join('')+'</div>'}
+function showTAHistory(){openModal('Historique T.A / P.N.I.',taHistoryMarkup())}
+$('nibpBtn').onclick=()=>{const m={time:new Date().toLocaleTimeString('fr-FR'),sys:fmt(state.sys),dia:fmt(state.dia),pam:pam()};taHistory.unshift(m);taHistory=taHistory.slice(0,10);saveTaHistory();showTAHistory()};
+$('applyTA').onclick=()=>{const sys=$('manualSys').value.trim(),dia=$('manualDia').value.trim();if(sys===''||dia===''||!Number.isFinite(Number(sys))||!Number.isFinite(Number(dia))){alert('Saisis une TAS et une TAD valides.');return}state.sys=Math.max(0,Math.min(300,Number(sys)));state.dia=Math.max(0,Math.min(200,Number(dia)));log(`Tension appliquée : ${state.sys}/${state.dia} mmHg`);render();publish()};
 $('soundToggle').onchange=e=>{audioEnabled=e.target.checked;state.soundEnabled=audioEnabled;if(!audioEnabled)stopFlatlineTone();publish()};
 $('menuBtn').onclick=()=>setPage('settings');
 $('patient').onchange=e=>{state.patient=e.target.value;log(`Mode patient : ${state.patient}`);render();publish()};
 $('patientName').onchange=e=>{state.name=e.target.value||'PATIENT SIMULÉ';render();publish()};
-$('rhythm').onchange=e=>{state.rhythm=e.target.value;state.ecgPattern=e.target.value;lastHeartBeat=0;log(`Rythme / aspect ECG modifié : ${state.rhythm}`);render();publish();renderEcgPresets()};
+function setRhythm(id){state.rhythm=id;state.irregularFC=id==='fa';if(id==='brady'){state.fc=45;state.variationFCEnabled=false}else if(id==='tachy'){state.fc=145;state.variationFCEnabled=false}else if(id==='svt'){state.fc=170;state.variationFCEnabled=false}else if(id==='tv'){state.fc=180;state.variationFCEnabled=false}else if(id==='flutter'){state.fc=150;state.variationFCEnabled=false}else if(id==='fv'||id==='asystole'){state.fc=0;state.spo=0;state.variationFCEnabled=false;state.variationSpoEnabled=false}else if(id==='sinusal'){state.irregularFC=false;if(Number(state.fc)<=0)state.fc=72;if(Number(state.spo)<=0)state.spo=98}lastHeartBeat=0;log('Rythme sélectionné : '+id);render();publish()}
+$('rhythm').onchange=e=>setRhythm(e.target.value);
+$('variationFCToggle').onchange=e=>{state.variationFCEnabled=e.target.checked;log('Variation FC '+(e.target.checked?'activée':'désactivée'));render();publish()};
+$('variationSpoToggle').onchange=e=>{state.variationSpoEnabled=e.target.checked;log('Variation SpO₂ '+(e.target.checked?'activée':'désactivée'));render();publish()};
+$('cardiacArrestBtn').onclick=()=>{clearInterval(scenarioTimer);scenarioTimer=null;state.variationFCEnabled=false;state.variationSpoEnabled=false;state.fc=0;state.spo=0;state.rhythm='asystole';state.irregularFC=false;lastHeartBeat=0;log('Simulation d’arrêt cardiaque : variations désactivées, FC 0, SpO₂ 0, asystolie');render();publish()};
 $('applyLimits').onclick=()=>{
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>state[id]=Number($(id).value));
  log('Seuils hauts et bas des alarmes modifiés par le formateur');render();publish()
@@ -142,59 +179,51 @@ $('addStep').onclick=()=>{scenarioSteps.push({fc:state.fc,sys:state.sys,dia:stat
 $('exportScenario').onclick=()=>{let blob=new Blob([JSON.stringify(scenarioSteps,null,2)],{type:'application/json'});download(blob,'scenario-scope-suap.json')};
 $('importScenario').onchange=async e=>{try{scenarioSteps=JSON.parse(await e.target.files[0].text());renderTimeline();log('Scénario JSON importé')}catch{alert('Fichier JSON invalide')}};
 function download(blob,name){let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
-const leadNames=['I','aVR','V1','V4','II','aVL','V2','V5','III','aVF','V3','V6'];
-const leadAxis={I:0,II:1,III:.72,aVR:-.8,aVL:-.45,aVF:.8,V1:-.75,V2:-.45,V3:0,V4:.45,V5:.8,V6:.9};
-const patternInfo={
- sinusal:{label:'Rythme sinusal',hint:'Onde P suivie de QRS fins et onde T',group:'rhythms'},brady:{label:'Bradycardie sinusale',hint:'Rythme sinusal lent',group:'rhythms'},tachy:{label:'Tachycardie sinusale',hint:'Rythme sinusal rapide',group:'rhythms'},fa:{label:'Fibrillation atriale',hint:'Tracé irrégulièrement irrégulier, absence de P organisées',group:'rhythms'},flutter:{label:'Flutter atrial',hint:'Ondes de flutter en dents de scie',group:'rhythms'},svt:{label:'Tachycardie supraventriculaire',hint:'Tachycardie régulière à QRS fins (modèle simplifié)',group:'rhythms'},tv:{label:'Tachycardie ventriculaire',hint:'Tachycardie à QRS larges',group:'rhythms'},fv:{label:'Fibrillation ventriculaire',hint:'Activité électrique chaotique sans QRS organisés',group:'rhythms'},asystole:{label:'Asystolie',hint:'Absence d’activité électrique visible',group:'rhythms'},stemi_inf:{label:'SCA ST+ inférieur',hint:'Sus-décalage simulé en II, III, aVF',group:'ischemia'},stemi_ant:{label:'SCA ST+ antérieur',hint:'Sus-décalage simulé en V1 à V4',group:'ischemia'},stemi_lat:{label:'SCA ST+ latéral',hint:'Sus-décalage simulé en I, aVL, V5, V6',group:'ischemia'},ischemia:{label:'Ischémie sous-endocardique',hint:'Sous-décalage ST et anomalies de repolarisation simplifiés',group:'ischemia'},bbb_r:{label:'Bloc de branche droit',hint:'QRS élargis avec morphologie type rSR’ en V1 (schématique)',group:'conduction'},bbb_l:{label:'Bloc de branche gauche',hint:'QRS élargis et discordance secondaire ST-T (schématique)',group:'conduction'}
-};
-const presetGroups={rhythms:[['sinusal','Sinusal'],['brady','Bradycardie'],['tachy','Tachycardie'],['fa','FA'],['flutter','Flutter'],['svt','TSV'],['tv','TV'],['fv','FV'],['asystole','Asystolie']],ischemia:[['stemi_inf','ST+ inférieur'],['stemi_ant','ST+ antérieur'],['stemi_lat','ST+ latéral'],['ischemia','Ischémie ST−']],conduction:[['bbb_r','BBD'],['bbb_l','BBG']]};
-function setPattern(id){state.ecgPattern=id;state.rhythm=id; if(id==='brady')state.fc=Math.min(state.fc,45);if(id==='tachy'||id==='svt')state.fc=Math.max(state.fc,145);if(id==='tv')state.fc=Math.max(state.fc,160);if(id==='fv'||id==='asystole')state.fc=0; if(id==='fa')state.irregular=true; if(id==='sinusal')state.irregular=false;lastHeartBeat=0;render();renderEcgPresets();publish();log('Aspect ECG sélectionné : '+(patternInfo[id]?.label||id));}
-function renderEcgPresets(){let group=ecgGroup;$('ecgPresets').innerHTML=(presetGroups[group]||[]).map(([id,label])=>`<button class="ecg-preset ${state.ecgPattern===id?'primary':''}" data-pattern="${id}">${label}</button>`).join('');$('ecgPresets').querySelectorAll('[data-pattern]').forEach(b=>b.onclick=()=>setPattern(b.dataset.pattern));let info=patternInfo[state.ecgPattern||state.rhythm]||patternInfo.sinusal;$('ecgPatternLabel').textContent=info.label;$('ecgPatternHint').textContent=info.hint+' · vitesse '+state.speed+' mm/s';}
-$('ecgTabs').querySelectorAll('[data-group]').forEach(b=>b.onclick=()=>{ecgGroup=b.dataset.group;$('ecgTabs').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderEcgPresets()});$('ecgToMonitor').onclick=()=>setPage('monitor');
-function leadMorphology(t,leadName,idx){let id=state.ecgPattern||state.rhythm,fc=Math.max(1,state.fc||60),period=60/fc;
- if(id==='asystole')return 0;
- if(id==='fv')return (Math.sin(t*31+idx*2.3)*.18+Math.sin(t*47+idx)*.12+Math.sin(t*67+idx*1.7)*.08);
- let irregularOn=!!state.irregularFC||id==='fa';
-  // La modulation de phase fait varier réellement les intervalles RR autour de la FC moyenne.
-  // Elle reste déterministe pour éviter que le tracé ne saute à chaque rafraîchissement.
-  let phaseCycles=t/period;
-  if(irregularOn)phaseCycles=phaseCycles+.24*Math.sin(phaseCycles*2.17)+.11*Math.sin(phaseCycles*4.73+1.2);
-  let beatNo=Math.floor(phaseCycles),local=(phaseCycles-beatNo)*period;
- if(id==='fa'){let jitter=.78+.38*Math.abs(Math.sin(beatNo*12.989+idx*.73));local=(t%(period*jitter));period=period*jitter;}
- if(id==='flutter'){let saw=((local*4.2)%1);let baseline=(saw<.5?saw*2:(1-saw)*2)-.5;}
- let axis=leadAxis[leadName]??.5,pol=axis>=0?1:-1,amp=Math.max(.35,Math.abs(axis));
- let wide=['tv','bbb_r','bbb_l'].includes(id),qrsWidth=wide?.105:.055;
+const leadAxis={II:1};
+function leadMorphology(t,leadName='II',idx=0){
+ const id=state.rhythm,fc=Math.max(1,Number(state.fc)||60),period=60/fc;
+ if(id==='asystole'||(Number(state.fc)<=0&&id!=='fv'))return 0;
+ if(id==='fv')return Math.sin(t*31+idx*2.3)*.18+Math.sin(t*47+idx)*.12+Math.sin(t*67+idx*1.7)*.08;
+ let cycles=t/period;
+ if(state.irregularFC||id==='fa')cycles+=.24*Math.sin(cycles*2.17)+.11*Math.sin(cycles*4.73+1.2);
+ const beat=Math.floor(cycles),local=(cycles-beat)*period;
+ const axis=leadAxis[leadName]??1,pol=axis>=0?1:-1,amp=Math.max(.35,Math.abs(axis));
+ const wide=id==='tv',qrsWidth=wide?.105:.055;
  let y=0;
- if(id==='flutter'){let saw=((local*4.0)%1);y+=(saw<.5?saw*2:(1-saw)*2-.0)*.11-.055;}
- if(!['fa','flutter','svt','tv'].includes(id)) y+=Math.exp(-Math.pow((local-.16*period)/(.035*period),2))*pol*.10*amp; // P
- if(id==='svt'||id==='tv'){} 
- // QRS: three components, widened for ventricular rhythm / bundle branch block
- let qrsCenter=.31*period, qAmp=(id==='tv'?1.15:1)*pol*amp;
+ if(id==='flutter'){
+  const saw=(local/period*4.0)%1;
+  y+=(saw<.5?saw*2:(1-saw)*2)*.11-.055;
+ }
+ if(!['fa','flutter','svt','tv'].includes(id))y+=Math.exp(-Math.pow((local-.16*period)/(.035*period),2))*pol*.10*amp;
+ const qrsCenter=.31*period,qAmp=(id==='tv'?1.15:1)*pol*amp;
  y+=-Math.exp(-Math.pow((local-(qrsCenter-qrsWidth*.30))/(qrsWidth*.18),2))*qAmp*.22;
  y+=Math.exp(-Math.pow((local-qrsCenter)/(qrsWidth*.24),2))*qAmp*.95;
  y+=-Math.exp(-Math.pow((local-(qrsCenter+qrsWidth*.34))/(qrsWidth*.2),2))*qAmp*.28;
- if(id==='bbb_r'&&['V1','V2'].includes(leadName))y+=Math.exp(-Math.pow((local-(qrsCenter+qrsWidth*.65))/(qrsWidth*.22),2))*.42;
- if(id==='bbb_l'&&['I','aVL','V5','V6'].includes(leadName))y+=Math.exp(-Math.pow((local-(qrsCenter+qrsWidth*.5))/(qrsWidth*.28),2))*pol*.35;
- let st=.40*period,stAmp=0;
- if(id==='stemi_inf'&&['II','III','aVF'].includes(leadName))stAmp=.24;
- if(id==='stemi_ant'&&['V1','V2','V3','V4'].includes(leadName))stAmp=.24;
- if(id==='stemi_lat'&&['I','aVL','V5','V6'].includes(leadName))stAmp=.22;
- if(id==='ischemia')stAmp=-.15;
- if(id==='bbb_l'&&['I','aVL','V5','V6'].includes(leadName))stAmp=-.08;
- if(id==='bbb_r'&&['V1','V2'].includes(leadName))stAmp=-.07;
- if(local>st&&local<.57*period)y+=stAmp;
- let tAmp=(id==='ischemia'?-1:(id.startsWith('stemi_')?.18:.16))*pol*amp;
- if(id==='stemi_inf'&&['II','III','aVF'].includes(leadName))tAmp=.2;
- if(id==='stemi_ant'&&['V1','V2','V3','V4'].includes(leadName))tAmp=.22;
- if(id==='stemi_lat'&&['I','aVL','V5','V6'].includes(leadName))tAmp=.18;
- y+=Math.exp(-Math.pow((local-.70*period)/(.085*period),2))*tAmp;
- if(id==='fa')y+=(Math.sin(t*27+idx)*.018+Math.sin(t*39+idx*.5)*.012);
+ y+=Math.exp(-Math.pow((local-.70*period)/(.085*period),2))*(id==='tv'?.08:.16)*pol*amp;
+ if(id==='fa')y+=Math.sin(t*27)*.018+Math.sin(t*39)*.012;
  return y;
 }
-function draw(canvas,type,leadName='II'){if(!canvas||!canvas.clientWidth||!canvas.clientHeight)return;let ctx=canvas.getContext('2d'),w=canvas.width=Math.floor(canvas.clientWidth*devicePixelRatio),h=canvas.height=Math.floor(canvas.clientHeight*devicePixelRatio);ctx.clearRect(0,0,w,h);ctx.strokeStyle='#193328';ctx.lineWidth=1;for(let x=0;x<w;x+=w/10){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=h/4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
- let color=type==='ecg'?'#53f28b':type==='pleth'?'#4aa8ff':'#ffe16a';ctx.strokeStyle=color;ctx.lineWidth=1.8*devicePixelRatio;ctx.beginPath();let offset=phase*(1),windowSec=5*(25/state.speed);
- for(let x=0;x<w;x++){let t=x/w*windowSec+offset,y=h*.5;if(type==='ecg'){let v=leadMorphology(t,leadName,leadNames.indexOf(leadName));y=h*.5-v*h*.72;}else if(type==='pleth'){let beat=60/Math.max(1,state.fc||60),p=(t%beat)/beat;y=h*.78;if(p>.05&&p<.45)y-=Math.pow(Math.sin((p-.05)/.4*Math.PI),2)*h*.55*(state.spo/100);}else{let rr=60/Math.max(1,state.fr||1);y=h*.5-Math.sin(t/rr*Math.PI*2)*h*.27;}if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.stroke();}
-const leadGrid=$('leadGrid');leadGrid.innerHTML=leadNames.map(l=>`<div class="lead"><b>${l}</b><canvas data-lead="${l}"></canvas></div>`).join('');
+function draw(canvas,type){
+ if(!canvas||!canvas.clientWidth||!canvas.clientHeight)return;
+ const ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;
+ const w=canvas.width=Math.floor(canvas.clientWidth*dpr),h=canvas.height=Math.floor(canvas.clientHeight*dpr);
+ ctx.clearRect(0,0,w,h);ctx.strokeStyle='#193328';ctx.lineWidth=1*dpr;
+ for(let x=0;x<w;x+=w/10){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+ for(let y=0;y<h;y+=h/4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+ ctx.strokeStyle=type==='ecg'?'#53f28b':'#4aa8ff';ctx.lineWidth=1.8*dpr;ctx.beginPath();
+ const windowSec=5*(25/(Number(state.speed)||25)),offset=phase;
+ for(let x=0;x<w;x++){
+  const t=x/w*windowSec+offset;let y=h*.5;
+  if(type==='ecg'){
+   const v=leadMorphology(t,'II',0);y=h*.5-v*h*.72;
+  }else{
+   const beat=60/Math.max(1,Number(state.fc)||60),p=(t%beat)/beat;y=h*.78;
+   if(Number(state.fc)>0&&Number(state.spo)>0&&p>.05&&p<.45)y-=Math.pow(Math.sin((p-.05)/.4*Math.PI),2)*h*.55*(state.spo/100);
+  }
+  if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+ }
+ ctx.stroke();
+}
 function shortTone(frequency,duration,gainValue,when=null){if(!audioCtx)return;try{let o=audioCtx.createOscillator(),g=audioCtx.createGain(),start=when===null?audioCtx.currentTime:when;o.type='sine';o.frequency.value=frequency;g.gain.setValueAtTime(gainValue,start);g.gain.exponentialRampToValueAtTime(.001,start+duration);o.connect(g);g.connect(audioCtx.destination);o.start(start);o.stop(start+duration)}catch(e){}}
 function alarmPulse(frequency,duration,when){
  if(!audioCtx)return;
@@ -224,23 +253,21 @@ function beepAlarm(){
 function stopFlatlineTone(){if(flatOsc){try{flatOsc.stop()}catch(e){}flatOsc=null;flatGain=null}}
 function syncFlatlineTone(){if(!audioEnabled||!audioCtx||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
 function beepHeart(){if(!audioEnabled||!audioCtx||state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)<=0)return;let now=Date.now(),base=60000/Math.max(1,Number(state.fc)),interval=base;if(state.irregularFC||state.rhythm==='fa')interval=base*(.72+Math.random()*.56);if(now-lastHeartBeat>=interval){lastHeartBeat=now;shortTone(720,.075,.045)}}
-function animate(){phase+=1/60;syncFlatlineTone();beepHeart();beepAlarm();draw($('ecgCanvas'),'ecg','II');draw($('plethCanvas'),'pleth');document.querySelectorAll('.lead canvas').forEach(c=>draw(c,'ecg',c.dataset.lead));$('clock').textContent=new Date().toLocaleTimeString('fr-FR');requestAnimationFrame(animate)}
+function animate(){phase+=1/60;syncFlatlineTone();beepHeart();beepAlarm();draw($('ecgCanvas'),'ecg','II');draw($('plethCanvas'),'pleth');$('clock').textContent=new Date().toLocaleTimeString('fr-FR');requestAnimationFrame(animate)}
 function updateRole(){
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>{if($(id))$(id).value=state[id]});
  let control=role==='control';
- state.alarms=true; audioEnabled=state.soundEnabled!==false; if($('soundToggle'))$('soundToggle').checked=audioEnabled;
+ state.alarms=true;audioEnabled=state.soundEnabled!==false;if($('soundToggle'))$('soundToggle').checked=audioEnabled;
  $('controlPanel').classList.toggle('hidden',!control);
- $('tabSettings').classList.remove('hidden');
- $('tabEvents').classList.toggle('hidden',!control);
- $('menuBtn').classList.add('hidden');
- $('nibpBtn').classList.toggle('hidden',control);
+ $('tabSettings').classList.remove('hidden');$('tabEvents').classList.toggle('hidden',!control);
+ $('menuBtn').classList.add('hidden');$('nibpBtn').classList.toggle('hidden',control);
  $('status').textContent=control?'INTERFACE FORMATEUR':'INTERFACE STAGIAIRE';
  document.title=control?'Pilotage Scope SUAP':'Scope SUAP — Moniteur';
 }
 function config(){return {url:localStorage.sbUrl||'',key:localStorage.sbKey||''}}
 function initSupabase(){let c=config();if(!c.url||!c.key||!window.supabase){$('status').textContent='Mode local — configure Supabase pour la liaison distante';return}try{sb=window.supabase.createClient(c.url,c.key);$('status').textContent='Supabase prêt — code de session requis'}catch(e){$('status').textContent='Configuration Supabase invalide'}}
 function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room,state:state,updated_at:new Date().toISOString()},{onConflict:'code'}).then(({error})=>{if(error)$('status').textContent='Erreur de synchronisation : '+error.message})}
-async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,alarms:true};audioEnabled=state.soundEnabled!==false;render()}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
+async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}loadTaHistory();if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,alarms:true};audioEnabled=state.soundEnabled!==false;loadTaHistory();render()}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
  if(!payload.new?.state)return;
  const incoming=payload.new.state;
  if(role==='display'){state={...defaults,...incoming,alarms:true};audioEnabled=state.soundEnabled!==false;render()}
@@ -249,14 +276,14 @@ async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room)
 $('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value=String(Math.floor(100000+Math.random()*900000))};
 $('saveConfig').onclick=()=>{localStorage.sbUrl=$('sbUrl').value.trim();localStorage.sbKey=$('sbKey').value.trim();initSupabase();alert('Configuration enregistrée sur cet appareil.')};
 $('sbUrl').value=localStorage.sbUrl||'';$('sbKey').value=localStorage.sbKey||'';
-updateRole();initSupabase();render();renderEcgPresets();
+updateRole();initSupabase();loadTaHistory();render();
 let audioUnlockAttempted=false;
 document.addEventListener('pointerdown',async()=>{
  if(audioUnlockAttempted)return;audioUnlockAttempted=true;
  try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();await audioCtx.resume();lastHeartBeat=0;render()}
  catch(e){audioEnabled=false;render()}
 },{once:true});
-requestAnimationFrame(animate);setInterval(()=>{if(role==='control'&&room)publish();},2500);setInterval(()=>{if(role==='control'){const rnd=(a,b)=>Math.round(a+Math.random()*(b-a));state.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));state.spo=rnd(Math.min(state.spoMin,state.spoMax),Math.max(state.spoMin,state.spoMax));render();publish();}},2200);
+requestAnimationFrame(animate);setInterval(()=>{if(role==='control'&&room)publish();},2500);setInterval(()=>{if(role==='control'){const rnd=(a,b)=>Math.round(a+Math.random()*(b-a));let changed=false;if(state.variationFCEnabled){state.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));changed=true}if(state.variationSpoEnabled){state.spo=rnd(Math.min(state.spoMin,state.spoMax),Math.max(state.spoMin,state.spoMax));changed=true}if(changed){render();publish()}}},2200);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(err=>console.warn('Service worker non enregistré',err)));}
 </script>
 </body></html>
