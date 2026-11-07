@@ -132,10 +132,29 @@ function renderSliders(){
  const markupKey=[state.fcMin,state.fcMax,state.spoMin,state.spoMax].join('|');
  if(markupKey!==slidersMarkupCache){
   slidersMarkupCache=markupKey;
-  $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l} (${u})</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${fmt(state[k])}"></div>`).join('')+
+  $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l} (${u})</label><input type="number" data-key="${k}" min="${min}" max="${max}" step="1" inputmode="numeric" value="${fmt(state[k])}"></div>`).join('')+
   `<div class="field"><label>Plage de variation FC — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`+
   `<div class="field"><label>Plage de variation SpO₂ — minimum / maximum (%)</label><div class="row"><input id="spoMin" type="number" min="0" max="100" value="${state.spoMin}"><input id="spoMax" type="number" min="0" max="100" value="${state.spoMax}"></div></div>`;
-  $('sliders').querySelectorAll('input[data-key]').forEach(el=>el.addEventListener('change',e=>{state[e.target.dataset.key]=Number(e.target.value);render();publish()}));
+  $('sliders').querySelectorAll('input[data-key]').forEach(el=>{
+   // Saisie directe des constantes FC et SpO2 : mise à jour immédiate sans toucher aux tracés.
+   el.addEventListener('input',e=>{
+    const key=e.target.dataset.key, max=key==='spo'?100:240;
+    if(e.target.value==='')return;
+    const value=Math.max(0,Math.min(max,Number(e.target.value)));
+    state[key]=value;
+    if(key==='fc')smoothTarget.fc=value; else smoothTarget.spo=value;
+    transitionActive=false;
+    if(key==='fc')$('vFC').textContent=fmt(value); else $('vSpO2').textContent=fmt(value);
+    publish();
+   });
+   el.addEventListener('change',e=>{
+    const key=e.target.dataset.key, max=key==='spo'?100:240;
+    const value=Math.max(0,Math.min(max,Number(e.target.value)||0));
+    e.target.value=value;state[key]=value;
+    if(key==='fc')smoothTarget.fc=value; else smoothTarget.spo=value;
+    transitionActive=false;render();publish();
+   });
+  });
   ['fcMin','fcMax','spoMin','spoMax'].forEach(id=>$(id).onchange=e=>{
    state[id]=Number(e.target.value);
    if(state.fcMin>state.fcMax){if(id==='fcMin')state.fcMax=state.fcMin;else state.fcMin=state.fcMax}
