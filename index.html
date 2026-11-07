@@ -28,14 +28,14 @@
  </div>
 </div>
 <div class="app">
- <header class="top"><div><div class="brand">SCOPE SUAP <span class="tag">SIMULATION PÉDAGOGIQUE</span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
+ <header class="top"><div><div class="brand">SIMULATEUR DE MONITORING <span class="tag">SUAP</span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
  <main id="monitorPage">
   <section class="screen">
-   <div class="monitor-head"><span id="patientLabel">ADULTE · PATIENT SIMULÉ</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
+   <div class="monitor-head"><span id="patientLabel">ADULTE · VICTIME</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
    <div class="monitor-grid">
     <div class="traces">
-     <div class="trace"><span class="trace-label" style="color:var(--green)">ECG · II</span><canvas id="ecgCanvas"></canvas></div>
-     <div class="trace"><span class="trace-label" style="color:var(--blue)">SpO₂ · PLETH</span><canvas id="plethCanvas"></canvas></div>
+     <div class="trace"><span class="trace-label" style="color:var(--green)">F.C</span><canvas id="ecgCanvas"></canvas></div>
+     <div class="trace"><span class="trace-label" style="color:var(--blue)">SpO₂</span><canvas id="plethCanvas"></canvas></div>
     </div>
     <div class="numbers">
      <button class="metric fc" data-metric="FC"><div class="name">FC / HR</div><div class="value" id="vFC">72</div><div class="unit">bpm</div></button>
@@ -76,7 +76,7 @@
    <div class="row"><button id="applyLimits">Appliquer seuils</button><label><input id="soundToggle" type="checkbox" checked> Son ON/OFF</label><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button><button id="exportScenario">Exporter scénario JSON</button><label><input id="importScenario" type="file" accept="application/json" hidden><button onclick="document.getElementById('importScenario').click()">Importer JSON</button></label></div><div id="timeline" class="muted" style="margin-top:10px">Aucune étape personnalisée.</div>
   </section>
  </section>
- <div class="footer">Scope SUAP · Simulation pédagogique uniquement · Ne pas utiliser pour une décision médicale réelle</div>
+ <div class="footer">SIMULATION DE MONITORING - Créer par Aurélien.E </div>
 </div>
 <div id="modal" class="modal hidden"><div class="modalbox"><h3 id="modalTitle">Détail</h3><div id="modalBody"></div><div style="text-align:right;margin-top:12px"><button id="closeModal">Fermer</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
