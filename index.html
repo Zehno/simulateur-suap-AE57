@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#05090d">
+<meta name="description" content="Simulateur pédagogique Scope SUAP — pilotage formateur et moniteur stagiaire.">
+<meta name="application-name" content="Scope SUAP">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Scope SUAP">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
 <title>Scope SUAP — Simulateur pédagogique</title>
 <style>
 :root{--bg:#05090d;--panel:#101820;--line:#26333d;--muted:#8da0ad;--green:#53f28b;--blue:#4aa8ff;--yellow:#ffe16a;--orange:#ff9d45;--red:#ff5555;--white:#e8eef2}
@@ -11,6 +19,14 @@
 </style>
 </head>
 <body>
+<div id="roleChooser" class="modal hidden" style="z-index:20">
+ <div class="modalbox">
+  <h3>Scope SUAP</h3>
+  <p>Choisir l'interface à ouvrir sur cet appareil.</p>
+  <button class="primary" id="choosePilot" style="width:100%;margin:5px 0">PILOTAGE — Formateur</button>
+  <button id="chooseTrainee" style="width:100%;margin:5px 0">SCOPE — Stagiaire</button>
+ </div>
+</div>
 <div class="app">
  <header class="top"><div><div class="brand">SCOPE SUAP <span class="tag">SIMULATION PÉDAGOGIQUE</span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEcg">ECG 12D</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
  <main id="monitorPage">
@@ -47,14 +63,19 @@
   <section class="panel"><h2>Pilotage formateur — constantes</h2><div id="sliders"></div><div class="field"><label>Rythme ECG</label><select id="rhythm"><option value="sinusal">Sinusal</option><option value="brady">Bradycardie sinusale</option><option value="tachy">Tachycardie sinusale</option><option value="fa">Fibrillation atriale</option><option value="flutter">Flutter atrial</option><option value="svt">Tachycardie supraventriculaire</option><option value="tv">Tachycardie ventriculaire</option><option value="fv">Fibrillation ventriculaire</option><option value="asystole">Asystolie</option><option value="stemi_inf">ST+ inférieur</option><option value="stemi_ant">ST+ antérieur</option><option value="stemi_lat">ST+ latéral</option><option value="ischemia">Ischémie sous-endocardique</option><option value="bbb_r">Bloc de branche droit</option><option value="bbb_l">Bloc de branche gauche</option></select></div><div class="field"><label>Scénario</label><select id="scenario"><option value="custom">Manuel</option><option value="choc">Dégradation hémodynamique</option><option value="detresse">Détresse respiratoire</option><option value="retablissement">Amélioration progressive</option></select></div><div class="row"><button class="primary" id="startScenario">Lancer scénario</button><button id="stopScenario">Arrêter</button><button id="addStep">Ajouter étape actuelle</button></div><p class="muted">Scénario automatique : les étapes prédéfinies évoluent dans le temps. Le mode manuel permet de modifier les valeurs directement.</p><h3>NOTE PATIENT</h3><textarea id="controlNotes" rows="3" placeholder="Informations à transmettre aux stagiaires…" style="width:100%;background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:10px;resize:vertical"></textarea></section>
   <section class="panel"><h2>Chronologie & alarmes</h2><div class="field"><label>Intervalle entre étapes</label><select id="interval"><option value="15">15 secondes</option><option value="30" selected>30 secondes</option><option value="60">1 minute</option><option value="120">2 minutes</option></select></div><div class="field"><label>Seuil alarme FC basse</label><input id="lowFC" type="number" value="50" min="0" max="250"></div><div class="field"><label>Seuil alarme FC haute</label><input id="highFC" type="number" value="130" min="1" max="300"></div><div class="field"><label>Seuil alarme SpO₂ basse</label><input id="lowSpo" type="number" value="90" min="0" max="100"></div><div class="row"><button id="applyLimits">Appliquer seuils</button><button id="exportScenario">Exporter scénario JSON</button><label><input id="importScenario" type="file" accept="application/json" hidden><button onclick="document.getElementById('importScenario').click()">Importer JSON</button></label></div><div id="timeline" class="muted" style="margin-top:10px">Aucune étape personnalisée.</div></section>
  </section>
- <div class="footer">Outil de simulation pédagogique SUAP · Aucune connexion à un patient réel · V1</div>
+ <div class="footer">Scope SUAP · Simulation pédagogique uniquement · Ne pas utiliser pour une décision médicale réelle</div>
 </div>
 <div id="modal" class="modal hidden"><div class="modalbox"><h3 id="modalTitle">Détail</h3><div id="modalBody"></div><div style="text-align:right;margin-top:12px"><button id="closeModal">Fermer</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=id=>document.getElementById(id);
 const defaults={fc:72,fr:15,sys:120,dia:80,spo:98,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',ecgPattern:'sinusal',alarms:true,freeze:false,speed:25,lowFC:50,highFC:130,lowSpo:90,irregular:false,fcMin:65,fcMax:85,frMin:13,frMax:18,events:[],notes:''};
-let state={...defaults},role=new URLSearchParams(location.search).get('mode')==='control'?'control':'display';
+let state={...defaults};
+const requestedMode=new URLSearchParams(location.search).get('mode');
+let role=requestedMode==='control'?'control':'display';
+if(!requestedMode && !sessionStorage.getItem('scopeRoleChosen')) $('roleChooser').classList.remove('hidden');
+$('choosePilot').onclick=()=>{sessionStorage.setItem('scopeRoleChosen','1');location.replace(location.pathname+'?mode=control')};
+$('chooseTrainee').onclick=()=>{sessionStorage.setItem('scopeRoleChosen','1');location.replace(location.pathname+'?mode=display')};
 let sb=null,channel=null,room='',timer=null,scenarioTimer=null,scenarioSteps=[],scenarioIndex=0,history=[];
 let phase=0,leadRhythm='sinusal',ecgGroup='rhythms',audioEnabled=false,audioCtx=null,lastBeep=0,lastHeartBeat=0,flatOsc=null,flatGain=null;
 const fmt=n=>Math.round(n);
@@ -146,7 +167,21 @@ function stopFlatlineTone(){if(flatOsc){try{flatOsc.stop()}catch(e){}flatOsc=nul
 function syncFlatlineTone(){if(!audioEnabled||!audioCtx||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
 function beepHeart(){if(!audioEnabled||!audioCtx||state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)<=0)return;let now=Date.now(),interval=60000/Math.max(1,Number(state.fc));if(now-lastHeartBeat>=interval){lastHeartBeat=now;shortTone(720,.075,.045)}}
 function animate(){if(!state.freeze)phase+=1/60*(state.speed/25);syncFlatlineTone();beepHeart();beepAlarm();draw($('ecgCanvas'),'ecg','II');draw($('plethCanvas'),'pleth');draw($('respCanvas'),'resp');document.querySelectorAll('.lead canvas').forEach(c=>draw(c,'ecg',c.dataset.lead));$('clock').textContent=new Date().toLocaleTimeString('fr-FR');requestAnimationFrame(animate)}
-function updateRole(){let control=role==='control';$('controlPanel').classList.toggle('hidden',!control);$('status').textContent=control?'INTERFACE FORMATEUR':'INTERFACE STAGIAIRE';document.title=control?'Pilotage Scope SUAP':'Scope SUAP — Moniteur';}
+function updateRole(){
+ let control=role==='control';
+ $('controlPanel').classList.toggle('hidden',!control);
+ $('tabSettings').classList.toggle('hidden',!control);
+ $('tabEvents').classList.toggle('hidden',!control);
+ $('patientNotes').readOnly=!control;
+ $('patientNotes').placeholder=control?'Saisir les informations utiles à la simulation…':'Informations transmises par le formateur';
+ $('menuBtn').classList.toggle('hidden',!control);
+ $('freezeBtn').classList.toggle('hidden',control);
+ $('nibpBtn').classList.toggle('hidden',control);
+ $('alarmBtn').classList.toggle('hidden',control);
+ $('speedBtn').classList.toggle('hidden',control);
+ $('status').textContent=control?'INTERFACE FORMATEUR':'INTERFACE STAGIAIRE';
+ document.title=control?'Pilotage Scope SUAP':'Scope SUAP — Moniteur';
+}
 function config(){return {url:localStorage.sbUrl||'',key:localStorage.sbKey||''}}
 function initSupabase(){let c=config();if(!c.url||!c.key||!window.supabase){$('status').textContent='Mode local — configure Supabase pour la liaison distante';return}try{sb=window.supabase.createClient(c.url,c.key);$('status').textContent='Supabase prêt — code de session requis'}catch(e){$('status').textContent='Configuration Supabase invalide'}}
 function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room,state:state,updated_at:new Date().toISOString()},{onConflict:'code'}).then(({error})=>{if(error)$('status').textContent='Erreur de synchronisation : '+error.message})}
@@ -155,5 +190,6 @@ $('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value
 $('saveConfig').onclick=()=>{localStorage.sbUrl=$('sbUrl').value.trim();localStorage.sbKey=$('sbKey').value.trim();initSupabase();alert('Configuration enregistrée sur cet appareil.')};
 $('sbUrl').value=localStorage.sbUrl||'';$('sbKey').value=localStorage.sbKey||'';
 updateRole();initSupabase();render();renderEcgPresets();requestAnimationFrame(animate);setInterval(()=>{if(role==='control'&&room)publish();},2500);setInterval(()=>{if(role==='control'&&state.irregular){const rnd=(a,b)=>Math.round(a+Math.random()*(b-a));state.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));state.fr=rnd(Math.min(state.frMin,state.frMax),Math.max(state.frMin,state.frMax));render();publish();}},2200);
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(err=>console.warn('Service worker non enregistré',err)));}
 </script>
 </body></html>
