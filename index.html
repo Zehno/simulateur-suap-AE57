@@ -23,23 +23,23 @@
  <div class="modalbox">
   <h3>Scope SUAP</h3>
   <p>Choisir l'interface à ouvrir sur cet appareil.</p>
-  <button class="primary" id="choosePilot" style="width:100%;margin:5px 0">PILOTAGE — Formateur Premier Secours</button>
-  <button id="chooseTrainee" style="width:100%;margin:5px 0">SCOPE — EQUIPE VSAV</button>
+  <button class="primary" id="choosePilot" style="width:100%;margin:5px 0">PILOTAGE — Formateur</button>
+  <button id="chooseTrainee" style="width:100%;margin:5px 0">SCOPE — Stagiaire</button>
  </div>
 </div>
 <div class="app">
- <header class="top"><div><div class="brand">Moniteur de surveillance <span class="tag">By Aurélien.E</span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEcg">ECG 12D</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
+ <header class="top"><div><div class="brand">SIMULATEUR DE MONITORING <span class="tag"> VSAV </span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEcg">ECG 12D</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
  <main id="monitorPage">
   <section class="screen">
    <div class="monitor-head"><span id="patientLabel">ADULTE · PATIENT SIMULÉ</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
    <div class="monitor-grid">
     <div class="traces">
-     <div class="trace"><span class="trace-label" style="color:var(--green)">Fréquence Cardiaque · II</span><canvas id="ecgCanvas"></canvas></div>
+     <div class="trace"><span class="trace-label" style="color:var(--green)">F.C · II</span><canvas id="ecgCanvas"></canvas></div>
      <div class="trace"><span class="trace-label" style="color:var(--blue)">SpO₂ · PLETH</span><canvas id="plethCanvas"></canvas></div>
     </div>
     <div class="numbers">
-     <button class="metric fc" data-metric="FC"><div class="name">FC / HR</div><div class="value" id="vFC">72</div><div class="unit">bpm</div></button>
-     <button class="metric ta" data-metric="TA"><div class="name">NIBP · TA</div><div class="value" id="vTA">120/80</div><div class="subvalue" id="vPAM">PAM 93 mmHg</div></button>
+     <button class="metric fc" data-metric="FC"><div class="name">F.C / HR</div><div class="value" id="vFC">72</div><div class="unit">bpm</div></button>
+     <button class="metric ta" data-metric="TA"><div class="name">T.A / P.N.I</div><div class="value" id="vTA">120/80</div><div class="subvalue" id="vPAM">PAM 93 mmHg</div></button>
      <button class="metric spo" data-metric="SpO₂"><div class="name">SpO₂</div><div class="value" id="vSpO2">98</div><div class="unit">%</div></button>
     </div>
    </div>
@@ -53,20 +53,20 @@
   <section class="panel"><h2>Connexion formateur / stagiaire</h2><div class="field"><label>Code de session</label><input id="roomCode" type="text" maxlength="8" placeholder="Ex. 482731"></div><div class="row"><button class="primary" id="connectBtn">Connecter / rejoindre</button><button id="newCodeBtn">Nouveau code</button></div><div class="field"><label>URL Supabase</label><input id="sbUrl" type="text" placeholder="https://xxxx.supabase.co"></div><div class="field"><label>Clé anon / publishable</label><input id="sbKey" type="text" placeholder="Clé publique du projet"></div><button id="saveConfig">Enregistrer la configuration</button><p class="danger-note">La clé publique anon est destinée au navigateur. Ne place jamais de clé service_role ici. La V1 utilise une table publique de simulation : ne saisis aucune donnée nominative ou médicale réelle. Le code de session sert à rejoindre une simulation, ce n'est pas une authentification sécurisée.</p></section>
  </div></main>
  <section id="controlPanel" class="layout hidden" style="margin-top:12px">
-  <section class="panel"><h2>Pilotage formateur — constantes</h2><div id="sliders"></div><div class="field"><label>FC irrégulière</label><label><input id="irregularFCToggle" type="checkbox"> Activée — rythme irrégulier (arythmie simulée)</label></div><div class="field"><label>Rythme ECG</label><select id="rhythm"><option value="sinusal">Sinusal</option><option value="brady">Bradycardie sinusale</option><option value="tachy">Tachycardie sinusale</option><option value="fa">Fibrillation atriale</option><option value="flutter">Flutter atrial</option><option value="svt">Tachycardie supraventriculaire</option><option value="tv">Tachycardie ventriculaire</option><option value="fv">Fibrillation ventriculaire</option><option value="asystole">Asystolie</option><option value="stemi_inf">ST+ inférieur</option><option value="stemi_ant">ST+ antérieur</option><option value="stemi_lat">ST+ latéral</option><option value="ischemia">Ischémie sous-endocardique</option><option value="bbb_r">Bloc de branche droit</option><option value="bbb_l">Bloc de branche gauche</option></select></div><div class="field"><label>Tendance TA à la demande du stagiaire</label><select id="taTrend"><option value="stable">Stable — valeur inchangée</option><option value="up">Augmentation progressive</option><option value="down">Diminution progressive</option><option value="improve">Amélioration progressive</option><option value="worsen">Dégradation progressive</option></select></div><div class="field"><label>Amplitude par mesure (mmHg)</label><input id="taStep" type="number" min="1" max="30" value="5"></div><div class="field"><label>Plage TAS autorisée (mmHg) — min / max</label><div class="row"><input id="taSysMin" type="number" min="0" max="300" value="70"><input id="taSysMax" type="number" min="1" max="350" value="180"></div></div><div class="field"><label>Plage TAD autorisée (mmHg) — min / max</label><div class="row"><input id="taDiaMin" type="number" min="0" max="200" value="40"><input id="taDiaMax" type="number" min="1" max="250" value="110"></div></div><p class="muted">La tension ne change que lorsque le stagiaire demande une nouvelle mesure. La tendance choisie ici est appliquée à chaque demande.</p><div class="field"><label>Scénario</label><select id="scenario"><option value="custom">Manuel</option><option value="choc">Dégradation hémodynamique</option><option value="detresse">Détresse respiratoire</option><option value="retablissement">Amélioration progressive</option></select></div><div class="row"><button class="primary" id="startScenario">Lancer scénario</button><button id="stopScenario">Arrêter</button><button id="addStep">Ajouter étape actuelle</button></div><p class="muted">Scénario automatique : les étapes prédéfinies évoluent dans le temps. Le mode manuel permet de modifier les valeurs directement.</p><h3>NOTE PATIENT</h3><textarea id="controlNotes" rows="3" placeholder="Informations à transmettre aux stagiaires…" style="width:100%;background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:10px;resize:vertical"></textarea></section>
+  <section class="panel"><h2>Pilotage formateur — constantes</h2><div id="sliders"></div><div class="field"><label>FC irrégulière</label><label><input id="irregularFCToggle" type="checkbox"> Activée — rythme irrégulier (arythmie simulée)</label></div><div class="field"><label>Rythme ECG</label><select id="rhythm"><option value="sinusal">Sinusal</option><option value="brady">Bradycardie sinusale</option><option value="tachy">Tachycardie sinusale</option><option value="fa">Fibrillation atriale</option><option value="flutter">Flutter atrial</option><option value="svt">Tachycardie supraventriculaire</option><option value="tv">Tachycardie ventriculaire</option><option value="fv">Fibrillation ventriculaire</option><option value="asystole">Asystolie</option><option value="stemi_inf">ST+ inférieur</option><option value="stemi_ant">ST+ antérieur</option><option value="stemi_lat">ST+ latéral</option><option value="ischemia">Ischémie sous-endocardique</option><option value="bbb_r">Bloc de branche droit</option><option value="bbb_l">Bloc de branche gauche</option></select></div><div class="field"><label>Valeurs de tension à afficher (mmHg) — TAS / TAD</label><div class="row"><input id="manualSys" type="number" min="0" max="300" value="120" aria-label="TAS"><input id="manualDia" type="number" min="0" max="200" value="80" aria-label="TAD"></div></div><p class="muted">Le stagiaire appuie sur MESURE T.A : la valeur TAS/TAD définie ici s'affiche immédiatement.</p><div class="field"><label>Scénario</label><select id="scenario"><option value="custom">Manuel</option><option value="choc">Dégradation hémodynamique</option><option value="detresse">Détresse respiratoire</option><option value="retablissement">Amélioration progressive</option></select></div><div class="row"><button class="primary" id="startScenario">Lancer scénario</button><button id="stopScenario">Arrêter</button><button id="addStep">Ajouter étape actuelle</button></div><p class="muted">Scénario automatique : les étapes prédéfinies évoluent dans le temps. Le mode manuel permet de modifier les valeurs directement.</p><h3>NOTE PATIENT</h3><textarea id="controlNotes" rows="3" placeholder="Informations à transmettre aux stagiaires…" style="width:100%;background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:10px;resize:vertical"></textarea></section>
   <section class="panel"><h2>Chronologie & alarmes</h2><div class="field"><label>Intervalle entre étapes</label><select id="interval"><option value="15">15 secondes</option><option value="30" selected>30 secondes</option><option value="60">1 minute</option><option value="120">2 minutes</option></select></div><div class="field"><label>FC — seuil bas / haut (bpm)</label><div class="row"><input id="lowFC" type="number" value="50" min="0" max="250"><input id="highFC" type="number" value="130" min="1" max="300"></div></div>
     <div class="field"><label>TA systolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowSys" type="number" value="90" min="0" max="300"><input id="highSys" type="number" value="180" min="1" max="350"></div></div>
     <div class="field"><label>TA diastolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowDia" type="number" value="50" min="0" max="200"><input id="highDia" type="number" value="110" min="1" max="250"></div></div>
     <div class="field"><label>SpO₂ — seuil bas / haut (%)</label><div class="row"><input id="lowSpo" type="number" value="90" min="0" max="100"><input id="highSpo" type="number" value="100" min="1" max="100"></div></div>
-    <div class="row"><button id="applyLimits">Appliquer seuils</button><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button><button id="exportScenario">Exporter scénario JSON</button><label><input id="importScenario" type="file" accept="application/json" hidden><button onclick="document.getElementById('importScenario').click()">Importer JSON</button></label></div><div id="timeline" class="muted" style="margin-top:10px">Aucune étape personnalisée.</div></section>
+    <div class="row"><button id="applyLimits">Appliquer seuils</button><label><input id="soundToggle" type="checkbox" checked> Son ON/OFF</label><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button><button id="exportScenario">Exporter scénario JSON</button><label><input id="importScenario" type="file" accept="application/json" hidden><button onclick="document.getElementById('importScenario').click()">Importer JSON</button></label></div><div id="timeline" class="muted" style="margin-top:10px">Aucune étape personnalisée.</div></section>
  </section>
- <div class="footer">Scope SUAP · Simulation pédagogique uniquement · Ne pas utiliser pour une décision médicale réelle</div>
+ <div class="footer">Simulateur de monitoring - Create by Aurélien E</div>
 </div>
 <div id="modal" class="modal hidden"><div class="modalbox"><h3 id="modalTitle">Détail</h3><div id="modalBody"></div><div style="text-align:right;margin-top:12px"><button id="closeModal">Fermer</button></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=id=>document.getElementById(id);
-const defaults={fc:72,sys:120,dia:80,spo:98,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',ecgPattern:'sinusal',alarms:true,freeze:false,speed:25,lowFC:50,highFC:130,lowSys:90,highSys:180,lowDia:50,highDia:110,lowSpo:90,highSpo:100,irregular:false,irregularFC:false,taTrend:'stable',taStep:5,taSysMin:70,taSysMax:180,taDiaMin:40,taDiaMax:110,taRequest:0,taRequestHandled:0,fcMin:65,fcMax:85,events:[],notes:''};
+const defaults={fc:72,sys:120,dia:80,spo:98,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',ecgPattern:'sinusal',alarms:true,soundEnabled:true,freeze:false,speed:25,lowFC:50,highFC:130,lowSys:90,highSys:180,lowDia:50,highDia:110,lowSpo:90,highSpo:100,irregular:false,irregularFC:false,taTrend:'stable',taStep:5,taSysMin:70,taSysMax:180,taDiaMin:40,taDiaMax:110,taRequest:0,taRequestHandled:0,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:''};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -79,7 +79,7 @@ const fmt=n=>Math.round(n);
 function pam(){return Math.round((state.sys+2*state.dia)/3)}
 function log(msg){state.events.unshift({t:new Date().toLocaleTimeString('fr-FR'),msg});state.events=state.events.slice(0,100);renderEvents();publish()}
 function render(){ $('vFC').textContent=fmt(state.fc);$('vTA').textContent=`${fmt(state.sys)}/${fmt(state.dia)}`;$('vPAM').textContent=`PAM ${pam()} mmHg`;$('vSpO2').textContent=fmt(state.spo);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;$('alarmText').classList.toggle('off',!alarmActive());$('alarmText').textContent=alarmActive()?'ALARME':'';$('alarmText').classList.toggle('alarm-zone',alarmActive());$('monitorPage').querySelector('.screen').classList.toggle('alarm-frame',alarmActive());document.querySelector('[data-metric="FC"]').classList.toggle('metric-alarm',state.alarms&&(state.fc===0||state.fc<state.lowFC||state.fc>state.highFC||['asystole','fv'].includes(state.rhythm)));document.querySelector('[data-metric="SpO₂"]').classList.toggle('metric-alarm',state.alarms&&(state.spo===0||state.spo<state.lowSpo||state.spo>state.highSpo));document.querySelector('[data-metric="TA"]').classList.toggle('metric-alarm',state.alarms&&(state.sys<state.lowSys||state.sys>state.highSys||state.dia<state.lowDia||state.dia>state.highDia));if($('irregularFCToggle'))$('irregularFCToggle').checked=!!state.irregularFC;if(document.activeElement!==$('controlNotes'))$('controlNotes').value=state.notes||'';
-if($('taTrend'))$('taTrend').value=state.taTrend||'stable';if($('taStep')&&document.activeElement!==$('taStep'))$('taStep').value=state.taStep||5;['taSysMin','taSysMax','taDiaMin','taDiaMax'].forEach(id=>{if($(id)&&document.activeElement!==$(id))$(id).value=state[id]});$('patient').value=state.patient;$('rhythm').value=state.rhythm;$('ecgPatternLabel').textContent=patternInfo[state.ecgPattern||state.rhythm]?.label||'ECG simulé';renderSliders();renderEvents();renderTimeline(); }
+$('patient').value=state.patient;$('rhythm').value=state.rhythm;$('ecgPatternLabel').textContent=patternInfo[state.ecgPattern||state.rhythm]?.label||'ECG simulé';renderSliders();if($('soundToggle'))$('soundToggle').checked=audioEnabled;renderEvents();renderTimeline(); }
 function alarmActive(){
  return state.alarms && (
   state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)===0||Number(state.spo)===0||
@@ -90,7 +90,17 @@ function alarmActive(){
   state.spo<state.lowSpo||state.spo>state.highSpo
  );
 }
-function renderSliders(){let defs=[['fc','FC',0,240,'bpm'],['sys','PAS',0,220,'mmHg'],['dia','PAD',0,140,'mmHg'],['spo','SpO₂',0,100,'%']];$('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l}</label><output>${state[k]} ${u}</output><input type="range" data-key="${k}" min="${min}" max="${max}" value="${state[k]}"></div>`).join('')+`<div class="field"><label>FC variable : ${state.fcMin} à ${state.fcMax} bpm</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`;$('sliders').querySelectorAll('input[data-key]').forEach(el=>el.addEventListener('input',e=>{state[e.target.dataset.key]=Number(e.target.value);render();publish()}));['fcMin','fcMax'].forEach(id=>$(id).onchange=e=>{state[id]=Number(e.target.value);if(state.fcMin>state.fcMax)state.fcMin=state.fcMax;publish()});}
+function renderSliders(){
+ const defs=[['fc','FC',0,240,'bpm'],['spo','SpO₂',0,100,'%']];
+ $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l}</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${state[k]}"></div>`).join('')+
+ `<div class="field"><label>Variation FC activée automatiquement — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`+
+ `<div class="field"><label>Variation SpO₂ activée automatiquement — minimum / maximum (%)</label><div class="row"><input id="spoMin" type="number" min="0" max="100" value="${state.spoMin}"><input id="spoMax" type="number" min="0" max="100" value="${state.spoMax}"></div></div>`+
+ `<div class="field"><label>Tension artérielle — TAS / TAD (mmHg)</label><div class="row"><input id="manualSys" type="number" min="0" max="300" value="${state.sys}"><input id="manualDia" type="number" min="0" max="200" value="${state.dia}"></div></div>`;
+ $('sliders').querySelectorAll('input[data-key]').forEach(el=>el.addEventListener('change',e=>{state[e.target.dataset.key]=Number(e.target.value);render();publish()}));
+ ['fcMin','fcMax','spoMin','spoMax'].forEach(id=>$(id).onchange=e=>{state[id]=Number(e.target.value);if(state.fcMin>state.fcMax)state.fcMin=state.fcMax;if(state.spoMin>state.spoMax)state.spoMin=state.spoMax;publish()});
+ ['manualSys','manualDia'].forEach(id=>$(id).onchange=e=>{state[id==='manualSys'?'sys':'dia']=Number(e.target.value);render();publish()});
+}
+
 function renderEvents(){$('events').innerHTML=(state.events||[]).map(e=>`<div class="event"><span class="muted">${e.t}</span> — ${escapeHtml(e.msg)}</div>`).join('')||'<p class="muted">Aucun événement enregistré.</p>'}
 function renderTimeline(){$('timeline').textContent=scenarioSteps.length?scenarioSteps.map((s,i)=>`${i+1}. FC ${s.fc} · TA ${s.sys}/${s.dia} · SpO₂ ${s.spo}%`).join('  |  '):'Aucune étape personnalisée.'}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -100,29 +110,15 @@ document.querySelectorAll('[data-metric]').forEach(b=>b.addEventListener('click'
 function setPage(p){['monitor','ecg','events','settings'].forEach(x=>$(x+'Page').classList.toggle('hidden',x!==p));['Monitor','Ecg','Events','Settings'].forEach(x=>$('tab'+x).classList.toggle('active',x.toLowerCase()===p))}
 $('tabMonitor').onclick=()=>setPage('monitor');$('tabEcg').onclick=()=>setPage('ecg');$('tabEvents').onclick=()=>setPage('events');$('tabSettings').onclick=()=>setPage('settings');
 $('closeModal').onclick=()=>$('modal').classList.add('hidden');
-function applyTaTrend(){
- const step=Math.max(1,Math.min(30,Number(state.taStep)||5));
- const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
- const sysMin=Number(state.taSysMin??70),sysMax=Number(state.taSysMax??180),diaMin=Number(state.taDiaMin??40),diaMax=Number(state.taDiaMax??110);
- let ds=0,dd=0;const trend=state.taTrend||'stable';
- if(trend==='up'){ds=step;dd=Math.max(1,Math.round(step*.6))}
- if(trend==='down'){ds=-step;dd=-Math.max(1,Math.round(step*.6))}
- if(trend==='improve'){ds=state.sys<120?step:-step;dd=state.dia<80?Math.max(1,Math.round(step*.6)):-Math.max(1,Math.round(step*.6))}
- if(trend==='worsen'){ds=state.sys>90?-step:step;dd=state.dia>60?-Math.max(1,Math.round(step*.6)):Math.max(1,Math.round(step*.6))}
- state.sys=clamp(Number(state.sys)+ds,sysMin,sysMax);state.dia=clamp(Number(state.dia)+dd,diaMin,diaMax);
- state.taRequestHandled=Number(state.taRequest||0);render();publish();log('Nouvelle mesure TA réalisée selon la tendance définie');
-}
-['taTrend','taStep','taSysMin','taSysMax','taDiaMin','taDiaMax'].forEach(id=>{const el=$(id);if(el)el.addEventListener('change',()=>{state[id]=id==='taTrend'?el.value:Number(el.value);publish()})});
 $('nibpBtn').onclick=()=>{
  if(role==='display'){
-  state.taRequest=(Number(state.taRequest)||0)+1;
-  publish();
-  openModal('Demande de mesure de tension',`<p>Demande transmise au formateur.</p><p class="muted">La valeur sera actualisée selon la tendance définie dans le menu formateur.</p>`);
+   openModal('Mesure de tension',`<p>Mesure simulée : <b>${fmt(state.sys)}/${fmt(state.dia)} mmHg</b></p><p>PAM : ${pam()} mmHg</p>`);
  }else{
-  applyTaTrend();
-  openModal('Mesure NIBP',`<p>Mesure simulée : <b>${fmt(state.sys)}/${fmt(state.dia)} mmHg</b></p><p>PAM : ${pam()} mmHg</p>`);
+   state.sys=Number($('manualSys')?.value??state.sys);state.dia=Number($('manualDia')?.value??state.dia);render();publish();
+   openModal('Mesure NIBP',`<p>Mesure simulée : <b>${fmt(state.sys)}/${fmt(state.dia)} mmHg</b></p><p>PAM : ${pam()} mmHg</p>`);
  }
-}
+};
+$('soundToggle').onchange=e=>{audioEnabled=e.target.checked;state.soundEnabled=audioEnabled;if(!audioEnabled)stopFlatlineTone();publish()};
 $('menuBtn').onclick=()=>setPage('settings');
 $('patient').onchange=e=>{state.patient=e.target.value;log(`Mode patient : ${state.patient}`);render();publish()};
 $('patientName').onchange=e=>{state.name=e.target.value||'PATIENT SIMULÉ';render();publish()};
@@ -135,7 +131,7 @@ $('irregularFCToggle').onchange=e=>{state.irregularFC=e.target.checked;lastHeart
 $('testAlarmBtn').onclick=async()=>{
  if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}
  if(!audioCtx){alert('Audio indisponible sur cet appareil.');return}
- try{await audioCtx.resume();audioEnabled=true;render();playAlarmSequence(true)}catch(e){alert('Impossible de démarrer le son sur cet appareil.')}
+ try{await audioCtx.resume();audioEnabled=state.soundEnabled!==false;render();playAlarmSequence(true)}catch(e){alert('Impossible de démarrer le son sur cet appareil.')}
 };
 $('clearEvents').onclick=()=>{state.events=[];renderEvents();publish()};$('controlNotes')?.addEventListener('input',e=>{state.notes=e.target.value;publish()});
 function preset(name){if(name==='choc')return [{fc:85,sys:110,dia:70,spo:96,co2:34},{fc:125,sys:82,dia:48,spo:89,co2:26},{fc:145,sys:65,dia:35,spo:82,co2:20},{fc:38,sys:45,dia:25,spo:70,co2:12}];if(name==='detresse')return [{fc:95,sys:125,dia:80,spo:92,co2:42},{fc:112,sys:130,dia:82,spo:86,co2:55},{fc:130,sys:135,dia:85,spo:78,co2:65}];return [{fc:130,sys:80,dia:45,spo:84,co2:52},{fc:105,sys:100,dia:65,spo:92,co2:40},{fc:82,sys:118,dia:76,spo:97,co2:36}]}
@@ -232,11 +228,11 @@ function animate(){phase+=1/60;syncFlatlineTone();beepHeart();beepAlarm();draw($
 function updateRole(){
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>{if($(id))$(id).value=state[id]});
  let control=role==='control';
- state.alarms=true;
+ state.alarms=true; audioEnabled=state.soundEnabled!==false; if($('soundToggle'))$('soundToggle').checked=audioEnabled;
  $('controlPanel').classList.toggle('hidden',!control);
  $('tabSettings').classList.remove('hidden');
  $('tabEvents').classList.toggle('hidden',!control);
- $('menuBtn').classList.remove('hidden');
+ $('menuBtn').classList.add('hidden');
  $('nibpBtn').classList.toggle('hidden',control);
  $('status').textContent=control?'INTERFACE FORMATEUR':'INTERFACE STAGIAIRE';
  document.title=control?'Pilotage Scope SUAP':'Scope SUAP — Moniteur';
@@ -244,14 +240,11 @@ function updateRole(){
 function config(){return {url:localStorage.sbUrl||'',key:localStorage.sbKey||''}}
 function initSupabase(){let c=config();if(!c.url||!c.key||!window.supabase){$('status').textContent='Mode local — configure Supabase pour la liaison distante';return}try{sb=window.supabase.createClient(c.url,c.key);$('status').textContent='Supabase prêt — code de session requis'}catch(e){$('status').textContent='Configuration Supabase invalide'}}
 function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room,state:state,updated_at:new Date().toISOString()},{onConflict:'code'}).then(({error})=>{if(error)$('status').textContent='Erreur de synchronisation : '+error.message})}
-async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,alarms:true};render()}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
+async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,alarms:true};audioEnabled=state.soundEnabled!==false;render()}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
  if(!payload.new?.state)return;
  const incoming=payload.new.state;
- if(role==='display'){state={...defaults,...incoming,alarms:true};render()}
- else if(role==='control'&&Number(incoming.taRequest||0)>Number(state.taRequestHandled||0)){
-  state={...state,...incoming};
-  applyTaTrend();
- }
+ if(role==='display'){state={...defaults,...incoming,alarms:true};audioEnabled=state.soundEnabled!==false;render()}
+ else if(role==='control'){state={...state,...incoming};render();}
 }).subscribe();$('status').textContent=`Connecté · session ${room} · ${role==='control'?'formateur':'stagiaire'}`;log('Connexion à la session '+room)}
 $('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value=String(Math.floor(100000+Math.random()*900000))};
 $('saveConfig').onclick=()=>{localStorage.sbUrl=$('sbUrl').value.trim();localStorage.sbKey=$('sbKey').value.trim();initSupabase();alert('Configuration enregistrée sur cet appareil.')};
@@ -263,7 +256,7 @@ document.addEventListener('pointerdown',async()=>{
  try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();await audioCtx.resume();lastHeartBeat=0;render()}
  catch(e){audioEnabled=false;render()}
 },{once:true});
-requestAnimationFrame(animate);setInterval(()=>{if(role==='control'&&room)publish();},2500);setInterval(()=>{if(role==='control'&&state.irregular){const rnd=(a,b)=>Math.round(a+Math.random()*(b-a));state.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));render();publish();}},2200);
+requestAnimationFrame(animate);setInterval(()=>{if(role==='control'&&room)publish();},2500);setInterval(()=>{if(role==='control'){const rnd=(a,b)=>Math.round(a+Math.random()*(b-a));state.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));state.spo=rnd(Math.min(state.spoMin,state.spoMax),Math.max(state.spoMin,state.spoMax));render();publish();}},2200);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(err=>console.warn('Service worker non enregistré',err)));}
 </script>
 </body></html>
