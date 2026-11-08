@@ -467,7 +467,13 @@ function setModule(mode){
  $('controlPanel').classList.toggle('hidden',role!=='control');
  $('gasControlPanel').classList.toggle('hidden',role!=='control'||mode!=='gas');
  $('controlPanel').querySelectorAll(':scope > .panel:not(#gasControlPanel)').forEach(el=>el.classList.toggle('hidden',mode==='gas'));
- setPage('monitor');renderGas();
+ // Le changement de module ne doit jamais réafficher le Scope par effet de bord de setPage('monitor').
+ // On force ici la visibilité des deux modules, puis on remet simplement l'onglet Moniteur actif.
+ $('monitorPage').style.display=mode==='scope'?'':'none';
+ $('gasPage').style.display=mode==='gas'?'':'none';
+ $('eventsPage').classList.add('hidden');$('settingsPage').classList.add('hidden');
+ $('tabMonitor').classList.add('active');$('tabEvents').classList.remove('active');$('tabSettings').classList.remove('active');
+ renderGas();
  document.title=mode==='gas'?'Détecteur 4 gaz — Simulation SUAP':'Scope SUAP — Simulateur pédagogique';
 }
 $('scopeModeBtn').onclick=()=>setModule('scope');$('gasModeBtn').onclick=()=>setModule('gas');
@@ -493,6 +499,8 @@ function updateRole(){
  $('breathCard').classList.toggle('hidden',!control);
  $('tabSettings').classList.remove('hidden');$('tabEvents').classList.toggle('hidden',!control);
  $('menuBtn').classList.add('hidden');
+ $('monitorPage').style.display=currentModule==='scope'?'':'none';
+ $('gasPage').style.display=currentModule==='gas'?'':'none';
  $('status').textContent=control?'INTERFACE FORMATEUR':'INTERFACE STAGIAIRE';
  document.title=control?'Pilotage Scope SUAP':'Scope SUAP — Moniteur';
 }
