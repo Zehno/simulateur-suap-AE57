@@ -149,6 +149,169 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   .numbers>.ta-wide{grid-column:auto!important}
 }
 
+
+
+/* Interface LCD portable du détecteur 4 gaz — stagiaire uniquement */
+.trainee-gas-ui #gasScreen{
+  max-width:560px;
+  margin:14px auto;
+  padding:0;
+  overflow:hidden;
+  border:8px solid #aeb8bb;
+  border-radius:24px;
+  background:linear-gradient(145deg,#20282c,#070b0d 28%,#111719);
+  box-shadow:inset 0 0 0 2px #465156,0 12px 28px #0009;
+}
+.trainee-gas-ui .gas-head{
+  min-height:82px;
+  margin:0;
+  padding:17px 20px;
+  background:linear-gradient(180deg,#101719,#050809);
+  color:#dce6e9;
+  font-size:20px;
+  letter-spacing:.07em;
+}
+.trainee-gas-ui .gas-live{
+  border:1px solid #55704b;
+  border-radius:4px;
+  background:#1c2c17;
+  color:#c7e5a2;
+  font-size:11px;
+  letter-spacing:.04em;
+}
+.trainee-gas-ui .gas-grid{
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  margin:0 14px;
+  padding:6px 12px;
+  border:3px solid #263622;
+  border-radius:13px;
+  background:linear-gradient(145deg,#9db777,#87a660 55%,#789454);
+  box-shadow:inset 0 0 18px #30442188,0 0 0 2px #080d0e;
+}
+.trainee-gas-ui .gas-metric,
+.trainee-gas-ui .gas-metric.o2,
+.trainee-gas-ui .gas-metric.lie,
+.trainee-gas-ui .gas-metric.co,
+.trainee-gas-ui .gas-metric.h2s{
+  display:grid;
+  grid-template-columns:minmax(70px, .8fr) minmax(90px,1.2fr) auto;
+  grid-template-rows:auto;
+  align-items:center;
+  gap:7px;
+  min-height:105px;
+  padding:12px 8px;
+  border:0;
+  border-bottom:1px solid #435b32;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:#101a0b;
+}
+.trainee-gas-ui .gas-metric:last-child{border-bottom:0}
+.trainee-gas-ui #gasCardLIE{order:1}
+.trainee-gas-ui #gasCardO2{order:2}
+.trainee-gas-ui #gasCardCO{order:3}
+.trainee-gas-ui #gasCardH2S{order:4}
+.trainee-gas-ui .gas-name{
+  grid-column:1;
+  grid-row:1;
+  color:#17210f!important;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-size:clamp(17px,3vw,22px);
+  font-weight:800;
+  letter-spacing:-.04em;
+}
+.trainee-gas-ui .gas-value{
+  grid-column:2;
+  grid-row:1;
+  margin:0;
+  color:#10190b!important;
+  text-align:right;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-size:clamp(36px,7vw,54px);
+  font-weight:850;
+  line-height:1;
+  letter-spacing:-.07em;
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 1px 0 #d4e6b7;
+}
+.trainee-gas-ui .gas-unit{
+  grid-column:3;
+  grid-row:1;
+  align-self:center;
+  color:#1b2811!important;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-size:clamp(12px,2.2vw,16px);
+  font-weight:800;
+  white-space:nowrap;
+}
+.trainee-gas-ui .gas-threshold{display:none!important}
+.trainee-gas-ui .gas-metric.gas-alarm-a1,
+.trainee-gas-ui .gas-metric.gas-alarm-a2{
+  border:0!important;
+  border-bottom:2px solid #26351b!important;
+  animation:gasAlarmBlink .55s steps(2,start) infinite;
+}
+.trainee-gas-ui .gas-metric.gas-alarm-a1{background:#d6a33b!important}
+.trainee-gas-ui .gas-metric.gas-alarm-a2{background:#ba3a2d!important}
+.trainee-gas-ui .gas-metric.gas-alarm-a1 .gas-name,
+.trainee-gas-ui .gas-metric.gas-alarm-a1 .gas-value,
+.trainee-gas-ui .gas-metric.gas-alarm-a1 .gas-unit,
+.trainee-gas-ui .gas-metric.gas-alarm-a2 .gas-name,
+.trainee-gas-ui .gas-metric.gas-alarm-a2 .gas-value,
+.trainee-gas-ui .gas-metric.gas-alarm-a2 .gas-unit{color:#111!important;text-shadow:none}
+.trainee-gas-ui .gas-status-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:10px 16px 0;
+  padding:8px 3px;
+  border-top:1px solid #344047;
+}
+.trainee-gas-ui .gas-status-pill{
+  padding:4px 7px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#c3ced1;
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-size:10px;
+}
+.trainee-gas-ui #gasAlarmStatus{font-weight:900;color:#a9e58c}
+.trainee-gas-ui #gasAlarmStatus:not(:empty){letter-spacing:.02em}
+.trainee-gas-ui .gas-ack-wrap{
+  margin:0 16px 10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.trainee-gas-ui .gas-ack-btn{
+  min-height:40px;
+  padding:8px 14px;
+  border:1px solid #67757c;
+  border-radius:6px;
+  background:#1b272c;
+  color:#eef4f5;
+  font-size:12px;
+  font-weight:850;
+}
+.trainee-gas-ui #gasAlarmAckStatus{display:none!important}
+.trainee-gas-ui .gas-note{
+  margin:0;
+  padding:0 12px 10px;
+  color:#849196;
+  text-align:center;
+  font-size:9px;
+}
+@media(max-width:650px){
+  .trainee-gas-ui #gasScreen{max-width:100%;margin:8px auto;border-width:6px;border-radius:18px}
+  .trainee-gas-ui .gas-head{min-height:65px;padding:12px 14px;font-size:16px}
+  .trainee-gas-ui .gas-grid{margin:0 8px;padding:3px 8px}
+  .trainee-gas-ui .gas-metric{min-height:88px;padding:9px 5px;gap:4px}
+  .trainee-gas-ui .gas-value{font-size:clamp(31px,9vw,46px)}
+}
+
 </style>
 </head>
 <body>
@@ -572,7 +735,7 @@ function gasAlarmSignature(){return ['o2','lie','co','h2s'].map(k=>gasAlarmLevel
 function refreshGasAlarmAcknowledgement(){const sig=gasAlarmSignature();if(sig!==gasAlarmLastSignature){gasAlarmLastSignature=sig;gasAlarmAcked=false;}return sig}
 function renderGas(){
  const g={...gasDefaults,...(state.gas||{})},f=(v,d=0)=>Number(v).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
- $('gasValueO2').textContent=f(g.o2,1);$('gasValueLIE').textContent=f(g.lie);$('gasValueCO').textContent=f(g.co);$('gasValueH2S').textContent=f(g.h2s);
+ $('gasValueO2').textContent=f(g.o2,1);$('gasValueLIE').textContent=f(g.lie);$('gasValueCO').textContent=f(g.co);$('gasValueH2S').textContent=f(g.h2s,1);
  $('gasThresholdO2').textContent=`Plage pédagogique : ${f(g.lowO2,1)} – ${f(g.highO2,1)} % vol`;
  $('gasThresholdLIE').textContent=`A1 : ${f(g.lieA1)} · A2 : ${f(g.lieA2)} % LIE`;
  $('gasThresholdCO').textContent=`A1 : ${f(g.coA1)} · A2 : ${f(g.coA2)} ppm`;
@@ -632,6 +795,10 @@ $('resetGasValues').onclick=()=>{stopGasEvolution();state.gas={...gasDefaults};r
 function updateRole(){
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo','lowHbco','lowTemp','highTemp'].forEach(id=>{if($(id))$(id).value=state[id]});
  let control=role==='control';
+ // Le look LCD façon détecteur portatif et les libellés courts sont réservés au stagiaire.
+ document.body.classList.toggle('trainee-gas-ui',!control);
+ const gasLabels=control?{O2:'O₂ — OXYGÈNE',LIE:'LIE — EXPLOSIMÉTRIE',CO:'CO — MONOXYDE DE CARBONE',H2S:'H₂S — HYDROGÈNE SULFURÉ'}:{O2:'O₂',LIE:'CH₄',CO:'CO',H2S:'H₂S'};
+ Object.entries(gasLabels).forEach(([id,label])=>{const el=$('gasCard'+id)?.querySelector('.gas-name');if(el)el.textContent=label});
  state.alarms=true;audioEnabled=state.soundEnabled!==false;if($('soundToggle'))$('soundToggle').checked=audioEnabled;
  $('controlPanel').classList.toggle('hidden',!control);
   $('gasControlPanel').classList.toggle('hidden',!control||currentModule!=='gas');
