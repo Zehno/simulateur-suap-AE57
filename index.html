@@ -14,7 +14,7 @@
 <title>Simulateur pédagogique</title>
 <style>
 :root{--bg:#05090d;--panel:#101820;--line:#26333d;--muted:#8da0ad;--green:#53f28b;--blue:#4aa8ff;--yellow:#ffe16a;--orange:#ff9d45;--red:#ff5555;--white:#e8eef2}
-*{box-sizing:border-box}body{margin:0;background:#080d12;color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{border:1px solid #344653;background:#18242d;color:#eef5f8;border-radius:9px;padding:10px 12px;cursor:pointer}button:active{transform:scale(.98)}button.primary{background:#12683c;border-color:#218c56}button.warn{background:#662b2b;border-color:#a74444}.app{max-width:1400px;margin:auto;padding:12px}.top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}.brand{font-weight:800;letter-spacing:.06em}.tag{font-size:11px;color:#9fb0bb;border:1px solid #33434e;padding:4px 7px;border-radius:20px}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button.active{background:#284052;border-color:#5d8298}.screen{background:#020507;border:1px solid #2d3942;border-radius:12px;padding:10px;box-shadow:0 8px 30px #0008}.screen.alarm-frame{border:4px solid #ff2525;animation:alarmFrame .55s steps(2,start) infinite;box-shadow:0 0 18px #ff2525,0 0 36px #ff252588}@keyframes alarmFrame{50%{border-color:#450000;box-shadow:0 0 3px #ff2525}}.monitor-head{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#aab8c0;font-size:13px;font-variant-numeric:tabular-nums;padding:2px 4px 8px}.monitor-grid{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:10px}.traces{min-width:0;display:flex;flex-direction:column;gap:7px}.trace{height:94px;background:#06100d;border:1px solid #13251c;border-radius:6px;position:relative;overflow:hidden}.trace canvas{width:100%;height:100%;display:block}.trace-label{position:absolute;left:8px;top:5px;font-size:11px;font-weight:700;z-index:1;text-shadow:0 1px 3px #000}.numbers{display:grid;grid-template-columns:1fr;gap:7px}.metric{min-height:80px;background:#10171c;border:1px solid #27343d;border-radius:7px;padding:8px;cursor:pointer;text-align:left}.metric .name{font-size:11px;color:#a9b6bd;letter-spacing:.06em}.metric{position:relative}.metric .thresholds{position:absolute;right:6px;top:5px;font-size:9px;line-height:1.25;text-align:right;color:#d2dce2;opacity:.9;pointer-events:none}.metric .name{padding-right:56px}.metric .value{font-size:29px;font-weight:750;line-height:1.2;font-variant-numeric:tabular-nums}.metric .unit{font-size:11px;color:#a9b6bd}.metric.fc{background:#07552f;border-color:#16804b}.metric.fc .name,.metric.fc .value,.metric.fc .unit{color:#fff}.metric.spo{background:#07508a;border-color:#1678bd}.metric.spo .name,.metric.spo .value,.metric.spo .unit{color:#fff}.metric.ta{background:#41484e;border-color:#66717a}.metric.ta .name,.metric.ta .value,.metric.ta .unit,.metric.ta .subvalue{color:#fff}.metric.rr .value{color:var(--yellow)}.metric.co2 .value{color:var(--red)}.metric.temp .value{color:var(--orange)}.metric.ta .value{color:#e5e8eb}.metric.metric-alarm{background:#b00000!important;border:3px solid #ff2525;animation:metricAlarm .55s steps(2,start) infinite;box-shadow:0 0 12px #ff252588}.metric.metric-alarm .name,.metric.metric-alarm .value,.metric.metric-alarm .unit,.metric.metric-alarm .subvalue{color:#fff!important}@keyframes metricAlarm{50%{border-color:#450000;box-shadow:0 0 2px #ff2525}}.alarm-zone{border:2px solid #ff2525;border-radius:7px;padding:3px 8px;animation:metricAlarm .55s steps(2,start) infinite}.subvalue{font-size:11px;color:#b7c2c9}.bottom{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.alarm{color:#ff7777;font-weight:800;letter-spacing:.1em;animation:blink 1s steps(2,start) infinite}.alarm.off{visibility:hidden}@keyframes blink{to{visibility:hidden}}.layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.panel{background:#111a21;border:1px solid #293944;border-radius:12px;padding:12px}.panel h2{font-size:16px;margin:0 0 10px}.field{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:10px 0}.field input[type=range]{grid-column:1/-1;width:100%;accent-color:#fff;cursor:pointer;appearance:none;-webkit-appearance:none;background:transparent}.field input[type=range]::-webkit-slider-runnable-track{height:5px;background:#64727d;border-radius:8px}.field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;margin-top:-6px;border-radius:50%;background:#fff;border:2px solid #dce5eb;box-shadow:0 0 0 2px #26343d}.field input[type=range]::-moz-range-track{height:5px;background:#64727d;border-radius:8px}.field input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#fff;border:2px solid #dce5eb}
+*{box-sizing:border-box}body{margin:0;background:#080d12;color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{border:1px solid #344653;background:#18242d;color:#eef5f8;border-radius:9px;padding:10px 12px;cursor:pointer}button:active{transform:scale(.98)}button.primary{background:#12683c;border-color:#218c56}button.warn{background:#662b2b;border-color:#a74444}.app{max-width:1400px;margin:auto;padding:12px}.top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}.brand{font-weight:800;letter-spacing:.06em}.tag{font-size:11px;color:#9fb0bb;border:1px solid #33434e;padding:4px 7px;border-radius:20px}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button.active{background:#284052;border-color:#5d8298}.screen{background:#020507;border:1px solid #2d3942;border-radius:12px;padding:10px;box-shadow:0 8px 30px #0008}.screen.alarm-frame{border:4px solid #ff2525;animation:alarmFrame .55s steps(2,start) infinite;box-shadow:none!important}@keyframes alarmFrame{50%{border-color:transparent;box-shadow:none}}.monitor-head{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#aab8c0;font-size:13px;font-variant-numeric:tabular-nums;padding:2px 4px 8px}.monitor-grid{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:10px}.traces{min-width:0;display:flex;flex-direction:column;gap:7px}.trace{height:94px;background:#06100d;border:1px solid #13251c;border-radius:6px;position:relative;overflow:hidden}.trace canvas{width:100%;height:100%;display:block}.trace-label{position:absolute;left:8px;top:5px;font-size:11px;font-weight:700;z-index:1;text-shadow:0 1px 3px #000}.numbers{display:grid;grid-template-columns:1fr;gap:7px}.metric{min-height:80px;background:#10171c;border:1px solid #27343d;border-radius:7px;padding:8px;cursor:pointer;text-align:left}.metric .name{font-size:11px;color:#a9b6bd;letter-spacing:.06em}.metric{position:relative}.metric .thresholds{position:absolute;right:6px;top:5px;font-size:9px;line-height:1.25;text-align:right;color:#d2dce2;opacity:.9;pointer-events:none}.metric .name{padding-right:56px}.metric .value{font-size:29px;font-weight:750;line-height:1.2;font-variant-numeric:tabular-nums}.metric .unit{font-size:11px;color:#a9b6bd}.metric.fc{background:#07552f;border-color:#16804b}.metric.fc .name,.metric.fc .value,.metric.fc .unit{color:#fff}.metric.spo{background:#07508a;border-color:#1678bd}.metric.spo .name,.metric.spo .value,.metric.spo .unit{color:#fff}.metric.ta{background:#41484e;border-color:#66717a}.metric.ta .name,.metric.ta .value,.metric.ta .unit,.metric.ta .subvalue{color:#fff}.metric.rr .value{color:var(--yellow)}.metric.co2 .value{color:var(--red)}.metric.temp .value{color:var(--orange)}.metric.ta .value{color:#e5e8eb}.metric.metric-alarm{background-color:transparent!important;border:3px solid #ff2525!important;animation:metricAlarm .55s steps(2,start) infinite;box-shadow:none!important}@keyframes metricAlarm{50%{border-color:transparent;box-shadow:none}}.alarm-zone{border:2px solid #ff2525;border-radius:7px;padding:3px 8px;animation:metricAlarm .55s steps(2,start) infinite}.subvalue{font-size:11px;color:#b7c2c9}.bottom{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.alarm{color:#ff7777;font-weight:800;letter-spacing:.1em;animation:blink 1s steps(2,start) infinite}.alarm.off{visibility:hidden}@keyframes blink{to{visibility:hidden}}.layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.panel{background:#111a21;border:1px solid #293944;border-radius:12px;padding:12px}.panel h2{font-size:16px;margin:0 0 10px}.field{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:10px 0}.field input[type=range]{grid-column:1/-1;width:100%;accent-color:#fff;cursor:pointer;appearance:none;-webkit-appearance:none;background:transparent}.field input[type=range]::-webkit-slider-runnable-track{height:5px;background:#64727d;border-radius:8px}.field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;margin-top:-6px;border-radius:50%;background:#fff;border:2px solid #dce5eb;box-shadow:0 0 0 2px #26343d}.field input[type=range]::-moz-range-track{height:5px;background:#64727d;border-radius:8px}.field input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#fff;border:2px solid #dce5eb}
 /* Flèches haut/bas des champs numériques : blanches et bien visibles */
 .field input[type=number]::-webkit-inner-spin-button,.field input[type=number]::-webkit-outer-spin-button{opacity:1;filter:invert(1) brightness(1.35);cursor:pointer}
 .field input[type=number]{color-scheme:white}
@@ -120,9 +120,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .gly-long .name,.gly-long .value,.gly-long .unit{color:#ffdc48!important}
 .temp-long{background:linear-gradient(100deg,#071a2b,#0a3150)!important;border:1px solid #1688d2!important}
 .temp-long .name,.temp-long .value,.temp-long .unit{color:#66bdff!important}
-.metric.metric-alarm .value{color:#fff!important}
-.metric.metric-alarm-ack{background:#8e1010!important;border:3px solid #ff2525!important;animation:none!important;box-shadow:none!important}
-.metric.metric-alarm-ack .name,.metric.metric-alarm-ack .value,.metric.metric-alarm-ack .unit,.metric.metric-alarm-ack .subvalue{color:#fff!important}
+.metric.metric-alarm-ack{background-color:transparent!important;border:3px solid #ff2525!important;animation:none!important;box-shadow:none!important}
 .alarm.acknowledged{animation:none!important;visibility:visible!important}
 #scopeAlarmAckBtn{font-weight:900;border:2px solid #ff3434;background:#761515;color:#fff;min-width:190px}
 #scopeAlarmAckBtn:disabled{opacity:.85;background:#4b2525;border-color:#a45a5a;cursor:default}
@@ -498,7 +496,9 @@ let sb=null,channel=null,room='',timer=null,history=[];
 let smoothTarget={fc:72,spo:98},lastTargetAt=0,lastSmoothRender=0,worseningTimer=null;
 let phase=0,audioEnabled=true,audioCtx=null,lastBeep=0,lastHeartBeat=0,flatOsc=null,flatGain=null,taHistory=[];
 let gasAlarmLastSignature="0000",gasAlarmAcked=false;
-let scopeAlarmAcked=false,scopeAlarmLastSignature="",scopeAlarmLastRevision=0;
+let scopeAlarmAcked=false,scopeAlarmLastRevision=0,scopeAlarmLastUnackedSignature="";
+// Valeurs de référence capturées au moment de l’acquittement, une par seuil déclenché.
+const scopeAlarmAckSnapshots=Object.create(null);
 const scopeAlarmOscillators=new Set();
 const fmt=n=>Math.round(n);
 function pam(){return Math.round((state.sys+2*state.dia)/3)}
@@ -541,39 +541,85 @@ function scopeAlarmConditions(){
  if(Number(state.hbco??0)>Number(state.lowHbco??0))out.push('HBCO_HAUT');
  return out;
 }
+function scopeAlarmConditionInfo(condition){
+ if(condition.startsWith('FC_'))return {card:'FC',value:Number(state.fc)};
+ if(condition.startsWith('SPO_'))return {card:'SpO₂',value:Number(state.spo)};
+ if(condition.startsWith('TAS_'))return {card:'TA',value:Number(state.sys)};
+ if(condition.startsWith('TAD_'))return {card:'TA',value:Number(state.dia)};
+ if(condition==='HBCO_HAUT')return {card:'HbCO',value:Number(state.hbco??0)};
+ return null;
+}
 function scopeAlarmCardStates(conditions=scopeAlarmConditions()){
- return {
-  FC:conditions.some(x=>x.startsWith('FC_')),
-  'SpO₂':conditions.some(x=>x.startsWith('SPO_')),
-  TA:conditions.some(x=>x.startsWith('TAS_')||x.startsWith('TAD_')),
-  HbCO:conditions.includes('HBCO_HAUT')
+ const result={
+  FC:{blinking:false,acknowledged:false},
+  'SpO₂':{blinking:false,acknowledged:false},
+  TA:{blinking:false,acknowledged:false},
+  HbCO:{blinking:false,acknowledged:false}
  };
+ // Un contour acquitté reste visible même si la valeur repasse momentanément dans la plage.
+ Object.keys(scopeAlarmAckSnapshots).forEach(condition=>{
+  const info=scopeAlarmConditionInfo(condition);
+  if(info&&result[info.card])result[info.card].acknowledged=true;
+ });
+ // Un seuil nouveau ou réarmé fait clignoter uniquement la case concernée.
+ conditions.forEach(condition=>{
+  if(Object.prototype.hasOwnProperty.call(scopeAlarmAckSnapshots,condition))return;
+  const info=scopeAlarmConditionInfo(condition);
+  if(info&&result[info.card])result[info.card].blinking=true;
+ });
+ Object.values(result).forEach(status=>{if(status.blinking)status.acknowledged=false});
+ return result;
+}
+function updateScopeAlarmAckSnapshots(){
+ let released=false;
+ Object.entries(scopeAlarmAckSnapshots).forEach(([condition,baseline])=>{
+  const info=scopeAlarmConditionInfo(condition);
+  if(!info||!Number.isFinite(info.value)||!Number.isFinite(Number(baseline))){delete scopeAlarmAckSnapshots[condition];released=true;return}
+  // Seuil de libération : déplacement d'au moins 20 % dans l'un ou l'autre sens.
+  // Pour une valeur de référence nulle, un écart d'une unité déclenche la libération.
+  const limit=Math.max(Math.abs(Number(baseline))*0.20,1);
+  if(Math.abs(info.value-Number(baseline))>=limit){delete scopeAlarmAckSnapshots[condition];released=true;}
+ });
+ return released;
+}
+function scopeAlarmUnacknowledgedConditions(conditions=scopeAlarmConditions()){
+ return conditions.filter(condition=>!Object.prototype.hasOwnProperty.call(scopeAlarmAckSnapshots,condition));
 }
 function stopScopeAlarmAudio(){
  scopeAlarmOscillators.forEach(osc=>{try{osc.stop()}catch(e){}});scopeAlarmOscillators.clear();
  lastBeep=Date.now();stopFlatlineTone();
 }
 function refreshScopeAlarms(){
- const conditions=scopeAlarmConditions(),signature=conditions.slice().sort().join('|');
- const active=conditions.length>0,revision=Number(state.scopeAlarmRevision||0);
- // Un nouvel état d'alarme ou une action de pilotage formateur réarme l'alarme.
- if(!active){scopeAlarmAcked=false;scopeAlarmLastSignature='';scopeAlarmLastRevision=revision;}
- else if(signature!==scopeAlarmLastSignature||revision!==scopeAlarmLastRevision){scopeAlarmAcked=false;lastBeep=0;}
- scopeAlarmLastSignature=signature;scopeAlarmLastRevision=revision;
- const blinking=active&&!scopeAlarmAcked;
+ const conditions=scopeAlarmConditions(),revision=Number(state.scopeAlarmRevision||0);
+ // Une action du formateur réarme les alarmes et efface les références précédemment acquittées.
+ if(revision!==scopeAlarmLastRevision){
+  Object.keys(scopeAlarmAckSnapshots).forEach(key=>delete scopeAlarmAckSnapshots[key]);
+  scopeAlarmLastRevision=revision;
+  scopeAlarmLastUnackedSignature='';
+  lastBeep=0;
+ }
+ const released=updateScopeAlarmAckSnapshots();
+ const unacked=scopeAlarmUnacknowledgedConditions(conditions);
+ const unackedSignature=unacked.slice().sort().join('|');
+ if(unackedSignature!==scopeAlarmLastUnackedSignature){lastBeep=0;scopeAlarmLastUnackedSignature=unackedSignature;}
+ if(released&&unacked.length)lastBeep=0;
+ const active=conditions.length>0;
+ const held=Object.keys(scopeAlarmAckSnapshots).length>0;
+ scopeAlarmAcked=unacked.length===0&&(active||held);
+ const blinking=unacked.length>0;
  const alarmText=$('alarmText'),screen=$('monitorPage').querySelector('.screen'),ackBtn=$('scopeAlarmAckBtn');
  alarmText.classList.toggle('off',!active);alarmText.textContent=active?'ALARME':'';
- alarmText.classList.toggle('alarm-zone',blinking);alarmText.classList.toggle('acknowledged',active&&scopeAlarmAcked);
+ alarmText.classList.toggle('alarm-zone',blinking);alarmText.classList.toggle('acknowledged',scopeAlarmAcked);
  screen.classList.toggle('alarm-frame',blinking);
  const cards=scopeAlarmCardStates(conditions);
- Object.entries(cards).forEach(([key,on])=>{
+ Object.entries(cards).forEach(([key,status])=>{
   const card=document.querySelector(`[data-metric="${key}"]`);if(!card)return;
-  card.classList.toggle('metric-alarm',on&&blinking);
-  card.classList.toggle('metric-alarm-ack',on&&active&&scopeAlarmAcked);
+  card.classList.toggle('metric-alarm',status.blinking);
+  card.classList.toggle('metric-alarm-ack',status.acknowledged);
  });
  if(ackBtn){
-  const trainee=role==='display';ackBtn.classList.toggle('hidden',!trainee||!active);
-  ackBtn.disabled=scopeAlarmAcked;
+  const trainee=role==='display';ackBtn.classList.toggle('hidden',!trainee||(!active&&!held));
+  ackBtn.disabled=!blinking;
   ackBtn.textContent=scopeAlarmAcked?'✓ ALARME ACQUITTÉE':'🔇 ACQUITTER L’ALARME';
  }
 }
@@ -786,13 +832,13 @@ function playAlarmSequence(testOnly=false){
  lastBeep=Date.now();
 }
 function beepAlarm(){
- if(currentModule!=='scope'||!audioEnabled||!alarmActive()||scopeAlarmAcked||!audioCtx)return;
+ if(currentModule!=='scope'||!audioEnabled||scopeAlarmUnacknowledgedConditions().length===0||!audioCtx)return;
  if(Date.now()-lastBeep>=2600)playAlarmSequence();
 }
 function stopFlatlineTone(){if(flatOsc){try{flatOsc.stop()}catch(e){}flatOsc=null;flatGain=null}}
 function syncFlatlineTone(){if(!audioEnabled||!audioCtx||scopeAlarmAcked||!state.fcMeasured||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
 function beepHeart(){if(!audioEnabled||!audioCtx||!state.fcMeasured||state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)<=0)return;let now=Date.now(),base=60000/Math.max(1,Number(state.fc)),interval=base;if(state.irregularFC||state.rhythm==='fa')interval=base*(.72+Math.random()*.56);if(now-lastHeartBeat>=interval){lastHeartBeat=now;shortTone(720,.075,.045)}}
-$('scopeAlarmAckBtn').onclick=()=>{if(role!=='display'||!alarmActive())return;scopeAlarmAcked=true;stopScopeAlarmAudio();refreshScopeAlarms()};
+$('scopeAlarmAckBtn').onclick=()=>{if(role!=='display')return;const pending=scopeAlarmUnacknowledgedConditions();if(!pending.length)return;pending.forEach(condition=>{const info=scopeAlarmConditionInfo(condition);if(info&&Number.isFinite(info.value))scopeAlarmAckSnapshots[condition]=info.value});scopeAlarmAcked=true;stopScopeAlarmAudio();refreshScopeAlarms()};
 function animate(){if(currentModule==='scope'){syncFlatlineTone();beepHeart();beepAlarm();}else{stopFlatlineTone();}beepGasAlarm();renderScenarioClock();requestAnimationFrame(animate)}
 
 // Module 4 gaz : le CO atmosphérique est indépendant de la HbCO du Scope.
