@@ -424,8 +424,8 @@ const gasDefaults={o2:20.9,lie:0,co:0,h2s:0,lowO2:19.5,highO2:23.5,lieA1:5,lieA2
 function gasAlarmLevel(key){
  const g={...gasDefaults,...(state.gas||{})},v=Number(g[key])||0;
  if(key==='o2')return (v<Number(g.lowO2)||v>Number(g.highO2))?2:0;
- const a1=Number(g[{lie:'lieA1',co:'coA1',h2s:'h2sA1'}[key])||0;
- const a2=Number(g[{lie:'lieA2',co:'coA2',h2s:'h2sA2'}[key])||0;
+ const a1=Number(g[{lie:'lieA1',co:'coA1',h2s:'h2sA1'}[key]])||0;
+ const a2=Number(g[{lie:'lieA2',co:'coA2',h2s:'h2sA2'}[key]])||0;
  return v>=a2?2:(v>=a1?1:0);
 }
 function gasAlarmActive(){return ['o2','lie','co','h2s'].some(k=>gasAlarmLevel(k)>0)}
