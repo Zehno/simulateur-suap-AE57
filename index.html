@@ -53,6 +53,28 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .breath-source{font-size:10px;color:#8fa2ae;line-height:1.4}.breath-source a{color:#8fcaff}
 @media(max-width:650px){.app{padding:7px}.numbers{gap:8px}.metric{min-height:120px;padding:10px}.metric .value{font-size:34px}.metric .name{font-size:11px}.ta-wide{min-height:255px}.ta-history-row{grid-template-columns:76px 1fr auto;font-size:13px}.ta-history-row strong{font-size:16px}.breath-card{padding:11px}}
 
+
+.module-switch{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.module-switch button{flex:1;min-width:145px;padding:13px 16px;font-weight:850;background:#1b2b38;border:1px solid #3b5668}
+.module-switch button.active{background:#126b50;border:2px solid #48d9a2;box-shadow:0 0 14px #21b78333}
+.gas-screen{background:#020507;border:1px solid #35434c;border-radius:12px;padding:14px}
+.gas-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;font-weight:850}
+.gas-live{font-size:11px;color:#53f28b;border:1px solid #286b4b;padding:4px 8px;border-radius:20px}
+.gas-grid,.gas-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.gas-metric{border:1px solid #35434c;border-radius:10px;padding:15px;min-height:125px;background:#101820}
+.gas-name{font-size:13px;font-weight:850}.gas-value{font-size:clamp(32px,5vw,48px);font-weight:850;line-height:1.2;margin:10px 0 2px;font-variant-numeric:tabular-nums}.gas-unit{font-size:12px;color:#b5c2ca}
+.gas-metric.o2{background:#142c20;border-color:#28794c}.gas-metric.o2 .gas-name,.gas-metric.o2 .gas-value{color:#53f28b}
+.gas-metric.lie{background:#302819;border-color:#79602d}.gas-metric.lie .gas-name,.gas-metric.lie .gas-value{color:#ffe16a}
+.gas-metric.co{background:#301d1d;border-color:#854141}.gas-metric.co .gas-name,.gas-metric.co .gas-value{color:#ff7777}
+.gas-metric.h2s{background:#1b293a;border-color:#3d5d85}.gas-metric.h2s .gas-name,.gas-metric.h2s .gas-value{color:#80b7ff}
+.gas-metric.gas-alarm{background:#8e1010!important;border:3px solid #ff3030;animation:metricAlarm .55s steps(2,start) infinite}
+.gas-metric.gas-alarm .gas-name,.gas-metric.gas-alarm .gas-value,.gas-metric.gas-alarm .gas-unit{color:white!important}
+.gas-threshold{font-size:10px;color:#c5d0d6;margin-top:6px}.gas-note{font-size:11px;color:#a8b7c0;line-height:1.45;margin-top:12px}
+.gas-control{background:#0b141b;border:1px solid #344653;border-radius:9px;padding:12px}.gas-control h3{font-size:14px;margin:0 0 8px}
+.gas-control .field{grid-template-columns:1fr auto;margin:8px 0}.gas-control input[type=range]{grid-column:1/-1;width:100%;accent-color:#fff}.gas-control input[type=number]{width:100px}
+.gas-status-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.gas-status-pill{font-size:11px;color:#c5d0d6;background:#17232c;border:1px solid #3b4b56;border-radius:20px;padding:5px 9px}
+@media(max-width:650px){.gas-screen{padding:8px}.gas-metric{padding:10px;min-height:112px}.gas-metric .gas-name{font-size:11px}.gas-metric .gas-value{font-size:34px}}
+
 </style>
 </head>
 <body>
@@ -66,6 +88,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 </div>
 <div class="app">
  <header class="top"><div><div class="brand">SCOPE SUAP <span class="tag">SIMULATION PÉDAGOGIQUE</span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
+ <nav class="module-switch" aria-label="Choix du simulateur"><button id="scopeModeBtn" class="active" type="button">▣ SCOPE</button><button id="gasModeBtn" type="button">◉ DÉTECTEUR 4 GAZ</button></nav>
  <main id="monitorPage">
   <section class="screen">
    <div class="monitor-head"><span id="patientLabel">ADULTE · PATIENT SIMULÉ</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
@@ -82,6 +105,19 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   </section>
  </main>
  
+ <main id="gasPage" class="hidden">
+  <section class="gas-screen" id="gasScreen">
+   <div class="gas-head"><span>DÉTECTEUR MULTIGAZ</span><span class="gas-live">● SIMULATION</span></div>
+   <div class="gas-grid">
+    <article class="gas-metric o2" id="gasCardO2"><div class="gas-name">O₂ — OXYGÈNE</div><div class="gas-value" id="gasValueO2">20,9</div><div class="gas-unit">% VOL</div><div class="gas-threshold" id="gasThresholdO2">Plage pédagogique : 19,5 – 23,5</div></article>
+    <article class="gas-metric lie" id="gasCardLIE"><div class="gas-name">LIE — EXPLOSIMÉTRIE</div><div class="gas-value" id="gasValueLIE">0</div><div class="gas-unit">% LIE</div><div class="gas-threshold" id="gasThresholdLIE">Seuil haut : 10</div></article>
+    <article class="gas-metric co" id="gasCardCO"><div class="gas-name">CO — MONOXYDE DE CARBONE</div><div class="gas-value" id="gasValueCO">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdCO">Seuil haut : 30 ppm</div></article>
+    <article class="gas-metric h2s" id="gasCardH2S"><div class="gas-name">H₂S — HYDROGÈNE SULFURÉ</div><div class="gas-value" id="gasValueH2S">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdH2S">Seuil haut : 5 ppm</div></article>
+   </div>
+   <div class="gas-status-row"><span class="gas-status-pill">CAPTEURS : SIMULÉS</span><span class="gas-status-pill">BATTERIE : 100 %</span><span class="gas-status-pill" id="gasAlarmStatus">ÉTAT : NORMAL</span></div>
+   <p class="gas-note">Simulation pédagogique uniquement. Les seuils affichés sont des exemples configurables, pas des seuils d'intervention ni une référence de sécurité. Ne pas utiliser pour une décision opérationnelle.</p>
+  </section>
+ </main>
  <main id="eventsPage" class="hidden"><section class="panel"><h2>Historique des événements</h2><div id="events"></div><button id="clearEvents">Effacer l'historique local</button></section></main>
  <main id="settingsPage" class="hidden"><div class="layout">
   <section class="panel"><h2>Configuration du patient</h2><div class="field"><label>Mode patient</label><select id="patient"><option value="adulte">Adulte</option><option value="pediatrie">Pédiatrie</option></select></div><div class="field"><label>Identifiant affiché</label><input id="patientName" type="text" value="PATIENT SIMULÉ"></div><p class="muted">Le mode pédiatrie adapte les plages de référence affichées dans l'interface, sans validation clinique automatique.</p></section>
@@ -116,6 +152,17 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <div class="field"><label>SpO₂ — seuil bas / haut (%)</label><div class="row"><input id="lowSpo" type="number" value="90" min="0" max="100"><input id="highSpo" type="number" value="100" min="1" max="100"></div></div>
    <div class="field"><label>HbCO — seuil bas (%)</label><input id="lowHbco" type="number" min="0" max="100" value="10"></div><div class="row"><button id="applyLimits">Appliquer seuils</button><label><input id="soundToggle" type="checkbox" checked> Son ON/OFF</label><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button></div>
   </section>
+  <section class="panel hidden" id="gasControlPanel">
+   <h2>Console formateur — Détecteur 4 gaz</h2><p class="muted">Fais évoluer chaque capteur indépendamment. Les valeurs sont transmises au stagiaire via la même session.</p>
+   <div class="gas-control-grid">
+    <div class="gas-control"><h3>O₂ — Oxygène (% vol)</h3><div class="field"><label>Valeur</label><input id="gasO2Input" type="number" min="0" max="100" step=".1" value="20.9"></div><input id="gasO2Range" type="range" min="0" max="100" step=".1" value="20.9"><div class="field"><label>Seuil bas / haut</label><div class="row"><input id="gasO2Low" type="number" step=".1" value="19.5"><input id="gasO2High" type="number" step=".1" value="23.5"></div></div></div>
+    <div class="gas-control"><h3>LIE — Explosimétrie (% LIE)</h3><div class="field"><label>Valeur</label><input id="gasLIEInput" type="number" min="0" max="100" value="0"></div><input id="gasLIERange" type="range" min="0" max="100" value="0"><div class="field"><label>Seuil haut</label><input id="gasLIEHigh" type="number" min="0" max="100" value="10"></div></div>
+    <div class="gas-control"><h3>CO — Monoxyde de carbone (ppm)</h3><div class="field"><label>Valeur</label><input id="gasCOInput" type="number" min="0" max="2000" value="0"></div><input id="gasCORange" type="range" min="0" max="2000" value="0"><div class="field"><label>Seuil haut</label><input id="gasCOHigh" type="number" min="0" max="2000" value="30"></div></div>
+    <div class="gas-control"><h3>H₂S — Hydrogène sulfuré (ppm)</h3><div class="field"><label>Valeur</label><input id="gasH2SInput" type="number" min="0" max="500" value="0"></div><input id="gasH2SRange" type="range" min="0" max="500" value="0"><div class="field"><label>Seuil haut</label><input id="gasH2SHigh" type="number" min="0" max="500" value="5"></div></div>
+   </div>
+   <div class="row" style="margin-top:12px"><button class="primary" id="applyGasValues">Appliquer les valeurs</button><button id="resetGasValues">Réinitialiser le détecteur</button></div>
+   <p class="danger-note">Seuils pédagogiques d'exemple, à adapter au scénario. Ils ne remplacent pas les seuils réglementaires ni les procédures d'intervention.</p>
+  </section>
  </section>
  <div class="footer">Scope SUAP · Simulation pédagogique uniquement · Ne pas utiliser pour une décision médicale réelle</div>
 </div>
@@ -124,7 +171,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=id=>document.getElementById(id);
-const defaults={fc:72,sys:120,dia:80,spo:98,hbco:0,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:50,highFC:130,lowSys:90,highSys:180,lowDia:50,highDia:110,lowSpo:90,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],respiratorySound:'none'};
+const defaults={fc:72,sys:120,dia:80,spo:98,hbco:0,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:50,highFC:130,lowSys:90,highSys:180,lowDia:50,highDia:110,lowSpo:90,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],respiratorySound:'none',gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19.5,highO2:23.5,highLIE:10,highCO:30,highH2S:5}};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -160,7 +207,7 @@ function render(){
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>{if($(id)&&document.activeElement!==$(id))$(id).value=state[id]});
  if(document.activeElement!==$('controlNotes'))$('controlNotes').value=state.notes||'';
  $('patient').value=state.patient;$('rhythm').value=state.rhythm;if($('condition'))$('condition').value=state.condition||'normal';
- renderSliders();if($('soundToggle'))$('soundToggle').checked=audioEnabled;renderEvents();
+ renderSliders();renderGas();if($('soundToggle'))$('soundToggle').checked=audioEnabled;renderEvents();
 }
 function alarmActive(){
  return state.alarms && (
@@ -262,7 +309,7 @@ $('worsenBtn').onclick=()=>{
  };
  worseningTimer=setTimeout(evolveOneStep,3000+Math.random()*2000);
 };
-$('resetAllBtn').onclick=()=>{if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}state={...defaults,events:[],condition:'normal'};$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';audioEnabled=true;state.soundEnabled=true;smoothTarget={fc:72,spo:98};state.hbco=0;lastTargetAt=0;lastHeartBeat=0;stopFlatlineTone();$('clinicalInfo').textContent=conditions.normal.desc;$('patientName').value=state.name;$('condition').value='normal';log('Réinitialisation générale : constantes normales');render();publish()};
+$('resetAllBtn').onclick=()=>{if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}state={...defaults,events:[],condition:'normal',gas:{...gasDefaults}};$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';audioEnabled=true;state.soundEnabled=true;smoothTarget={fc:72,spo:98};state.hbco=0;lastTargetAt=0;lastHeartBeat=0;stopFlatlineTone();$('clinicalInfo').textContent=conditions.normal.desc;$('patientName').value=state.name;$('condition').value='normal';log('Réinitialisation générale : constantes normales');render();publish()};
 $('cardiacArrestBtn').onclick=()=>{state.variationFCEnabled=false;state.variationSpoEnabled=false;state.fc=0;state.spo=0;state.rhythm='asystole';state.irregularFC=false;lastHeartBeat=0;log('Simulation d’arrêt cardiaque : variations désactivées, FC 0, SpO₂ 0, asystolie');render();publish()};
 $('applyLimits').onclick=()=>{
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>state[id]=Number($(id).value));state.lowHbco=Math.max(0,Math.min(100,Number($('lowHbco').value)||0));$('lowHbco').value=state.lowHbco;
@@ -361,11 +408,49 @@ async function syncRespiratorySound(){const kind=state.respiratorySound||'none',
 $('breathSound').onchange=()=>{state.respiratorySound=$('breathSound').value;publish();syncRespiratorySound()};
 $('breathEnable').onclick=async()=>{respiratoryAudioUnlocked=true;await syncRespiratorySound();if((state.respiratorySound||'none')==='none'&&$('breathStatus'))$('breathStatus').textContent='Audio prêt. Choisis un bruit dans la liste.'};
 $('breathStop').onclick=()=>{state.respiratorySound='none';$('breathSound').value='none';syncRespiratorySound();publish()};
+
+// Module 4 gaz : le CO atmosphérique est indépendant de la HbCO du Scope.
+let currentModule='scope';
+const gasDefaults={o2:20.9,lie:0,co:0,h2s:0,lowO2:19.5,highO2:23.5,highLIE:10,highCO:30,highH2S:5};
+function gasAlarm(key){const g={...gasDefaults,...(state.gas||{})},v=Number(g[key])||0;return key==='o2'?(v<Number(g.lowO2)||v>Number(g.highO2)):v>Number(g[{lie:'highLIE',co:'highCO',h2s:'highH2S'}[key]])}
+function gasAlarmActive(){return ['o2','lie','co','h2s'].some(gasAlarm)}
+function renderGas(){
+ const g={...gasDefaults,...(state.gas||{})},f=(v,d=0)=>Number(v).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
+ $('gasValueO2').textContent=f(g.o2,1);$('gasValueLIE').textContent=f(g.lie);$('gasValueCO').textContent=f(g.co);$('gasValueH2S').textContent=f(g.h2s);
+ $('gasThresholdO2').textContent=`Plage pédagogique : ${f(g.lowO2,1)} – ${f(g.highO2,1)} % vol`;
+ $('gasThresholdLIE').textContent=`Seuil haut : ${f(g.highLIE)} % LIE`;$('gasThresholdCO').textContent=`Seuil haut : ${f(g.highCO)} ppm`;$('gasThresholdH2S').textContent=`Seuil haut : ${f(g.highH2S)} ppm`;
+ [['O2','o2'],['LIE','lie'],['CO','co'],['H2S','h2s']].forEach(([id,k])=>{$('gasCard'+id).classList.toggle('gas-alarm',gasAlarm(k));const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');if(n&&document.activeElement!==n)n.value=g[k];if(r)r.value=g[k]});
+ $('gasAlarmStatus').textContent=gasAlarmActive()?'ÉTAT : ALARME':'ÉTAT : NORMAL';
+ [['gasO2Low','lowO2'],['gasO2High','highO2'],['gasLIEHigh','highLIE'],['gasCOHigh','highCO'],['gasH2SHigh','highH2S']].forEach(([id,k])=>{if($(id)&&document.activeElement!==$(id))$(id).value=g[k]});
+}
+function setModule(mode){
+ currentModule=mode;$('scopeModeBtn').classList.toggle('active',mode==='scope');$('gasModeBtn').classList.toggle('active',mode==='gas');
+ $('monitorPage').classList.toggle('hidden',mode!=='scope');$('gasPage').classList.toggle('hidden',mode!=='gas');
+ $('controlPanel').classList.toggle('hidden',role!=='control');
+ $('gasControlPanel').classList.toggle('hidden',role!=='control'||mode!=='gas');
+ $('controlPanel').querySelectorAll(':scope > .panel:not(#gasControlPanel)').forEach(el=>el.classList.toggle('hidden',mode==='gas'));
+ setPage('monitor');renderGas();
+ document.title=mode==='gas'?'Détecteur 4 gaz — Simulation SUAP':'Scope SUAP — Simulateur pédagogique';
+}
+$('scopeModeBtn').onclick=()=>setModule('scope');$('gasModeBtn').onclick=()=>setModule('gas');
+function updateGasFromControls(){
+ const g={...gasDefaults,...(state.gas||{})};
+ [['O2','o2',0,100],['LIE','lie',0,100],['CO','co',0,2000],['H2S','h2s',0,500]].forEach(([id,k,min,max])=>{const n=Number($('gas'+id+'Input').value);g[k]=Math.max(min,Math.min(max,Number.isFinite(n)?n:0))});
+ g.lowO2=Number($('gasO2Low').value);g.highO2=Number($('gasO2High').value);g.highLIE=Number($('gasLIEHigh').value);g.highCO=Number($('gasCOHigh').value);g.highH2S=Number($('gasH2SHigh').value);
+ state.gas=g;renderGas();publish();
+}
+[['O2','o2'],['LIE','lie'],['CO','co'],['H2S','h2s']].forEach(([id])=>{const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');n.oninput=()=>r.value=n.value;r.oninput=()=>n.value=r.value});
+$('applyGasValues').onclick=()=>{updateGasFromControls();log('Valeurs du détecteur 4 gaz appliquées')};
+$('resetGasValues').onclick=()=>{state.gas={...gasDefaults};renderGas();publish();log('Détecteur 4 gaz réinitialisé')};
+['gasO2Low','gasO2High','gasLIEHigh','gasCOHigh','gasH2SHigh'].forEach(id=>$(id).onchange=()=>updateGasFromControls());
+
 function updateRole(){
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo','lowHbco'].forEach(id=>{if($(id))$(id).value=state[id]});
  let control=role==='control';
  state.alarms=true;audioEnabled=state.soundEnabled!==false;if($('soundToggle'))$('soundToggle').checked=audioEnabled;
  $('controlPanel').classList.toggle('hidden',!control);
+  $('gasControlPanel').classList.toggle('hidden',!control||currentModule!=='gas');
+  $('controlPanel').querySelectorAll(':scope > .panel:not(#gasControlPanel)').forEach(el=>el.classList.toggle('hidden',currentModule==='gas'));
  // Les commandes d’auscultation restent réservées au formateur.
  $('breathCard').classList.toggle('hidden',!control);
  $('tabSettings').classList.remove('hidden');$('tabEvents').classList.toggle('hidden',!control);
@@ -379,13 +464,13 @@ function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room
 async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}loadTaHistory();if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,alarms:true};audioEnabled=state.soundEnabled!==false;loadTaHistory();render();syncRespiratorySound()}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
  if(!payload.new?.state)return;
  const incoming=payload.new.state;
- if(role==='display'){const oldTA=`${state.sys}/${state.dia}`;state={...defaults,...incoming,alarms:true};if(`${state.sys}/${state.dia}`!==oldTA)recordTA();audioEnabled=state.soundEnabled!==false;render();syncRespiratorySound()}
- else if(role==='control'){state={...state,...incoming};render();}
+ if(role==='display'){const oldTA=`${state.sys}/${state.dia}`;state={...defaults,...incoming,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};if(`${state.sys}/${state.dia}`!==oldTA)recordTA();audioEnabled=state.soundEnabled!==false;render();syncRespiratorySound()}
+ else if(role==='control'){state={...state,...incoming,gas:{...gasDefaults,...(incoming.gas||state.gas||{})}};render();}
 }).subscribe();$('status').textContent=`Connecté · session ${room} · ${role==='control'?'formateur':'stagiaire'}`;log('Connexion à la session '+room)}
 $('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value=String(Math.floor(100000+Math.random()*900000))};
 $('saveConfig').onclick=()=>{localStorage.sbUrl=$('sbUrl').value.trim();localStorage.sbKey=$('sbKey').value.trim();initSupabase();alert('Configuration enregistrée sur cet appareil.')};
 $('sbUrl').value=localStorage.sbUrl||'';$('sbKey').value=localStorage.sbKey||'';
-updateRole();initSupabase();loadTaHistory();render();
+updateRole();initSupabase();loadTaHistory();render();setModule('scope');
 let audioUnlockAttempted=false;
 document.addEventListener('pointerdown',async()=>{
  if(audioUnlockAttempted)return;audioUnlockAttempted=true;
