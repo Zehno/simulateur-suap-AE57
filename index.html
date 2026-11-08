@@ -69,19 +69,15 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .gas-metric.h2s{background:#1b293a;border-color:#3d5d85}.gas-metric.h2s .gas-name,.gas-metric.h2s .gas-value{color:#80b7ff}
 .gas-metric.gas-alarm{background:#8e1010!important;border:3px solid #ff3030;animation:metricAlarm .55s steps(2,start) infinite}
 .gas-metric.gas-alarm .gas-name,.gas-metric.gas-alarm .gas-value,.gas-metric.gas-alarm .gas-unit{color:white!important}
-.gas-metric.gas-alarm-a1{background:#5b3a12!important;border:3px solid #ff9d45;animation:gasAlarmA1 .55s steps(2,start) infinite;box-shadow:0 0 14px #ff9d4588}
-.gas-metric.gas-alarm-a1 .gas-name,.gas-metric.gas-alarm-a1 .gas-value,.gas-metric.gas-alarm-a1 .gas-unit{color:#fff!important}
-.gas-metric.gas-alarm-a2{background:#8e1010!important;border:3px solid #ff3030;animation:gasAlarmA2 .55s steps(2,start) infinite;box-shadow:0 0 18px #ff3030aa}
-.gas-metric.gas-alarm-a2 .gas-name,.gas-metric.gas-alarm-a2 .gas-value,.gas-metric.gas-alarm-a2 .gas-unit{color:#fff!important}
-@keyframes gasAlarmA1{50%{border-color:#6b3500;box-shadow:0 0 3px #ff9d45}}
-@keyframes gasAlarmA2{50%{border-color:#450000;box-shadow:0 0 3px #ff3030}}
-.gas-alarm-label{font-size:12px;font-weight:900;letter-spacing:.08em;margin-top:8px}
-.gas-alarm-label.a1{color:#ffb36d}.gas-alarm-label.a2{color:#fff}
-
 .gas-threshold{font-size:10px;color:#c5d0d6;margin-top:6px}.gas-note{font-size:11px;color:#a8b7c0;line-height:1.45;margin-top:12px}
 .gas-control{background:#0b141b;border:1px solid #344653;border-radius:9px;padding:12px}.gas-control h3{font-size:14px;margin:0 0 8px}
 .gas-control .field{grid-template-columns:1fr auto;margin:8px 0}.gas-control input[type=range]{grid-column:1/-1;width:100%;accent-color:#fff}.gas-control input[type=number]{width:100px}
 .gas-status-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.gas-status-pill{font-size:11px;color:#c5d0d6;background:#17232c;border:1px solid #3b4b56;border-radius:20px;padding:5px 9px}
+@keyframes gasAlarmBlink{50%{opacity:.45;box-shadow:0 0 4px currentColor}}
+.gas-metric.gas-alarm-a1{background:#6b3d00!important;border:3px solid #ff9d00!important;animation:gasAlarmBlink .55s steps(2,start) infinite;color:#ff9d00}
+.gas-metric.gas-alarm-a2{background:#8e1010!important;border:3px solid #ff3030!important;animation:gasAlarmBlink .55s steps(2,start) infinite;color:#ff3030}
+.gas-metric.gas-alarm-a1 .gas-name,.gas-metric.gas-alarm-a1 .gas-value,.gas-metric.gas-alarm-a1 .gas-unit,.gas-metric.gas-alarm-a2 .gas-name,.gas-metric.gas-alarm-a2 .gas-value,.gas-metric.gas-alarm-a2 .gas-unit{color:#fff!important}
+.gas-alarm-label{font-weight:900;margin-left:8px}
 @media(max-width:650px){.gas-screen{padding:8px}.gas-metric{padding:10px;min-height:112px}.gas-metric .gas-name{font-size:11px}.gas-metric .gas-value{font-size:34px}}
 
 </style>
@@ -119,9 +115,9 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <div class="gas-head"><span>DÉTECTEUR MULTIGAZ</span><span class="gas-live">● SIMULATION</span></div>
    <div class="gas-grid">
     <article class="gas-metric o2" id="gasCardO2"><div class="gas-name">O₂ — OXYGÈNE</div><div class="gas-value" id="gasValueO2">20,9</div><div class="gas-unit">% VOL</div><div class="gas-threshold" id="gasThresholdO2">Plage pédagogique : 19,5 – 23,5</div></article>
-    <article class="gas-metric lie" id="gasCardLIE"><div class="gas-name">LIE — EXPLOSIMÉTRIE</div><div class="gas-value" id="gasValueLIE">0</div><div class="gas-unit">% LIE</div><div class="gas-threshold" id="gasThresholdLIE">Alarme seuil A1 : 5<br>Alarme seuil A2 : 10</div></article>
-    <article class="gas-metric co" id="gasCardCO"><div class="gas-name">CO — MONOXYDE DE CARBONE</div><div class="gas-value" id="gasValueCO">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdCO">Alarme seuil A1 : 20 ppm<br>Alarme seuil A2 : 50 ppm</div></article>
-    <article class="gas-metric h2s" id="gasCardH2S"><div class="gas-name">H₂S — HYDROGÈNE SULFURÉ</div><div class="gas-value" id="gasValueH2S">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdH2S">Alarme seuil A1 : 5 ppm<br>Alarme seuil A2 : 10 ppm</div></article>
+    <article class="gas-metric lie" id="gasCardLIE"><div class="gas-name">LIE — EXPLOSIMÉTRIE</div><div class="gas-value" id="gasValueLIE">0</div><div class="gas-unit">% LIE</div><div class="gas-threshold" id="gasThresholdLIE">A1 : 5 · A2 : 10</div></article>
+    <article class="gas-metric co" id="gasCardCO"><div class="gas-name">CO — MONOXYDE DE CARBONE</div><div class="gas-value" id="gasValueCO">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdCO">A1 : 20 · A2 : 50 ppm</div></article>
+    <article class="gas-metric h2s" id="gasCardH2S"><div class="gas-name">H₂S — HYDROGÈNE SULFURÉ</div><div class="gas-value" id="gasValueH2S">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdH2S">A1 : 5 · A2 : 10 ppm</div></article>
    </div>
    <div class="gas-status-row"><span class="gas-status-pill">CAPTEURS : SIMULÉS</span><span class="gas-status-pill">BATTERIE : 100 %</span><span class="gas-status-pill" id="gasAlarmStatus">ÉTAT : NORMAL</span></div>
    <p class="gas-note">Simulation pédagogique uniquement. Les seuils affichés sont des exemples configurables, pas des seuils d'intervention ni une référence de sécurité. Ne pas utiliser pour une décision opérationnelle.</p>
@@ -165,9 +161,9 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <h2>Console formateur — Détecteur 4 gaz</h2><p class="muted">Fais évoluer chaque capteur indépendamment. Les valeurs sont transmises au stagiaire via la même session.</p>
    <div class="gas-control-grid">
     <div class="gas-control"><h3>O₂ — Oxygène (% vol)</h3><div class="field"><label>Valeur</label><input id="gasO2Input" type="number" min="0" max="100" step=".1" value="20.9"></div><input id="gasO2Range" type="range" min="0" max="100" step=".1" value="20.9"><div class="field"><label>Seuil bas / haut</label><div class="row"><input id="gasO2Low" type="number" step=".1" value="19.5"><input id="gasO2High" type="number" step=".1" value="23.5"></div></div></div>
-    <div class="gas-control"><h3>LIE — Explosimétrie (% LIE)</h3><div class="field"><label>Valeur</label><input id="gasLIEInput" type="number" min="0" max="100" value="0"></div><input id="gasLIERange" type="range" min="0" max="100" value="0"><div class="field"><label>Seuils A1 / A2</label><div class="row"><input id="gasLIEA1" type="number" min="0" max="100" value="5"><input id="gasLIEA2" type="number" min="0" max="100" value="10"></div></div></div>
-    <div class="gas-control"><h3>CO — Monoxyde de carbone (ppm)</h3><div class="field"><label>Valeur</label><input id="gasCOInput" type="number" min="0" max="2000" value="0"></div><input id="gasCORange" type="range" min="0" max="2000" value="0"><div class="field"><label>Seuils A1 / A2</label><div class="row"><input id="gasCOA1" type="number" min="0" max="2000" value="20"><input id="gasCOA2" type="number" min="0" max="2000" value="50"></div></div></div>
-    <div class="gas-control"><h3>H₂S — Hydrogène sulfuré (ppm)</h3><div class="field"><label>Valeur</label><input id="gasH2SInput" type="number" min="0" max="500" value="0"></div><input id="gasH2SRange" type="range" min="0" max="500" value="0"><div class="field"><label>Seuils A1 / A2</label><div class="row"><input id="gasH2SA1" type="number" min="0" max="500" value="5"><input id="gasH2SA2" type="number" min="0" max="500" value="10"></div></div></div>
+    <div class="gas-control"><h3>LIE — Explosimétrie (% LIE)</h3><div class="field"><label>Valeur</label><input id="gasLIEInput" type="number" min="0" max="100" value="0"></div><input id="gasLIERange" type="range" min="0" max="100" value="0"><div class="field"><label>A1 / A2</label><div class="row"><input id="gasLIEA1" type="number" min="0" max="100" value="5"><input id="gasLIEA2" type="number" min="0" max="100" value="10"></div></div></div>
+    <div class="gas-control"><h3>CO — Monoxyde de carbone (ppm)</h3><div class="field"><label>Valeur</label><input id="gasCOInput" type="number" min="0" max="2000" value="0"></div><input id="gasCORange" type="range" min="0" max="2000" value="0"><div class="field"><label>A1 / A2</label><div class="row"><input id="gasCOA1" type="number" min="0" max="2000" value="20"><input id="gasCOA2" type="number" min="0" max="2000" value="50"></div></div></div>
+    <div class="gas-control"><h3>H₂S — Hydrogène sulfuré (ppm)</h3><div class="field"><label>Valeur</label><input id="gasH2SInput" type="number" min="0" max="500" value="0"></div><input id="gasH2SRange" type="range" min="0" max="500" value="0"><div class="field"><label>A1 / A2</label><div class="row"><input id="gasH2SA1" type="number" min="0" max="500" value="5"><input id="gasH2SA2" type="number" min="0" max="500" value="10"></div></div></div>
    </div>
    <div class="row" style="margin-top:12px"><button class="primary" id="applyGasValues">Appliquer les valeurs</button><button id="resetGasValues">Réinitialiser le détecteur</button></div>
    <p class="danger-note">Seuils pédagogiques d'exemple, à adapter au scénario. Ils ne remplacent pas les seuils réglementaires ni les procédures d'intervention.</p>
@@ -399,13 +395,13 @@ function playAlarmSequence(testOnly=false){
  lastBeep=Date.now();
 }
 function beepAlarm(){
- if(!audioEnabled||currentModule!=='scope'||!alarmActive()||!audioCtx)return;
+ if(currentModule!=='scope'||!audioEnabled||!alarmActive()||!audioCtx)return;
  if(Date.now()-lastBeep>=2600)playAlarmSequence();
 }
 function stopFlatlineTone(){if(flatOsc){try{flatOsc.stop()}catch(e){}flatOsc=null;flatGain=null}}
 function syncFlatlineTone(){if(!audioEnabled||!audioCtx||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
 function beepHeart(){if(!audioEnabled||!audioCtx||state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)<=0)return;let now=Date.now(),base=60000/Math.max(1,Number(state.fc)),interval=base;if(state.irregularFC||state.rhythm==='fa')interval=base*(.72+Math.random()*.56);if(now-lastHeartBeat>=interval){lastHeartBeat=now;shortTone(720,.075,.045)}}
-function animate(){syncFlatlineTone();if(currentModule==='scope')beepHeart();if(currentModule==='gas')beepGasAlarm();if(currentModule==='scope')beepAlarm();$('clock').textContent=new Date().toLocaleTimeString('fr-FR');requestAnimationFrame(animate)}
+function animate(){if(currentModule==='scope'){syncFlatlineTone();beepHeart();beepAlarm();}else{stopFlatlineTone();}beepGasAlarm();$('clock').textContent=new Date().toLocaleTimeString('fr-FR');requestAnimationFrame(animate)}
 const respiratorySources={
  rhonchi:{src:'https://upload.wikimedia.org/wikipedia/commons/4/47/Wheeze2O.ogg',rate:0.62,label:'Ronchis (échantillon sifflant ralenti pour accentuer les basses fréquences)'},
  rales:{src:'https://upload.wikimedia.org/wikipedia/commons/c/c7/Crackles_pneumoniaO.ogg',rate:0.82,label:'Râles crépitants'},
@@ -413,7 +409,7 @@ const respiratorySources={
  wheeze:{src:'https://upload.wikimedia.org/wikipedia/commons/4/47/Wheeze2O.ogg',rate:1,label:'Sifflements'}
 };
 let respiratoryAudioUnlocked=false;
-async function syncRespiratorySound(){const kind=state.respiratorySound||'none',audio=$('breathAudio');if(!audio)return;if(kind==='none'){audio.pause();audio.removeAttribute('src');audio.load();if($('breathStatus'))$('breathStatus').textContent='Aucun bruit respiratoire.';return}if(!respiratoryAudioUnlocked){if($('breathStatus'))$('breathStatus').textContent='Choix enregistré. Appuie sur « Activer le son » sur l’appareil diffuseur.';return}const item=respiratorySources[kind];if(!item)return;if(audio.dataset.kind!==kind){audio.pause();audio.src=item.src;audio.playbackRate=item.rate;audio.dataset.kind=kind;audio.load()}try{await audio.play();if($('breathStatus'))$('breathStatus').textContent='Lecture : '+item.label}catch(e){if($('breathStatus'))$('breathStatus').textContent='Appuie à nouveau sur « Activer le son » pour autoriser la lecture.'}}
+async function syncRespiratorySound(){if(currentModule!=='scope'){const a=$('breathAudio');if(a){a.pause();a.removeAttribute('src');a.load();}return}const kind=state.respiratorySound||'none',audio=$('breathAudio');if(!audio)return;if(kind==='none'){audio.pause();audio.removeAttribute('src');audio.load();if($('breathStatus'))$('breathStatus').textContent='Aucun bruit respiratoire.';return}if(!respiratoryAudioUnlocked){if($('breathStatus'))$('breathStatus').textContent='Choix enregistré. Appuie sur « Activer le son » sur l’appareil diffuseur.';return}const item=respiratorySources[kind];if(!item)return;if(audio.dataset.kind!==kind){audio.pause();audio.src=item.src;audio.playbackRate=item.rate;audio.dataset.kind=kind;audio.load()}try{await audio.play();if($('breathStatus'))$('breathStatus').textContent='Lecture : '+item.label}catch(e){if($('breathStatus'))$('breathStatus').textContent='Appuie à nouveau sur « Activer le son » pour autoriser la lecture.'}}
 $('breathSound').onchange=()=>{state.respiratorySound=$('breathSound').value;publish();syncRespiratorySound()};
 $('breathEnable').onclick=async()=>{respiratoryAudioUnlocked=true;await syncRespiratorySound();if((state.respiratorySound||'none')==='none'&&$('breathStatus'))$('breathStatus').textContent='Audio prêt. Choisis un bruit dans la liste.'};
 $('breathStop').onclick=()=>{state.respiratorySound='none';$('breathSound').value='none';syncRespiratorySound();publish()};
@@ -423,39 +419,51 @@ let currentModule='scope';
 const gasDefaults={o2:20.9,lie:0,co:0,h2s:0,lowO2:19.5,highO2:23.5,lieA1:5,lieA2:10,coA1:20,coA2:50,h2sA1:5,h2sA2:10};
 function gasAlarmLevel(key){
  const g={...gasDefaults,...(state.gas||{})},v=Number(g[key])||0;
- if(key==='o2')return (v<Number(g.lowO2)||v>Number(g.highO2))?2:0;
- const a1=Number(g[{lie:'lieA1',co:'coA1',h2s:'h2sA1'}[key]])||0;
- const a2=Number(g[{lie:'lieA2',co:'coA2',h2s:'h2sA2'}[key]])||0;
- return v>=a2?2:(v>=a1?1:0);
+ if(key==='o2') return (v<Number(g.lowO2)||v>Number(g.highO2))?2:0;
+ const map={lie:['lieA1','lieA2'],co:['coA1','coA2'],h2s:['h2sA1','h2sA2']};
+ const t=map[key]; if(!t)return 0;
+ if(v>=Number(g[t[1]]))return 2;
+ if(v>=Number(g[t[0]]))return 1;
+ return 0;
 }
 function gasAlarmActive(){return ['o2','lie','co','h2s'].some(k=>gasAlarmLevel(k)>0)}
-function gasAlarmMaxLevel(){return Math.max(...['o2','lie','co','h2s'].map(gasAlarmLevel))}
 function renderGas(){
  const g={...gasDefaults,...(state.gas||{})},f=(v,d=0)=>Number(v).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
  $('gasValueO2').textContent=f(g.o2,1);$('gasValueLIE').textContent=f(g.lie);$('gasValueCO').textContent=f(g.co);$('gasValueH2S').textContent=f(g.h2s);
  $('gasThresholdO2').textContent=`Plage pédagogique : ${f(g.lowO2,1)} – ${f(g.highO2,1)} % vol`;
- $('gasThresholdLIE').innerHTML=`Alarme seuil A1 : ${f(g.lieA1)} % LIE<br>Alarme seuil A2 : ${f(g.lieA2)} % LIE`;
- $('gasThresholdCO').innerHTML=`Alarme seuil A1 : ${f(g.coA1)} ppm<br>Alarme seuil A2 : ${f(g.coA2)} ppm`;
- $('gasThresholdH2S').innerHTML=`Alarme seuil A1 : ${f(g.h2sA1)} ppm<br>Alarme seuil A2 : ${f(g.h2sA2)} ppm`;
+ $('gasThresholdLIE').textContent=`A1 : ${f(g.lieA1)} · A2 : ${f(g.lieA2)} % LIE`;
+ $('gasThresholdCO').textContent=`A1 : ${f(g.coA1)} · A2 : ${f(g.coA2)} ppm`;
+ $('gasThresholdH2S').textContent=`A1 : ${f(g.h2sA1)} · A2 : ${f(g.h2sA2)} ppm`;
  [['O2','o2'],['LIE','lie'],['CO','co'],['H2S','h2s']].forEach(([id,k])=>{
    const card=$('gasCard'+id),level=gasAlarmLevel(k);
    card.classList.remove('gas-alarm','gas-alarm-a1','gas-alarm-a2');
    if(level===1)card.classList.add('gas-alarm-a1');
    if(level===2)card.classList.add('gas-alarm-a2');
-   const old=card.querySelector('.gas-alarm-label');if(old)old.remove();
-   if(level){const lab=document.createElement('div');lab.className='gas-alarm-label '+(level===1?'a1':'a2');lab.textContent=level===1?'ALARME A1':'ALARME A2';card.appendChild(lab)}
-   const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');if(n&&document.activeElement!==n)n.value=g[k];if(r)r.value=g[k]
+   const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');if(n&&document.activeElement!==n)n.value=g[k];if(r)r.value=g[k];
  });
- const max=gasAlarmMaxLevel();$('gasAlarmStatus').textContent=max===2?'ÉTAT : ALARME A2':(max===1?'ÉTAT : ALARME A1':'ÉTAT : NORMAL');
+ $('gasAlarmStatus').textContent=gasAlarmActive()?'ÉTAT : ALARME':'ÉTAT : NORMAL';
  [['gasO2Low','lowO2'],['gasO2High','highO2'],['gasLIEA1','lieA1'],['gasLIEA2','lieA2'],['gasCOA1','coA1'],['gasCOA2','coA2'],['gasH2SA1','h2sA1'],['gasH2SA2','h2sA2']].forEach(([id,k])=>{if($(id)&&document.activeElement!==$(id))$(id).value=g[k]});
+}
+function beepGasAlarm(){
+ if(currentModule!=='gas'||!audioEnabled||!audioCtx)return;
+ const g={...gasDefaults,...(state.gas||{})};
+ let level=0;['o2','lie','co','h2s'].forEach(k=>level=Math.max(level,gasAlarmLevel(k)));
+ if(!level||Date.now()-lastBeep<2600)return;
+ const now=audioCtx.currentTime;
+ if(level===1){ shortTone(920,.12,.055,now); shortTone(1240,.12,.055,now+.18); }
+ else { shortTone(520,.16,.06,now); shortTone(760,.16,.06,now+.20); shortTone(520,.16,.06,now+.40); }
+ lastBeep=Date.now();
 }
 function setModule(mode){
  currentModule=mode;$('scopeModeBtn').classList.toggle('active',mode==='scope');$('gasModeBtn').classList.toggle('active',mode==='gas');
  $('monitorPage').classList.toggle('hidden',mode!=='scope');$('gasPage').classList.toggle('hidden',mode!=='gas');
- $('controlPanel').classList.toggle('hidden',role!=='control');$('gasControlPanel').classList.toggle('hidden',role!=='control'||mode!=='gas');
+ if(mode==='gas'){ state.respiratorySound='none'; if($('breathSound'))$('breathSound').value='none'; const a=$('breathAudio'); if(a){a.pause();a.removeAttribute('src');a.load();} stopFlatlineTone(); }
+ else { syncRespiratorySound(); }
+ $('controlPanel').classList.toggle('hidden',role!=='control');
+ $('gasControlPanel').classList.toggle('hidden',role!=='control'||mode!=='gas');
  $('controlPanel').querySelectorAll(':scope > .panel:not(#gasControlPanel)').forEach(el=>el.classList.toggle('hidden',mode==='gas'));
- if(mode==='gas'){const audio=$('breathAudio');if(audio){audio.pause();audio.currentTime=0}stopFlatlineTone()}else{syncRespiratorySound()}
- setPage('monitor');renderGas();document.title=mode==='gas'?'Détecteur 4 gaz — Simulation SUAP':'Scope SUAP — Simulateur pédagogique';
+ setPage('monitor');renderGas();
+ document.title=mode==='gas'?'Détecteur 4 gaz — Simulation SUAP':'Scope SUAP — Simulateur pédagogique';
 }
 $('scopeModeBtn').onclick=()=>setModule('scope');$('gasModeBtn').onclick=()=>setModule('gas');
 function updateGasFromControls(){
@@ -465,15 +473,9 @@ function updateGasFromControls(){
  state.gas=g;renderGas();publish();
 }
 [['O2','o2'],['LIE','lie'],['CO','co'],['H2S','h2s']].forEach(([id])=>{const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');n.oninput=()=>r.value=n.value;r.oninput=()=>n.value=r.value});
-$('applyGasValues').onclick=()=>{updateGasFromControls();log('Valeurs et seuils A1/A2 du détecteur 4 gaz appliqués')};
+$('applyGasValues').onclick=()=>{updateGasFromControls();log('Valeurs du détecteur 4 gaz appliquées')};
 $('resetGasValues').onclick=()=>{state.gas={...gasDefaults};renderGas();publish();log('Détecteur 4 gaz réinitialisé')};
 ['gasO2Low','gasO2High','gasLIEA1','gasLIEA2','gasCOA1','gasCOA2','gasH2SA1','gasH2SA2'].forEach(id=>$(id).onchange=()=>updateGasFromControls());
-function playGasAlarm(level){
- if(!audioCtx||!audioEnabled||currentModule!=='gas')return;
- const now=audioCtx.currentTime,seq=level===2?[[900,.22,0],[900,.22,.34],[620,.32,.68]]:[[1200,.16,0],[1200,.16,.28]];
- seq.forEach(([f,d,t])=>alarmPulse(f,d,now+t));lastBeep=Date.now();
-}
-function beepGasAlarm(){if(!audioEnabled||!audioCtx||currentModule!=='gas')return;const level=gasAlarmMaxLevel();if(level&&Date.now()-lastBeep>=2200)playGasAlarm(level)}
 
 function updateRole(){
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo','lowHbco'].forEach(id=>{if($(id))$(id).value=state[id]});
