@@ -32,6 +32,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .metric{min-height:145px;padding:16px}
 .metric .name{font-size:14px;letter-spacing:.08em}
 .metric .thresholds{font-size:11px;right:12px;top:12px}
+#thFC,#thSpo,#thTA{display:none!important}
 .metric .value{font-size:clamp(36px,5vw,52px);margin-top:12px}
 .metric .unit,.metric .subvalue{font-size:14px}
 .ta-wide{grid-column:auto;min-height:145px;padding:10px;cursor:pointer}
@@ -221,19 +222,11 @@ function pam(){return Math.round((state.sys+2*state.dia)/3)}
 function log(msg){state.events.unshift({t:new Date().toLocaleTimeString('fr-FR'),msg});state.events=state.events.slice(0,100);renderEvents();publish()}
 function updateLiveReadouts(){
  $('vFC').textContent=state.fcMeasured===true?fmt(state.fc):'—';$('vSpO2').textContent=state.spoMeasured===true?fmt(state.spo):'—';
- $('alarmText').classList.toggle('off',!alarmActive());$('alarmText').textContent=alarmActive()?'ALARME':'';
- $('alarmText').classList.toggle('alarm-zone',alarmActive());
- $('monitorPage').querySelector('.screen').classList.toggle('alarm-frame',alarmActive());
- document.querySelector('[data-metric="FC"]').classList.toggle('metric-alarm',state.alarms&&state.fcMeasured&&(Number(state.fc)===0||state.fc<state.lowFC||state.fc>state.highFC||['asystole','fv'].includes(state.rhythm)));
- document.querySelector('[data-metric="SpO₂"]').classList.toggle('metric-alarm',state.alarms&&state.spoMeasured&&(Number(state.spo)===0||state.spo<state.lowSpo||state.spo>state.highSpo));
+ refreshScopeAlarms();
 }
 function render(){
- $('vFC').textContent=state.fcMeasured===true?fmt(state.fc):'—';$('uFC').textContent=state.fcMeasured===true?'bpm · ECG connecté':'bpm · électrodes non posées';$('uSpO2').textContent=state.spoMeasured===true?'% · pince connectée':'% · pince non posée';$('vGly').textContent=Number(state.gly??0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});$('glyStatus').textContent=state.glyMeasured===true?'Mesurée':'Non mesurée';$('thGly').textContent=`Seuil bas ${Number(state.lowGly??0.60).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})}`;$('vTemp').textContent=Number(state.temp??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1});$('tempStatus').textContent=state.tempMeasured===true?'Mesurée':'Non mesurée';$('thTemp').textContent=`Bas ${Number(state.lowTemp??35).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})} · Haut ${Number(state.highTemp??38).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})}`;if($('tempControl')&&document.activeElement!==$('tempControl'))$('tempControl').value=Number(state.temp??0).toFixed(1);$('vTA').textContent=state.taMeasured===true?`${fmt(state.sys)}/${fmt(state.dia)}`:'—/—';$('vPAM').textContent=state.taMeasured===true?`PAM ${pam()} mmHg`:'Brassard non posé';$('vSpO2').textContent=state.spoMeasured===true?fmt(state.spo):'—';$('vHbCO').textContent=fmt(state.hbco??0);$('thFC').textContent=state.fcMeasured===true?`Bas ${state.lowFC} · Haut ${state.highFC}`:'Électrodes ECG à poser';$('thTA').innerHTML=state.taMeasured===true?`TAS ${state.lowSys}–${state.highSys}<br>TAD ${state.lowDia}–${state.highDia}`:'Mesure non réalisée';$('thSpo').textContent=state.spoMeasured===true?`Bas ${state.lowSpo} · Haut ${state.highSpo}`:'Pince à SAT à poser';$('thHbco').textContent=`Bas ${state.lowHbco??0}`;if($('hbcoControl')&&document.activeElement!==$('hbcoControl'))$('hbcoControl').value=fmt(state.hbco??0);if($('glyControl')&&document.activeElement!==$('glyControl'))$('glyControl').value=Number(state.gly??0).toFixed(2);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;renderTAHistory();
- $('alarmText').classList.toggle('off',!alarmActive());$('alarmText').textContent=alarmActive()?'ALARME':'';$('alarmText').classList.toggle('alarm-zone',alarmActive());$('monitorPage').querySelector('.screen').classList.toggle('alarm-frame',alarmActive());
- document.querySelector('[data-metric="FC"]').classList.toggle('metric-alarm',state.alarms&&state.fcMeasured&&(Number(state.fc)===0||state.fc<state.lowFC||state.fc>state.highFC||['asystole','fv'].includes(state.rhythm)));
- document.querySelector('[data-metric="SpO₂"]').classList.toggle('metric-alarm',state.alarms&&state.spoMeasured&&(Number(state.spo)===0||state.spo<state.lowSpo||state.spo>state.highSpo));
- document.querySelector('[data-metric="TA"]').classList.toggle('metric-alarm',state.alarms&&state.taMeasured&&(state.sys<state.lowSys||state.sys>state.highSys||state.dia<state.lowDia||state.dia>state.highDia));
- document.querySelector('[data-metric="HbCO"]').classList.toggle('metric-alarm',state.alarms&&Number(state.hbco??0)>Number(state.lowHbco??0));
+ $('vFC').textContent=state.fcMeasured===true?fmt(state.fc):'—';$('uFC').textContent=state.fcMeasured===true?'bpm · ECG connecté':'bpm · électrodes ECG non posées';$('uSpO2').textContent=state.spoMeasured===true?'% · pince connectée':'% · Pince à SAT non posée';$('vGly').textContent=Number(state.gly??0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});$('glyStatus').textContent=state.glyMeasured===true?'Mesurée':'Non mesurée';$('thGly').textContent=`Seuil bas ${Number(state.lowGly??0.60).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})}`;$('vTemp').textContent=Number(state.temp??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1});$('tempStatus').textContent=state.tempMeasured===true?'Mesurée':'Non mesurée';$('thTemp').textContent=`Bas ${Number(state.lowTemp??35).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})} · Haut ${Number(state.highTemp??38).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})}`;if($('tempControl')&&document.activeElement!==$('tempControl'))$('tempControl').value=Number(state.temp??0).toFixed(1);$('vTA').textContent=state.taMeasured===true?`${fmt(state.sys)}/${fmt(state.dia)}`:'—/—';$('vPAM').textContent=state.taMeasured===true?`PAM ${pam()} mmHg`:'Brassard non posé';$('vSpO2').textContent=state.spoMeasured===true?fmt(state.spo):'—';$('vHbCO').textContent=fmt(state.hbco??0);$('thFC').textContent=state.fcMeasured===true?`Bas ${state.lowFC} · Haut ${state.highFC}`:'Électrodes ECG à poser';$('thTA').innerHTML=state.taMeasured===true?`TAS ${state.lowSys}–${state.highSys}<br>TAD ${state.lowDia}–${state.highDia}`:'Mesure non réalisée';$('thSpo').textContent=state.spoMeasured===true?`Bas ${state.lowSpo} · Haut ${state.highSpo}`:'Pince à SAT à poser';$('thHbco').textContent=`Bas ${state.lowHbco??0}`;if($('hbcoControl')&&document.activeElement!==$('hbcoControl'))$('hbcoControl').value=fmt(state.hbco??0);if($('glyControl')&&document.activeElement!==$('glyControl'))$('glyControl').value=Number(state.gly??0).toFixed(2);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;renderTAHistory();
+ refreshScopeAlarms();
  if($('irregularFCToggle'))$('irregularFCToggle').checked=!!state.irregularFC;
  if($('variationFCToggle'))$('variationFCToggle').checked=!!state.variationFCEnabled;
  if($('variationSpoToggle'))$('variationSpoToggle').checked=!!state.variationSpoEnabled;
@@ -244,15 +237,28 @@ function render(){
  $('patient').value=state.patient;if($('condition'))$('condition').value=state.condition||'normal';
  renderSliders();renderGas();if($('soundToggle'))$('soundToggle').checked=audioEnabled;renderEvents();
 }
+function refreshScopeAlarms(){
+ const active=alarmActive();
+ $('alarmText').classList.toggle('off',!active);
+ $('alarmText').textContent=active?'ALARME':'';
+ $('alarmText').classList.toggle('alarm-zone',active);
+ $('monitorPage').querySelector('.screen').classList.toggle('alarm-frame',active);
+ document.querySelector('[data-metric="FC"]').classList.toggle('metric-alarm',state.alarms&&state.fcMeasured===true&&(Number(state.fc)===0||Number(state.fc)<Number(state.lowFC)||Number(state.fc)>Number(state.highFC)));
+ document.querySelector('[data-metric="SpO₂"]').classList.toggle('metric-alarm',state.alarms&&state.spoMeasured===true&&(Number(state.spo)===0||Number(state.spo)<Number(state.lowSpo)||Number(state.spo)>Number(state.highSpo)));
+ document.querySelector('[data-metric="TA"]').classList.toggle('metric-alarm',state.alarms&&state.taMeasured===true&&(Number(state.sys)<Number(state.lowSys)||Number(state.sys)>Number(state.highSys)||Number(state.dia)<Number(state.lowDia)||Number(state.dia)>Number(state.highDia)));
+ document.querySelector('[data-metric="HbCO"]').classList.toggle('metric-alarm',state.alarms&&Number(state.hbco??0)>Number(state.lowHbco??0));
+ $('glyCard').classList.toggle('metric-alarm',state.alarms&&state.glyMeasured===true&&Number(state.gly)<Number(state.lowGly??0.60));
+ $('tempCard').classList.toggle('metric-alarm',state.alarms&&state.tempMeasured===true&&(Number(state.temp)<Number(state.lowTemp??35)||Number(state.temp)>Number(state.highTemp??38)));
+}
 function alarmActive(){
- return state.alarms && (
-  state.rhythm==='asystole'||state.rhythm==='fv'||(state.fcMeasured&&Number(state.fc)===0)||(state.spoMeasured&&Number(state.spo)===0)||
-  state.fc<state.lowFC||state.fc>state.highFC||
-  
-  state.sys<state.lowSys||state.sys>state.highSys||
-  state.dia<state.lowDia||state.dia>state.highDia||
-  state.spo<state.lowSpo||state.spo>state.highSpo||Number(state.hbco??0)>Number(state.lowHbco??0)
- );
+ if(!state.alarms)return false;
+ const fcOut=state.fcMeasured===true&&(Number(state.fc)===0||Number(state.fc)<Number(state.lowFC)||Number(state.fc)>Number(state.highFC));
+ const spoOut=state.spoMeasured===true&&(Number(state.spo)===0||Number(state.spo)<Number(state.lowSpo)||Number(state.spo)>Number(state.highSpo));
+ const taOut=state.taMeasured===true&&(Number(state.sys)<Number(state.lowSys)||Number(state.sys)>Number(state.highSys)||Number(state.dia)<Number(state.lowDia)||Number(state.dia)>Number(state.highDia));
+ const hbcoOut=Number(state.hbco??0)>Number(state.lowHbco??0);
+ const glyOut=state.glyMeasured===true&&Number(state.gly)<Number(state.lowGly??0.60);
+ const tempOut=state.tempMeasured===true&&(Number(state.temp)<Number(state.lowTemp??35)||Number(state.temp)>Number(state.highTemp??38));
+ return fcOut||spoOut||taOut||hbcoOut||glyOut||tempOut;
 }
 function renderSliders(){
  // Ne pas reconstruire les champs pendant que le formateur est en train de saisir une valeur.
