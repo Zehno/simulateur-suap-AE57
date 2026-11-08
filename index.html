@@ -541,12 +541,20 @@ function scopeAlarmConditions(){
  if(Number(state.hbco??0)>Number(state.lowHbco??0))out.push('HBCO_HAUT');
  return out;
 }
-function scopeAlarmConditionInfo(condition){
- if(condition.startsWith('FC_'))return {card:'FC',value:Number(state.fc)};
- if(condition.startsWith('SPO_'))return {card:'SpO₂',value:Number(state.spo)};
- if(condition.startsWith('TAS_'))return {card:'TA',value:Number(state.sys)};
- if(condition.startsWith('TAD_'))return {card:'TA',value:Number(state.dia)};
- if(condition==='HBCO_HAUT')return {card:'HbCO',value:Number(state.hbco??0)};
+function scopeAlarmMetricKey(condition){
+ if(condition.startsWith('FC_'))return 'FC';
+ if(condition.startsWith('SPO_'))return 'SpO2';
+ if(condition.startsWith('TAS_'))return 'TAS';
+ if(condition.startsWith('TAD_'))return 'TAD';
+ if(condition==='HBCO_HAUT')return 'HbCO';
+ return null;
+}
+function scopeAlarmMetricInfo(metricKey){
+ if(metricKey==='FC')return {card:'FC',value:Number(state.fc)};
+ if(metricKey==='SpO2')return {card:'SpO₂',value:Number(state.spo)};
+ if(metricKey==='TAS')return {card:'TA',value:Number(state.sys)};
+ if(metricKey==='TAD')return {card:'TA',value:Number(state.dia)};
+ if(metricKey==='HbCO')return {card:'HbCO',value:Number(state.hbco??0)};
  return null;
 }
 function scopeAlarmCardStates(conditions=scopeAlarmConditions()){
@@ -556,48 +564,50 @@ function scopeAlarmCardStates(conditions=scopeAlarmConditions()){
   TA:{blinking:false,acknowledged:false},
   HbCO:{blinking:false,acknowledged:false}
  };
- // Un contour acquitté reste visible même si la valeur repasse momentanément dans la plage.
- Object.keys(scopeAlarmAckSnapshots).forEach(condition=>{
-  const info=scopeAlarmConditionInfo(condition);
+ // Un contour acquitté reste affiché jusqu'à une variation réelle de 20 % de la valeur mémorisée.
+ Object.keys(scopeAlarmAckSnapshots).forEach(metricKey=>{
+  const info=scopeAlarmMetricInfo(metricKey);
   if(info&&result[info.card])result[info.card].acknowledged=true;
  });
- // Un seuil nouveau ou réarmé fait clignoter uniquement la case concernée.
+ // Un autre paramètre qui devient alarmant reste indépendant et peut donc relancer l'alarme.
  conditions.forEach(condition=>{
-  if(Object.prototype.hasOwnProperty.call(scopeAlarmAckSnapshots,condition))return;
-  const info=scopeAlarmConditionInfo(condition);
-  if(info&&result[info.card])result[info.card].blinking=true;
+  const metricKey=scopeAlarmMetricKey(condition);
+  if(metricKey&&!Object.prototype.hasOwnProperty.call(scopeAlarmAckSnapshots,metricKey)){
+   const info=scopeAlarmMetricInfo(metricKey);
+   if(info&&result[info.card])result[info.card].blinking=true;
+  }
  });
  Object.values(result).forEach(status=>{if(status.blinking)status.acknowledged=false});
  return result;
 }
 function updateScopeAlarmAckSnapshots(){
  let released=false;
- Object.entries(scopeAlarmAckSnapshots).forEach(([condition,baseline])=>{
-  const info=scopeAlarmConditionInfo(condition);
-  if(!info||!Number.isFinite(info.value)||!Number.isFinite(Number(baseline))){delete scopeAlarmAckSnapshots[condition];released=true;return}
-  // Seuil de libération : déplacement d'au moins 20 % dans l'un ou l'autre sens.
-  // Pour une valeur de référence nulle, un écart d'une unité déclenche la libération.
-  const limit=Math.max(Math.abs(Number(baseline))*0.20,1);
-  if(Math.abs(info.value-Number(baseline))>=limit){delete scopeAlarmAckSnapshots[condition];released=true;}
+ Object.entries(scopeAlarmAckSnapshots).forEach(([metricKey,baseline])=>{
+  const info=scopeAlarmMetricInfo(metricKey),base=Number(baseline);
+  if(!info||!Number.isFinite(info.value)||!Number.isFinite(base)){
+   delete scopeAlarmAckSnapshots[metricKey];released=true;return;
+  }
+  // L'acquittement ne se réarme qu'après un écart d'au moins 20 % par rapport à la valeur mémorisée.
+  // Pour une référence égale à zéro (ex. FC à l'arrêt), on utilise 1 unité comme seuil minimal.
+  const limit=Math.abs(base)>0?Math.abs(base)*0.20:1;
+  if(Math.abs(info.value-base)>=limit){delete scopeAlarmAckSnapshots[metricKey];released=true;}
  });
  return released;
 }
 function scopeAlarmUnacknowledgedConditions(conditions=scopeAlarmConditions()){
- return conditions.filter(condition=>!Object.prototype.hasOwnProperty.call(scopeAlarmAckSnapshots,condition));
+ return conditions.filter(condition=>{
+  const metricKey=scopeAlarmMetricKey(condition);
+  return !metricKey||!Object.prototype.hasOwnProperty.call(scopeAlarmAckSnapshots,metricKey);
+ });
 }
 function stopScopeAlarmAudio(){
  scopeAlarmOscillators.forEach(osc=>{try{osc.stop()}catch(e){}});scopeAlarmOscillators.clear();
  lastBeep=Date.now();stopFlatlineTone();
 }
 function refreshScopeAlarms(){
- const conditions=scopeAlarmConditions(),revision=Number(state.scopeAlarmRevision||0);
- // Une action du formateur réarme les alarmes et efface les références précédemment acquittées.
- if(revision!==scopeAlarmLastRevision){
-  Object.keys(scopeAlarmAckSnapshots).forEach(key=>delete scopeAlarmAckSnapshots[key]);
-  scopeAlarmLastRevision=revision;
-  scopeAlarmLastUnackedSignature='';
-  lastBeep=0;
- }
+ const conditions=scopeAlarmConditions();
+ // L'acquittement est strictement lié au déplacement de la valeur (+/-20 %),
+ // pas aux rafraîchissements de la synchronisation ni aux réglages du formateur.
  const released=updateScopeAlarmAckSnapshots();
  const unacked=scopeAlarmUnacknowledgedConditions(conditions);
  const unackedSignature=unacked.slice().sort().join('|');
@@ -838,7 +848,7 @@ function beepAlarm(){
 function stopFlatlineTone(){if(flatOsc){try{flatOsc.stop()}catch(e){}flatOsc=null;flatGain=null}}
 function syncFlatlineTone(){if(!audioEnabled||!audioCtx||scopeAlarmAcked||!state.fcMeasured||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
 function beepHeart(){if(!audioEnabled||!audioCtx||!state.fcMeasured||state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)<=0)return;let now=Date.now(),base=60000/Math.max(1,Number(state.fc)),interval=base;if(state.irregularFC||state.rhythm==='fa')interval=base*(.72+Math.random()*.56);if(now-lastHeartBeat>=interval){lastHeartBeat=now;shortTone(720,.075,.045)}}
-$('scopeAlarmAckBtn').onclick=()=>{if(role!=='display')return;const pending=scopeAlarmUnacknowledgedConditions();if(!pending.length)return;pending.forEach(condition=>{const info=scopeAlarmConditionInfo(condition);if(info&&Number.isFinite(info.value))scopeAlarmAckSnapshots[condition]=info.value});scopeAlarmAcked=true;stopScopeAlarmAudio();refreshScopeAlarms()};
+$('scopeAlarmAckBtn').onclick=()=>{if(role!=='display')return;const pending=scopeAlarmUnacknowledgedConditions();if(!pending.length)return;pending.forEach(condition=>{const metricKey=scopeAlarmMetricKey(condition),info=metricKey?scopeAlarmMetricInfo(metricKey):null;if(metricKey&&info&&Number.isFinite(info.value)&&!Object.prototype.hasOwnProperty.call(scopeAlarmAckSnapshots,metricKey))scopeAlarmAckSnapshots[metricKey]=info.value});scopeAlarmAcked=true;stopScopeAlarmAudio();refreshScopeAlarms()};
 function animate(){if(currentModule==='scope'){syncFlatlineTone();beepHeart();beepAlarm();}else{stopFlatlineTone();}beepGasAlarm();renderScenarioClock();requestAnimationFrame(animate)}
 
 // Module 4 gaz : le CO atmosphérique est indépendant de la HbCO du Scope.
