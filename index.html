@@ -99,7 +99,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
  <nav class="module-switch" aria-label="Choix du simulateur"><button id="scopeModeBtn" class="active" type="button">▣ MONITORING</button><button id="gasModeBtn" type="button">◉ DÉTECTEUR 4 GAZ</button></nav>
  <main id="monitorPage">
   <section class="screen">
-   <div class="monitor-head"><span id="patientLabel">ADULTE · VICTIME</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
+   <div class="monitor-head"><span id="patientLabel">ADULTE · VICTIME</span><span>HEURE <b id="clock">--:--:--</b></span><span>MISE EN SITUATION <b id="scenarioElapsed">00:00:00</b></span><span id="alarmText" class="alarm off">ALARME</span></div>
    <div class="monitor-grid">
     <div class="numbers">
      <button class="metric fc" data-metric="FC"><div class="name">FC / HR</div><div class="thresholds" id="thFC">Bas 50 · Haut 130</div><div class="value" id="vFC">—</div><div class="unit" id="uFC">bpm · Capteur cardiaque non posé</div></button>
@@ -134,6 +134,8 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
  </div></main>
  <section id="controlPanel" class="layout hidden" style="margin-top:12px">
   <section class="panel"><h2>Pilotage formateur — constantes</h2>
+   <div class="row"><button type="button" class="primary" id="startScenarioClock">▶ Démarrer / reprendre le compteur</button><button type="button" id="resetScenarioClock">↺ Remise à zéro</button></div>
+   <p class="muted" id="scenarioClockStatus">Compteur de mise en situation à l’arrêt.</p>
    <div id="sliders"></div>
    <div class="field"><label>Tension artérielle (mmHg)</label><div class="row"><label>TAS <input id="manualSys" type="number" min="0" max="300" value="120" aria-label="Tension artérielle systolique"></label><label>TAD <input id="manualDia" type="number" min="0" max="200" value="80" aria-label="Tension artérielle diastolique"></label><button class="primary" id="applyTA">Appliquer T.A.</button></div></div>
    <div id="variationRanges"></div>
@@ -205,7 +207,8 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=id=>document.getElementById(id);
-const defaults={fc:72,sys:120,dia:80,spo:98,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
+const GLYCEMIE_CODES={LO:{operator:'<',value:0.20,label:'LO'},HI:{operator:'>',value:5.00,label:'HI'}}; // Seuils internes uniquement : LO <0,20 g/L ; HI >5,00 g/L
+const defaults={scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,fc:72,sys:120,dia:80,spo:98,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -223,8 +226,20 @@ function updateLiveReadouts(){
  $('vFC').textContent=state.fcMeasured===true?fmt(state.fc):'—';$('vSpO2').textContent=state.spoMeasured===true?fmt(state.spo):'—';
  refreshScopeAlarms();
 }
+function formatElapsed(total){
+ const t=Math.max(0,Math.floor(total));const h=Math.floor(t/3600),m=Math.floor((t%3600)/60),sec=t%60;
+ return [h,m,sec].map(v=>String(v).padStart(2,'0')).join(':');
+}
+function renderScenarioClock(){
+ const now=new Date();$('clock').textContent=now.toLocaleTimeString('fr-FR',{hour12:false});
+ const running=state.scenarioElapsedEpoch!==null&&Number.isFinite(Number(state.scenarioElapsedEpoch));
+ const elapsed=Number(state.scenarioElapsedAccumulated||0)+(running?Math.max(0,(Date.now()-Number(state.scenarioElapsedEpoch))/1000):0);
+ $('scenarioElapsed').textContent=formatElapsed(elapsed);
+ if($('scenarioClockStatus'))$('scenarioClockStatus').textContent=running?'Compteur de mise en situation en cours · '+formatElapsed(elapsed):state.scenarioElapsedAccumulated>0?'Compteur arrêté · durée : '+formatElapsed(elapsed):'Compteur de mise en situation à l’arrêt.';
+}
+
 function render(){
- $('vFC').textContent=state.fcMeasured===true?fmt(state.fc):'—';$('uFC').textContent=state.fcMeasured===true?'bpm · ECG connecté':'bpm · électrodes ECG non posées';$('uSpO2').textContent=state.spoMeasured===true?'% · pince connectée':'% · Pince à SAT non posée';$('vGly').textContent=state.glyMeasured!==true?'—':Number(state.gly).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});$('glyStatus').textContent=state.glyMeasured===true?'Mesurée':'Non mesurée';$('vTemp').textContent=state.tempMeasured===true?Number(state.temp??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1}):'—';$('tempStatus').textContent=state.tempMeasured===true?'Mesurée':'Non mesurée';if($('tempControl')&&document.activeElement!==$('tempControl'))$('tempControl').value=Number(state.temp??0).toFixed(1);$('vTA').textContent=state.taMeasured===true?`${fmt(state.sys)}/${fmt(state.dia)}`:'—/—';$('vPAM').textContent=state.taMeasured===true?`PAM ${pam()} mmHg`:'Brassard non posé';$('vSpO2').textContent=state.spoMeasured===true?fmt(state.spo):'—';$('vHbCO').textContent=fmt(state.hbco??0);$('thFC').textContent=state.fcMeasured===true?`Bas ${state.lowFC} · Haut ${state.highFC}`:'Électrodes ECG à poser';$('thTA').innerHTML=state.taMeasured===true?`TAS ${state.lowSys}–${state.highSys}<br>TAD ${state.lowDia}–${state.highDia}`:'Mesure non réalisée';$('thSpo').textContent=state.spoMeasured===true?`Bas ${state.lowSpo} · Haut ${state.highSpo}`:'Pince à SAT à poser';$('thHbco').textContent=`Bas ${state.lowHbco??0}`;if($('hbcoControl')&&document.activeElement!==$('hbcoControl'))$('hbcoControl').value=fmt(state.hbco??0);if($('glyControl')&&document.activeElement!==$('glyControl'))$('glyControl').value=Number(state.gly??0).toFixed(2);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;renderTAHistory();
+ $('vFC').textContent=state.fcMeasured===true?fmt(state.fc):'—';$('uFC').textContent=state.fcMeasured===true?'bpm · ECG connecté':'bpm · électrodes ECG non posées';$('uSpO2').textContent=state.spoMeasured===true?'% · pince connectée':'% · Pince à SAT non posée';$('vGly').textContent=state.glyMeasured!==true?'—':Number(state.gly).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});$('glyStatus').textContent=state.glyMeasured===true?'Mesurée':'Non mesurée';$('vTemp').textContent=state.tempMeasured===true?Number(state.temp??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1}):'—';$('tempStatus').textContent=state.tempMeasured===true?'Mesurée':'Non mesurée';if($('tempControl')&&document.activeElement!==$('tempControl'))$('tempControl').value=Number(state.temp??0).toFixed(1);$('vTA').textContent=state.taMeasured===true?`${fmt(state.sys)}/${fmt(state.dia)}`:'—/—';$('vPAM').textContent=state.taMeasured===true?`PAM ${pam()} mmHg`:'Brassard non posé';$('vSpO2').textContent=state.spoMeasured===true?fmt(state.spo):'—';$('vHbCO').textContent=fmt(state.hbco??0);$('thFC').textContent=state.fcMeasured===true?`Bas ${state.lowFC} · Haut ${state.highFC}`:'Électrodes ECG à poser';$('thTA').innerHTML=state.taMeasured===true?`TAS ${state.lowSys}–${state.highSys}<br>TAD ${state.lowDia}–${state.highDia}`:'Mesure non réalisée';$('thSpo').textContent=state.spoMeasured===true?`Bas ${state.lowSpo} · Haut ${state.highSpo}`:'Pince à SAT à poser';$('thHbco').textContent=`Bas ${state.lowHbco??0}`;if($('hbcoControl')&&document.activeElement!==$('hbcoControl'))$('hbcoControl').value=fmt(state.hbco??0);if($('glyControl')&&document.activeElement!==$('glyControl'))$('glyControl').value=Number(state.gly??0).toFixed(2);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;renderScenarioClock();renderTAHistory();
  refreshScopeAlarms();
  if($('irregularFCToggle'))$('irregularFCToggle').checked=!!state.irregularFC;
  if($('variationFCToggle'))$('variationFCToggle').checked=!!state.variationFCEnabled;
@@ -376,6 +391,12 @@ $('worsenBtn').onclick=()=>{
  };
  worseningTimer=setTimeout(evolveOneStep,3000+Math.random()*2000);
 };
+$('startScenarioClock').onclick=()=>{
+ if(state.scenarioElapsedEpoch===null){state.scenarioElapsedEpoch=Date.now();log('Compteur de mise en situation démarré / repris');}
+ else {state.scenarioElapsedAccumulated=Number(state.scenarioElapsedAccumulated||0)+(Date.now()-Number(state.scenarioElapsedEpoch))/1000;state.scenarioElapsedEpoch=null;log('Compteur de mise en situation mis en pause');}
+ renderScenarioClock();publish();
+};
+$('resetScenarioClock').onclick=()=>{state.scenarioElapsedEpoch=null;state.scenarioElapsedAccumulated=0;renderScenarioClock();log('Compteur de mise en situation remis à zéro');publish()};
 $('resetAllBtn').onclick=()=>{if(worseningTimer){clearTimeout(worseningTimer);worseningTimer=null}state={...defaults,fcMeasured:false,spoMeasured:false,taMeasured:false,glyMeasured:false,tempMeasured:false,events:[],condition:'normal',gas:{...gasDefaults}};$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';audioEnabled=true;state.soundEnabled=true;smoothTarget={fc:72,spo:98};state.hbco=0;lastTargetAt=0;lastHeartBeat=0;stopFlatlineTone();$('clinicalInfo').textContent=conditions.normal.desc;$('patientName').value=state.name;$('condition').value='normal';log('Réinitialisation générale : constantes normales');render();publish()};
 $('cardiacArrestBtn').onclick=()=>{state.variationFCEnabled=false;state.variationSpoEnabled=false;state.fc=0;state.spo=0;state.rhythm='asystole';state.irregularFC=false;lastHeartBeat=0;log('Simulation d’arrêt cardiaque : variations désactivées, FC 0, SpO₂ 0, asystolie');render();publish()};
 $('applyLimits').onclick=()=>{
@@ -462,7 +483,7 @@ function beepAlarm(){
 function stopFlatlineTone(){if(flatOsc){try{flatOsc.stop()}catch(e){}flatOsc=null;flatGain=null}}
 function syncFlatlineTone(){if(!audioEnabled||!audioCtx||!state.fcMeasured||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
 function beepHeart(){if(!audioEnabled||!audioCtx||!state.fcMeasured||state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)<=0)return;let now=Date.now(),base=60000/Math.max(1,Number(state.fc)),interval=base;if(state.irregularFC||state.rhythm==='fa')interval=base*(.72+Math.random()*.56);if(now-lastHeartBeat>=interval){lastHeartBeat=now;shortTone(720,.075,.045)}}
-function animate(){if(currentModule==='scope'){syncFlatlineTone();beepHeart();beepAlarm();}else{stopFlatlineTone();}beepGasAlarm();$('clock').textContent=new Date().toLocaleTimeString('fr-FR');requestAnimationFrame(animate)}
+function animate(){if(currentModule==='scope'){syncFlatlineTone();beepHeart();beepAlarm();}else{stopFlatlineTone();}beepGasAlarm();renderScenarioClock();requestAnimationFrame(animate)}
 
 // Module 4 gaz : le CO atmosphérique est indépendant de la HbCO du Scope.
 let currentModule='scope';
