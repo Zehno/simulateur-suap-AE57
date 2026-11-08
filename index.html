@@ -121,6 +121,11 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .temp-long{background:linear-gradient(100deg,#071a2b,#0a3150)!important;border:1px solid #1688d2!important}
 .temp-long .name,.temp-long .value,.temp-long .unit{color:#66bdff!important}
 .metric.metric-alarm .value{color:#fff!important}
+.metric.metric-alarm-ack{background:#8e1010!important;border:3px solid #ff2525!important;animation:none!important;box-shadow:none!important}
+.metric.metric-alarm-ack .name,.metric.metric-alarm-ack .value,.metric.metric-alarm-ack .unit,.metric.metric-alarm-ack .subvalue{color:#fff!important}
+.alarm.acknowledged{animation:none!important;visibility:visible!important}
+#scopeAlarmAckBtn{font-weight:900;border:2px solid #ff3434;background:#761515;color:#fff;min-width:190px}
+#scopeAlarmAckBtn:disabled{opacity:.85;background:#4b2525;border-color:#a45a5a;cursor:default}
 @media(max-width:760px){.numbers{grid-template-columns:repeat(2,minmax(0,1fr))!important}.numbers>.ta-wide{grid-column:1/-1!important}.numbers>.metric{min-height:100px}.ta-wide{min-height:150px!important}}
 @media(max-width:430px){.numbers{grid-template-columns:1fr!important}.numbers>.ta-wide{grid-column:auto!important}.long-metric{min-height:65px!important}.ta-history-list{max-height:55px}}
 
@@ -312,6 +317,50 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   .trainee-gas-ui .gas-value{font-size:clamp(31px,9vw,46px)}
 }
 
+
+
+/* Disposition desktop : TA/PNI à gauche sur trois niveaux, HbCO / température / glycémie empilés à droite. */
+@media (min-width: 761px) {
+  .numbers {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-auto-rows: minmax(82px, auto);
+    align-items: stretch;
+  }
+  .numbers > .ta-wide {
+    grid-column: 1 !important;
+    grid-row: 2 / span 3 !important;
+    min-height: 0 !important;
+    height: 100%;
+    align-self: stretch;
+  }
+  .numbers > .metric.co2 {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    min-height: 72px !important;
+    padding: 10px 14px !important;
+    justify-content: center;
+  }
+  .numbers > .metric.co2 .value {
+    font-size: clamp(28px, 3.4vw, 46px) !important;
+    line-height: 1 !important;
+    margin-top: 3px !important;
+  }
+  .numbers > .temp-long {
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+  }
+  .numbers > .gly-long {
+    grid-column: 2 !important;
+    grid-row: 4 !important;
+  }
+}
+@media (max-width: 760px) {
+  .numbers > .ta-wide { grid-column: 1 / -1 !important; grid-row: auto !important; }
+  .numbers > .metric.co2,
+  .numbers > .temp-long,
+  .numbers > .gly-long { grid-column: auto !important; grid-row: auto !important; }
+}
+
 </style>
 </head>
 <body>
@@ -339,7 +388,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
      <button class="metric long-metric gly-long" data-metric="Glycémie" id="glyCard"><div class="long-main"><div><div class="name">GLYCÉMIE CAPILLAIRE</div><div class="subvalue" id="glyStatus">Non mesurée</div></div><div class="long-reading"><span class="value" id="vGly">—</span><span class="unit">g/L</span></div></div></button>
     </div>
    </div>
-   <div class="bottom"><button id="menuBtn">Réglages</button></div>
+   <div class="bottom"><button id="scopeAlarmAckBtn" type="button" class="hidden">🔇 ACQUITTER L’ALARME</button><button id="menuBtn">Réglages</button></div>
   </section>
  </main>
  
@@ -438,7 +487,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 const $=id=>document.getElementById(id);
 const GLYCEMIE_CODES={LO:{operator:'<',value:0.20,label:'LO'},HI:{operator:'>',value:5.00,label:'HI'}}; // Seuils internes uniquement : LO <0,20 g/L ; HI >5,00 g/L
 function glycemiaDisplay(value){const n=Number(value);if(!Number.isFinite(n))return null;if(n<GLYCEMIE_CODES.LO.value)return GLYCEMIE_CODES.LO.label;if(n>GLYCEMIE_CODES.HI.value)return GLYCEMIE_CODES.HI.label;return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});}
-const defaults={scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,fc:72,sys:120,dia:80,spo:98,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
+const defaults={scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,spo:98,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -449,6 +498,8 @@ let sb=null,channel=null,room='',timer=null,history=[];
 let smoothTarget={fc:72,spo:98},lastTargetAt=0,lastSmoothRender=0,worseningTimer=null;
 let phase=0,audioEnabled=true,audioCtx=null,lastBeep=0,lastHeartBeat=0,flatOsc=null,flatGain=null,taHistory=[];
 let gasAlarmLastSignature="0000",gasAlarmAcked=false;
+let scopeAlarmAcked=false,scopeAlarmLastSignature="",scopeAlarmLastRevision=0;
+const scopeAlarmOscillators=new Set();
 const fmt=n=>Math.round(n);
 function pam(){return Math.round((state.sys+2*state.dia)/3)}
 function log(msg){state.events.unshift({t:new Date().toLocaleTimeString('fr-FR'),msg});state.events=state.events.slice(0,100);renderEvents();publish()}
@@ -481,26 +532,53 @@ function render(){
  $('patient').value=state.patient;if($('condition'))$('condition').value=state.condition||'normal';
  renderSliders();renderGas();if($('soundToggle'))$('soundToggle').checked=audioEnabled;renderEvents();
 }
+function scopeAlarmConditions(){
+ if(!state.alarms)return [];
+ const out=[];
+ if(state.fcMeasured===true){const v=Number(state.fc);if(v===0||v<Number(state.lowFC))out.push('FC_BAS');else if(v>Number(state.highFC))out.push('FC_HAUT')}
+ if(state.spoMeasured===true){const v=Number(state.spo);if(v===0||v<Number(state.lowSpo))out.push('SPO_BAS');else if(v>Number(state.highSpo))out.push('SPO_HAUT')}
+ if(state.taMeasured===true){const sys=Number(state.sys),dia=Number(state.dia);if(sys<Number(state.lowSys))out.push('TAS_BASSE');else if(sys>Number(state.highSys))out.push('TAS_HAUTE');if(dia<Number(state.lowDia))out.push('TAD_BASSE');else if(dia>Number(state.highDia))out.push('TAD_HAUTE')}
+ if(Number(state.hbco??0)>Number(state.lowHbco??0))out.push('HBCO_HAUT');
+ return out;
+}
+function scopeAlarmCardStates(conditions=scopeAlarmConditions()){
+ return {
+  FC:conditions.some(x=>x.startsWith('FC_')),
+  'SpO₂':conditions.some(x=>x.startsWith('SPO_')),
+  TA:conditions.some(x=>x.startsWith('TAS_')||x.startsWith('TAD_')),
+  HbCO:conditions.includes('HBCO_HAUT')
+ };
+}
+function stopScopeAlarmAudio(){
+ scopeAlarmOscillators.forEach(osc=>{try{osc.stop()}catch(e){}});scopeAlarmOscillators.clear();
+ lastBeep=Date.now();stopFlatlineTone();
+}
 function refreshScopeAlarms(){
- const active=alarmActive();
- $('alarmText').classList.toggle('off',!active);
- $('alarmText').textContent=active?'ALARME':'';
- $('alarmText').classList.toggle('alarm-zone',active);
- $('monitorPage').querySelector('.screen').classList.toggle('alarm-frame',active);
- document.querySelector('[data-metric="FC"]').classList.toggle('metric-alarm',state.alarms&&state.fcMeasured===true&&(Number(state.fc)===0||Number(state.fc)<Number(state.lowFC)||Number(state.fc)>Number(state.highFC)));
- document.querySelector('[data-metric="SpO₂"]').classList.toggle('metric-alarm',state.alarms&&state.spoMeasured===true&&(Number(state.spo)===0||Number(state.spo)<Number(state.lowSpo)||Number(state.spo)>Number(state.highSpo)));
- document.querySelector('[data-metric="TA"]').classList.toggle('metric-alarm',state.alarms&&state.taMeasured===true&&(Number(state.sys)<Number(state.lowSys)||Number(state.sys)>Number(state.highSys)||Number(state.dia)<Number(state.lowDia)||Number(state.dia)>Number(state.highDia)));
- document.querySelector('[data-metric="HbCO"]').classList.toggle('metric-alarm',state.alarms&&Number(state.hbco??0)>Number(state.lowHbco??0));
- $('tempCard').classList.remove('metric-alarm');
+ const conditions=scopeAlarmConditions(),signature=conditions.slice().sort().join('|');
+ const active=conditions.length>0,revision=Number(state.scopeAlarmRevision||0);
+ // Un nouvel état d'alarme ou une action de pilotage formateur réarme l'alarme.
+ if(!active){scopeAlarmAcked=false;scopeAlarmLastSignature='';scopeAlarmLastRevision=revision;}
+ else if(signature!==scopeAlarmLastSignature||revision!==scopeAlarmLastRevision){scopeAlarmAcked=false;lastBeep=0;}
+ scopeAlarmLastSignature=signature;scopeAlarmLastRevision=revision;
+ const blinking=active&&!scopeAlarmAcked;
+ const alarmText=$('alarmText'),screen=$('monitorPage').querySelector('.screen'),ackBtn=$('scopeAlarmAckBtn');
+ alarmText.classList.toggle('off',!active);alarmText.textContent=active?'ALARME':'';
+ alarmText.classList.toggle('alarm-zone',blinking);alarmText.classList.toggle('acknowledged',active&&scopeAlarmAcked);
+ screen.classList.toggle('alarm-frame',blinking);
+ const cards=scopeAlarmCardStates(conditions);
+ Object.entries(cards).forEach(([key,on])=>{
+  const card=document.querySelector(`[data-metric="${key}"]`);if(!card)return;
+  card.classList.toggle('metric-alarm',on&&blinking);
+  card.classList.toggle('metric-alarm-ack',on&&active&&scopeAlarmAcked);
+ });
+ if(ackBtn){
+  const trainee=role==='display';ackBtn.classList.toggle('hidden',!trainee||!active);
+  ackBtn.disabled=scopeAlarmAcked;
+  ackBtn.textContent=scopeAlarmAcked?'✓ ALARME ACQUITTÉE':'🔇 ACQUITTER L’ALARME';
+ }
 }
-function alarmActive(){
- if(!state.alarms)return false;
- const fcOut=state.fcMeasured===true&&(Number(state.fc)===0||Number(state.fc)<Number(state.lowFC)||Number(state.fc)>Number(state.highFC));
- const spoOut=state.spoMeasured===true&&(Number(state.spo)===0||Number(state.spo)<Number(state.lowSpo)||Number(state.spo)>Number(state.highSpo));
- const taOut=state.taMeasured===true&&(Number(state.sys)<Number(state.lowSys)||Number(state.sys)>Number(state.highSys)||Number(state.dia)<Number(state.lowDia)||Number(state.dia)>Number(state.highDia));
- const hbcoOut=Number(state.hbco??0)>Number(state.lowHbco??0);
- return fcOut||spoOut||taOut||hbcoOut;
-}
+function alarmActive(){return scopeAlarmConditions().length>0;}
+
 function renderSliders(){
  // Ne pas reconstruire les champs pendant que le formateur est en train de saisir une valeur.
  if($('sliders').contains(document.activeElement))return;
@@ -695,6 +773,7 @@ function alarmPulse(frequency,duration,when){
   gain.gain.setValueAtTime(.055,when+duration-.025);
   gain.gain.linearRampToValueAtTime(.0001,when+duration);
   osc.connect(gain);gain.connect(audioCtx.destination);
+  scopeAlarmOscillators.add(osc);osc.onended=()=>scopeAlarmOscillators.delete(osc);
   osc.start(when);osc.stop(when+duration);
  }catch(e){}
 }
@@ -707,12 +786,13 @@ function playAlarmSequence(testOnly=false){
  lastBeep=Date.now();
 }
 function beepAlarm(){
- if(currentModule!=='scope'||!audioEnabled||!alarmActive()||!audioCtx)return;
+ if(currentModule!=='scope'||!audioEnabled||!alarmActive()||scopeAlarmAcked||!audioCtx)return;
  if(Date.now()-lastBeep>=2600)playAlarmSequence();
 }
 function stopFlatlineTone(){if(flatOsc){try{flatOsc.stop()}catch(e){}flatOsc=null;flatGain=null}}
-function syncFlatlineTone(){if(!audioEnabled||!audioCtx||!state.fcMeasured||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
+function syncFlatlineTone(){if(!audioEnabled||!audioCtx||scopeAlarmAcked||!state.fcMeasured||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
 function beepHeart(){if(!audioEnabled||!audioCtx||!state.fcMeasured||state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)<=0)return;let now=Date.now(),base=60000/Math.max(1,Number(state.fc)),interval=base;if(state.irregularFC||state.rhythm==='fa')interval=base*(.72+Math.random()*.56);if(now-lastHeartBeat>=interval){lastHeartBeat=now;shortTone(720,.075,.045)}}
+$('scopeAlarmAckBtn').onclick=()=>{if(role!=='display'||!alarmActive())return;scopeAlarmAcked=true;stopScopeAlarmAudio();refreshScopeAlarms()};
 function animate(){if(currentModule==='scope'){syncFlatlineTone();beepHeart();beepAlarm();}else{stopFlatlineTone();}beepGasAlarm();renderScenarioClock();requestAnimationFrame(animate)}
 
 // Module 4 gaz : le CO atmosphérique est indépendant de la HbCO du Scope.
@@ -817,10 +897,17 @@ function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room
 async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}loadTaHistory();if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,alarms:true};audioEnabled=state.soundEnabled!==false;loadTaHistory();render();}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
  if(!payload.new?.state)return;
  const incoming=payload.new.state;
- if(role==='display'){const oldTA=`${state.sys}/${state.dia}`;state={...defaults,...incoming,glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};if(`${state.sys}/${state.dia}`!==oldTA)recordTA();audioEnabled=state.soundEnabled!==false;render();}
+ if(role==='display'){const oldTA=`${state.sys}/${state.dia}`;state={...defaults,...incoming,scopeAlarmRevision:Number(incoming.scopeAlarmRevision)||0,glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};if(`${state.sys}/${state.dia}`!==oldTA)recordTA();audioEnabled=state.soundEnabled!==false;render();}
  else if(role==='control'){state={...state,...incoming,gas:{...gasDefaults,...(incoming.gas||state.gas||{})}};render();}
 }).subscribe();$('status').textContent=`Connecté · session ${room} · ${role==='control'?'formateur':'stagiaire'}`;log('Connexion à la session '+room)}
 $('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value=String(Math.floor(100000+Math.random()*900000))};
+// Toute action réelle du formateur dans le panneau de pilotage réarme les alarmes côté stagiaire.
+['click','change'].forEach(eventName=>$('controlPanel').addEventListener(eventName,e=>{
+ if(role!=='control')return;
+ if(e.target.closest('#gasControlPanel'))return;
+ state.scopeAlarmRevision=(Number(state.scopeAlarmRevision)||0)+1;
+ publish();
+}));
 $('saveConfig').onclick=()=>{localStorage.sbUrl=$('sbUrl').value.trim();localStorage.sbKey=$('sbKey').value.trim();initSupabase();alert('Configuration enregistrée sur cet appareil.')};
 $('sbUrl').value=localStorage.sbUrl||'';$('sbKey').value=localStorage.sbKey||'';
 updateRole();initSupabase();loadTaHistory();render();setModule('scope');
