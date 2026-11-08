@@ -117,11 +117,11 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <div class="gas-grid">
     <article class="gas-metric o2" id="gasCardO2"><div class="gas-name">O₂ — OXYGÈNE</div><div class="gas-value" id="gasValueO2">20,9</div><div class="gas-unit">% VOL</div><div class="gas-threshold" id="gasThresholdO2">Plage pédagogique : 19 – 23</div></article>
     <article class="gas-metric lie" id="gasCardLIE"><div class="gas-name">LIE — EXPLOSIMÉTRIE</div><div class="gas-value" id="gasValueLIE">0</div><div class="gas-unit">% LIE</div><div class="gas-threshold" id="gasThresholdLIE">A1 : 20 · A2 : 40</div></article>
-    <article class="gas-metric co" id="gasCardCO"><div class="gas-name">CO — MONOXYDE DE CARBONE</div><div class="gas-value" id="gasValueCO">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdCO">A1 : 20 · A2 : 50 ppm</div></article>
-    <article class="gas-metric h2s" id="gasCardH2S"><div class="gas-name">H₂S — HYDROGÈNE SULFURÉ</div><div class="gas-value" id="gasValueH2S">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdH2S">A1 : 5 · A2 : 30 ppm</div></article>
+    <article class="gas-metric co" id="gasCardCO"><div class="gas-name">CO — MONOXYDE DE CARBONE</div><div class="gas-value" id="gasValueCO">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdCO">A1 : 20 · A2 : 50</div></article>
+    <article class="gas-metric h2s" id="gasCardH2S"><div class="gas-name">H₂S — HYDROGÈNE SULFURÉ</div><div class="gas-value" id="gasValueH2S">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdH2S">A1 : 5 · A2 : 30</div></article>
    </div>
    <div class="gas-status-row"><span class="gas-status-pill">CAPTEURS : SIMULÉS</span><span class="gas-status-pill">BATTERIE : 100 %</span><span class="gas-status-pill" id="gasAlarmStatus">ÉTAT : NORMAL</span></div>
-   <p class="gas-note"> Simulateur crée pour un contexte de formation en milieu professionnel. Créer par Aurélien E. </p>
+   <p class="gas-note">Simulateur crée pour un contexte de formation en milieu professionnel. Créer par Aurélien E.</p>
   </section>
  </main>
  <main id="eventsPage" class="hidden"><section class="panel"><h2>Historique des événements</h2><div id="events"></div><button id="clearEvents">Effacer l'historique local</button></section></main>
@@ -171,7 +171,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <p class="danger-note">Seuils pédagogiques d'exemple, à adapter au scénario. Ils ne remplacent pas les seuils réglementaires ni les procédures d'intervention.</p>
   </section>
  </section>
- <div class="footer">Scope SUAP · Simulation pédagogique uniquement · Ne pas utiliser pour une décision médicale réelle</div>
+ <div class="footer">Simulateur crée pour un contexte de formation en milieu professionnel. Créer par Aurélien E.</div>
 </div>
 <audio id="breathAudio" preload="none" loop></audio>
 <div id="modal" class="modal hidden"><div class="modalbox"><h3 id="modalTitle">Détail</h3><div id="modalBody"></div><div style="text-align:right;margin-top:12px"><button id="closeModal">Fermer</button></div></div></div>
@@ -268,7 +268,7 @@ $('variationFCToggle').onchange=e=>{state.variationFCEnabled=e.target.checked;lo
 $('variationSpoToggle').onchange=e=>{state.variationSpoEnabled=e.target.checked;log('Variation SpO₂ '+(e.target.checked?'activée':'désactivée'));render();publish()};
 
 const conditions={
- normal:{label:'État stable',fc:[68,82],spo:[96,99],base:[74,98],sys:[110,130],dia:[70,85],desc:'Constantes stables : FC 68–82 bpm, SpO₂ 96–99 %. Variations discrètes.'},
+ normal:{label:'MSP Personnalisé',fc:[68,82],spo:[96,99],base:[74,98],sys:[110,130],dia:[70,85],desc:'Constantes stables : FC 68–82 bpm, SpO₂ 96–99 %. Variations discrètes.'},
  sepsis:{label:'Sepsis avec aggravation',fc:[105,145],spo:[88,95],base:[122,92],sys:[85,110],dia:[45,65],desc:'Tachycardie, désaturation possible et tendance à l’hypotension. L’évolution peut être progressive vers un choc septique.'},
  hemorrhage:{label:'Hémorragie / choc hypovolémique',fc:[115,155],spo:[90,97],base:[132,94],sys:[70,100],dia:[40,65],desc:'Tachycardie compensatrice, pression artérielle qui baisse avec la perte sanguine ; SpO₂ parfois conservée au début.'},
  cardiogenic:{label:'Choc cardiogénique',fc:[105,140],spo:[86,94],base:[120,91],sys:[70,95],dia:[45,65],desc:'Tachycardie fréquente, hypotension et hypoxémie possible en cas d’œdème pulmonaire.'},
