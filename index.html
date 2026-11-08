@@ -87,10 +87,10 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 <body>
 <div id="roleChooser" class="modal hidden" style="z-index:20">
  <div class="modalbox">
-  <h3>Scope SUAP</h3>
+  <h3>Simulateur Pédagogique By Aurélien E</h3>
   <p>Choisir l'interface à ouvrir sur cet appareil.</p>
   <button class="primary" id="choosePilot" style="width:100%;margin:5px 0">PILOTAGE — Formateur</button>
-  <button id="chooseTrainee" style="width:100%;margin:5px 0">SCOPE — Stagiaire</button>
+  <button id="chooseTrainee" style="width:100%;margin:5px 0">SIMULATION — Stagiaire</button>
  </div>
 </div>
 <div class="app">
@@ -98,7 +98,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
  <nav class="module-switch" aria-label="Choix du simulateur"><button id="scopeModeBtn" class="active" type="button">▣ MONITORING</button><button id="gasModeBtn" type="button">◉ DÉTECTEUR 4 GAZ</button></nav>
  <main id="monitorPage">
   <section class="screen">
-   <div class="monitor-head"><span id="patientLabel">ADULTE · PATIENT SIMULÉ</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
+   <div class="monitor-head"><span id="patientLabel">ADULTE · VICTIME</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
    <div class="monitor-grid">
     <div class="numbers">
      <button class="metric fc" data-metric="FC"><div class="name">FC / HR</div><div class="thresholds" id="thFC">Bas 50 · Haut 130</div><div class="value" id="vFC">72</div><div class="unit">bpm</div></button>
@@ -122,7 +122,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
     <article class="gas-metric h2s" id="gasCardH2S"><div class="gas-name">H₂S — HYDROGÈNE SULFURÉ</div><div class="gas-value" id="gasValueH2S">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdH2S">A1 : 5 · A2 : 10 ppm</div></article>
    </div>
    <div class="gas-status-row"><span class="gas-status-pill">CAPTEURS : SIMULÉS</span><span class="gas-status-pill">BATTERIE : 100 %</span><span class="gas-status-pill" id="gasAlarmStatus">ÉTAT : NORMAL</span></div><div class="gas-ack-wrap" id="gasAlarmAckWrap"><button type="button" class="gas-ack-btn" id="gasAlarmAck" disabled>🔇 Acquitter l'alarme sonore</button><span class="muted" id="gasAlarmAckStatus">Aucune alarme sonore active.</span></div>
-   <p class="gas-note">Simulation pédagogique uniquement. Les seuils affichés sont des exemples configurables, pas des seuils d'intervention ni une référence de sécurité. Ne pas utiliser pour une décision opérationnelle.</p>
+   <p class="gas-note">SIMULATEUR PEDAGOGIQUE - Mise en Situation Professionnelle - Créer par Aurélien E.</p>
   </section>
  </main>
  <main id="eventsPage" class="hidden"><section class="panel"><h2>Historique des événements</h2><div id="events"></div><button id="clearEvents">Effacer l'historique local</button></section></main>
@@ -143,13 +143,11 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <div class="field"><label>Évolution personnalisée des constantes</label>
     <div class="row"><label>FC <select id="fcDirection"><option value="up">Augmentation automatique</option><option value="down">Baisse automatique</option><option value="none">Ne pas modifier</option></select></label>
     <label>SpO₂ <select id="spoDirection"><option value="down">Baisse automatique</option><option value="up">Augmentation automatique</option><option value="none">Ne pas modifier</option></select></label></div>
-    <p class="muted">Choisis indépendamment le sens d’évolution de chaque constante, pour simuler une aggravation ou une amélioration après un geste salvateur.</p>
    </div>
-   <div class="row"><button id="worsenBtn">⚠ Déclencher une aggravation progressive</button><button class="warn" id="resetAllBtn">↺ Réinitialiser toutes les valeurs</button></div>
-   <div class="field"><label>Valeurs de tension à appliquer (mmHg)</label><div class="row"><label>TAS <input id="manualSys" type="number" min="0" max="300" value="120" aria-label="Tension artérielle systolique"></label><label>TAD <input id="manualDia" type="number" min="0" max="200" value="80" aria-label="Tension artérielle diastolique"></label><button class="primary" id="applyTA">Appliquer T.A.</button></div></div>
-   <p class="muted">Saisis la TAS et la TAD, puis applique-les : les valeurs sont mises à jour immédiatement sur le moniteur stagiaire.</p>
-   <div class="row"><button class="warn" id="cardiacArrestBtn">ARRÊT CARDIAQUE — tout désactiver</button></div>
-   <p class="muted">Force la FC à 0, la SpO₂ à 0, désactive leurs variations et affiche une asystolie. La dernière tension affichée reste celle de la dernière mesure.</p>
+   <div class="row"><button id="worsenBtn">⚠ Déclenchement progressive</button><button class="warn" id="resetAllBtn">↺ Réinitialiser toutes les valeurs</button></div>
+   <div class="field"><label>Tension artérielle (mmHg)</label><div class="row"><label>TAS <input id="manualSys" type="number" min="0" max="300" value="120" aria-label="Tension artérielle systolique"></label><label>TAD <input id="manualDia" type="number" min="0" max="200" value="80" aria-label="Tension artérielle diastolique"></label><button class="primary" id="applyTA">Appliquer T.A.</button></div></div>
+   <div class="row"><button class="warn" id="cardiacArrestBtn">ARRÊT CARDIAQUE</button></div>
+   <p class="muted">Shut down de votre MSP - FC 0 / SPO2 0</p>
    <h3>NOTE PATIENT</h3><textarea id="controlNotes" rows="3" placeholder="Informations à transmettre aux stagiaires…" style="width:100%;background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:10px;resize:vertical"></textarea>
   </section>
   <section class="panel"><h2>Alarmes & seuils</h2>
@@ -160,7 +158,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <div class="field"><label>HbCO — seuil bas (%)</label><input id="lowHbco" type="number" min="0" max="100" value="10"></div><div class="row"><button id="applyLimits">Appliquer seuils</button><label><input id="soundToggle" type="checkbox" checked> Son ON/OFF</label><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button></div>
   </section>
   <section class="panel hidden" id="gasControlPanel">
-   <h2>Console formateur — Détecteur 4 gaz</h2><p class="muted">Fais évoluer chaque capteur indépendamment. Les valeurs sont transmises au stagiaire via la même session.</p>
+   <h2>Pilotage FORMATEUR — Détecteur 4 gaz</h2><p class="muted">Faites évoluer votre MSP</p>
    <div class="gas-control-grid">
     <div class="gas-control"><h3>O₂ — Oxygène (% vol)</h3><div class="field"><label>Valeur</label><input id="gasO2Input" type="number" min="0" max="100" step=".1" value="20.9"></div><input id="gasO2Range" type="range" min="0" max="100" step=".1" value="20.9"><div class="field"><label>Seuil bas / haut</label><div class="row"><input id="gasO2Low" type="number" step=".1" value="19"><input id="gasO2High" type="number" step=".1" value="23"></div></div></div>
     <div class="gas-control"><h3>CH₄ / LIE — Explosimétrie (% LIE)</h3><div class="field"><label>Valeur</label><input id="gasLIEInput" type="number" min="0" max="100" value="0"></div><input id="gasLIERange" type="range" min="0" max="100" value="0"><div class="field"><label>A1 / A2</label><div class="row"><input id="gasLIEA1" type="number" min="0" max="100" value="20"><input id="gasLIEA2" type="number" min="0" max="100" value="40"></div></div></div>
@@ -172,7 +170,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <p class="danger-note">Seuils pédagogiques d'exemple, à adapter au scénario. Ils ne remplacent pas les seuils réglementaires ni les procédures d'intervention.</p>
   </section>
  </section>
- <div class="footer">Scope SUAP · Simulation pédagogique uniquement · Ne pas utiliser pour une décision médicale réelle</div>
+ <div class="footer">SIMULATEUR PEDAGOGIQUE - Mise en Situation Professionnelle - Créer par Aurélien E.</div>
 </div>
 <audio id="breathAudio" preload="none" loop></audio>
 <div id="modal" class="modal hidden"><div class="modalbox"><h3 id="modalTitle">Détail</h3><div id="modalBody"></div><div style="text-align:right;margin-top:12px"><button id="closeModal">Fermer</button></div></div></div>
