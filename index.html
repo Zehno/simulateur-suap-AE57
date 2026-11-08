@@ -11,7 +11,7 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icons/icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="./icons/icon-192.png">
-<title>Simulateur by Aurélien E — Simulateur pédagogique</title>
+<title>Simulateur pédagogique</title>
 <style>
 :root{--bg:#05090d;--panel:#101820;--line:#26333d;--muted:#8da0ad;--green:#53f28b;--blue:#4aa8ff;--yellow:#ffe16a;--orange:#ff9d45;--red:#ff5555;--white:#e8eef2}
 *{box-sizing:border-box}body{margin:0;background:#080d12;color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{border:1px solid #344653;background:#18242d;color:#eef5f8;border-radius:9px;padding:10px 12px;cursor:pointer}button:active{transform:scale(.98)}button.primary{background:#12683c;border-color:#218c56}button.warn{background:#662b2b;border-color:#a74444}.app{max-width:1400px;margin:auto;padding:12px}.top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}.brand{font-weight:800;letter-spacing:.06em}.tag{font-size:11px;color:#9fb0bb;border:1px solid #33434e;padding:4px 7px;border-radius:20px}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button.active{background:#284052;border-color:#5d8298}.screen{background:#020507;border:1px solid #2d3942;border-radius:12px;padding:10px;box-shadow:0 8px 30px #0008}.screen.alarm-frame{border:4px solid #ff2525;animation:alarmFrame .55s steps(2,start) infinite;box-shadow:0 0 18px #ff2525,0 0 36px #ff252588}@keyframes alarmFrame{50%{border-color:#450000;box-shadow:0 0 3px #ff2525}}.monitor-head{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#aab8c0;font-size:13px;font-variant-numeric:tabular-nums;padding:2px 4px 8px}.monitor-grid{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:10px}.traces{min-width:0;display:flex;flex-direction:column;gap:7px}.trace{height:94px;background:#06100d;border:1px solid #13251c;border-radius:6px;position:relative;overflow:hidden}.trace canvas{width:100%;height:100%;display:block}.trace-label{position:absolute;left:8px;top:5px;font-size:11px;font-weight:700;z-index:1;text-shadow:0 1px 3px #000}.numbers{display:grid;grid-template-columns:1fr;gap:7px}.metric{min-height:80px;background:#10171c;border:1px solid #27343d;border-radius:7px;padding:8px;cursor:pointer;text-align:left}.metric .name{font-size:11px;color:#a9b6bd;letter-spacing:.06em}.metric{position:relative}.metric .thresholds{position:absolute;right:6px;top:5px;font-size:9px;line-height:1.25;text-align:right;color:#d2dce2;opacity:.9;pointer-events:none}.metric .name{padding-right:56px}.metric .value{font-size:29px;font-weight:750;line-height:1.2;font-variant-numeric:tabular-nums}.metric .unit{font-size:11px;color:#a9b6bd}.metric.fc{background:#07552f;border-color:#16804b}.metric.fc .name,.metric.fc .value,.metric.fc .unit{color:#fff}.metric.spo{background:#07508a;border-color:#1678bd}.metric.spo .name,.metric.spo .value,.metric.spo .unit{color:#fff}.metric.ta{background:#41484e;border-color:#66717a}.metric.ta .name,.metric.ta .value,.metric.ta .unit,.metric.ta .subvalue{color:#fff}.metric.rr .value{color:var(--yellow)}.metric.co2 .value{color:var(--red)}.metric.temp .value{color:var(--orange)}.metric.ta .value{color:#e5e8eb}.metric.metric-alarm{background:#b00000!important;border:3px solid #ff2525;animation:metricAlarm .55s steps(2,start) infinite;box-shadow:0 0 12px #ff252588}.metric.metric-alarm .name,.metric.metric-alarm .value,.metric.metric-alarm .unit,.metric.metric-alarm .subvalue{color:#fff!important}@keyframes metricAlarm{50%{border-color:#450000;box-shadow:0 0 2px #ff2525}}.alarm-zone{border:2px solid #ff2525;border-radius:7px;padding:3px 8px;animation:metricAlarm .55s steps(2,start) infinite}.subvalue{font-size:11px;color:#b7c2c9}.bottom{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.alarm{color:#ff7777;font-weight:800;letter-spacing:.1em;animation:blink 1s steps(2,start) infinite}.alarm.off{visibility:hidden}@keyframes blink{to{visibility:hidden}}.layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.panel{background:#111a21;border:1px solid #293944;border-radius:12px;padding:12px}.panel h2{font-size:16px;margin:0 0 10px}.field{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:10px 0}.field input[type=range]{grid-column:1/-1;width:100%;accent-color:#fff;cursor:pointer;appearance:none;-webkit-appearance:none;background:transparent}.field input[type=range]::-webkit-slider-runnable-track{height:5px;background:#64727d;border-radius:8px}.field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;margin-top:-6px;border-radius:50%;background:#fff;border:2px solid #dce5eb;box-shadow:0 0 0 2px #26343d}.field input[type=range]::-moz-range-track{height:5px;background:#64727d;border-radius:8px}.field input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#fff;border:2px solid #dce5eb}
@@ -74,6 +74,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .gas-control{background:#0b141b;border:1px solid #344653;border-radius:9px;padding:12px}.gas-control h3{font-size:14px;margin:0 0 8px}
 .gas-control .field{grid-template-columns:1fr auto;margin:8px 0}.gas-control input[type=range]{grid-column:1/-1;width:100%;accent-color:#fff}.gas-control input[type=number]{width:100px}
 .gas-status-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.gas-status-pill{font-size:11px;color:#c5d0d6;background:#17232c;border:1px solid #3b4b56;border-radius:20px;padding:5px 9px}
+.gas-ack-wrap{display:flex;align-items:center;gap:8px;margin-top:10px}.gas-ack-btn{font-weight:900}.gas-ack-btn:disabled{opacity:.45;cursor:not-allowed}
 @keyframes gasAlarmBlink{50%{opacity:.45;box-shadow:0 0 4px currentColor}}
 .gas-metric.gas-alarm-a1{background:#6b3d00!important;border:3px solid #ff9d00!important;animation:gasAlarmBlink .55s steps(2,start) infinite;color:#ff9d00}
 .gas-metric.gas-alarm-a2{background:#8e1010!important;border:3px solid #ff3030!important;animation:gasAlarmBlink .55s steps(2,start) infinite;color:#ff3030}
@@ -93,8 +94,8 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
  </div>
 </div>
 <div class="app">
- <header class="top"><div><div class="brand">SCOPE SUAP <span class="tag">SIMULATION PÉDAGOGIQUE</span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
- <nav class="module-switch" aria-label="Choix du simulateur"><button id="scopeModeBtn" class="active" type="button">▣ SCOPE</button><button id="gasModeBtn" type="button">◉ DÉTECTEUR 4 GAZ</button></nav>
+ <header class="top"><div><div class="brand">SIMULATEUR SP<span class="tag">SIMULATION PÉDAGOGIQUE</span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
+ <nav class="module-switch" aria-label="Choix du simulateur"><button id="scopeModeBtn" class="active" type="button">▣ MONITORING</button><button id="gasModeBtn" type="button">◉ DÉTECTEUR 4 GAZ</button></nav>
  <main id="monitorPage">
   <section class="screen">
    <div class="monitor-head"><span id="patientLabel">ADULTE · PATIENT SIMULÉ</span><span id="clock">--:--:--</span><span id="alarmText" class="alarm off">ALARME</span></div>
@@ -120,7 +121,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
     <article class="gas-metric co" id="gasCardCO"><div class="gas-name">CO — MONOXYDE DE CARBONE</div><div class="gas-value" id="gasValueCO">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdCO">A1 : 20 · A2 : 50 ppm</div></article>
     <article class="gas-metric h2s" id="gasCardH2S"><div class="gas-name">H₂S — HYDROGÈNE SULFURÉ</div><div class="gas-value" id="gasValueH2S">0</div><div class="gas-unit">ppm</div><div class="gas-threshold" id="gasThresholdH2S">A1 : 5 · A2 : 10 ppm</div></article>
    </div>
-   <div class="gas-status-row"><span class="gas-status-pill">CAPTEURS : SIMULÉS</span><span class="gas-status-pill">BATTERIE : 100 %</span><span class="gas-status-pill" id="gasAlarmStatus">ÉTAT : NORMAL</span></div>
+   <div class="gas-status-row"><span class="gas-status-pill">CAPTEURS : SIMULÉS</span><span class="gas-status-pill">BATTERIE : 100 %</span><span class="gas-status-pill" id="gasAlarmStatus">ÉTAT : NORMAL</span></div><div class="gas-ack-wrap" id="gasAlarmAckWrap"><button type="button" class="gas-ack-btn" id="gasAlarmAck" disabled>🔇 Acquitter l'alarme sonore</button><span class="muted" id="gasAlarmAckStatus">Aucune alarme sonore active.</span></div>
    <p class="gas-note">Simulation pédagogique uniquement. Les seuils affichés sont des exemples configurables, pas des seuils d'intervention ni une référence de sécurité. Ne pas utiliser pour une décision opérationnelle.</p>
   </section>
  </main>
@@ -188,6 +189,7 @@ $('chooseTrainee').onclick=()=>{sessionStorage.setItem('scopeRoleChosen','1');lo
 let sb=null,channel=null,room='',timer=null,history=[];
 let smoothTarget={fc:72,spo:98},lastTargetAt=0,lastSmoothRender=0,worseningTimer=null;
 let phase=0,audioEnabled=true,audioCtx=null,lastBeep=0,lastHeartBeat=0,flatOsc=null,flatGain=null,taHistory=[];
+let gasAlarmLastSignature="0000",gasAlarmAcked=false;
 const fmt=n=>Math.round(n);
 function pam(){return Math.round((state.sys+2*state.dia)/3)}
 function log(msg){state.events.unshift({t:new Date().toLocaleTimeString('fr-FR'),msg});state.events=state.events.slice(0,100);renderEvents();publish()}
@@ -432,6 +434,8 @@ function gasAlarmLevel(key){
  return 0;
 }
 function gasAlarmActive(){return ['o2','lie','co','h2s'].some(k=>gasAlarmLevel(k)>0)}
+function gasAlarmSignature(){return ['o2','lie','co','h2s'].map(k=>gasAlarmLevel(k)).join('')}
+function refreshGasAlarmAcknowledgement(){const sig=gasAlarmSignature();if(sig!==gasAlarmLastSignature){gasAlarmLastSignature=sig;gasAlarmAcked=false;}return sig}
 function renderGas(){
  const g={...gasDefaults,...(state.gas||{})},f=(v,d=0)=>Number(v).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
  $('gasValueO2').textContent=f(g.o2,1);$('gasValueLIE').textContent=f(g.lie);$('gasValueCO').textContent=f(g.co);$('gasValueH2S').textContent=f(g.h2s);
@@ -446,19 +450,22 @@ function renderGas(){
    if(level===2)card.classList.add('gas-alarm-a2');
    const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');if(n&&document.activeElement!==n)n.value=g[k];if(r)r.value=g[k];
  });
- $('gasAlarmStatus').textContent=gasAlarmActive()?'ÉTAT : ALARME':'ÉTAT : NORMAL';
+ const alarmSig=refreshGasAlarmAcknowledgement(); const alarmOn=alarmSig!=='0000'; $('gasAlarmStatus').textContent=alarmOn?'ÉTAT : ALARME':'ÉTAT : NORMAL'; const ackBtn=$('gasAlarmAck'),ackStatus=$('gasAlarmAckStatus'); if(ackBtn){ackBtn.disabled=!alarmOn||gasAlarmAcked; ackBtn.textContent=gasAlarmAcked?'🔇 Alarme sonore acquittée':'🔇 Acquitter l\'alarme sonore';} if(ackStatus)ackStatus.textContent=alarmOn?(gasAlarmAcked?'Le visuel reste actif tant que les valeurs sont hors plage.':'Alarme sonore active — acquitte le son si nécessaire.'):'Aucune alarme sonore active.';
  [['gasO2Low','lowO2'],['gasO2High','highO2'],['gasLIEA1','lieA1'],['gasLIEA2','lieA2'],['gasCOA1','coA1'],['gasCOA2','coA2'],['gasH2SA1','h2sA1'],['gasH2SA2','h2sA2']].forEach(([id,k])=>{if($(id)&&document.activeElement!==$(id))$(id).value=g[k]});
 }
 function beepGasAlarm(){
  if(currentModule!=='gas'||!audioEnabled||!audioCtx)return;
- const g={...gasDefaults,...(state.gas||{})};
- let level=0;['o2','lie','co','h2s'].forEach(k=>level=Math.max(level,gasAlarmLevel(k)));
- if(!level||Date.now()-lastBeep<2600)return;
+ const sig=refreshGasAlarmAcknowledgement();
+ if(sig==='0000')return;
+ if(role==='display'&&gasAlarmAcked)return;
+ if(Date.now()-lastBeep<2600)return;
+ const levels=sig.split('').map(Number),level=Math.max(...levels);
  const now=audioCtx.currentTime;
  if(level===1){ shortTone(920,.12,.055,now); shortTone(1240,.12,.055,now+.18); }
  else { shortTone(520,.16,.06,now); shortTone(760,.16,.06,now+.20); shortTone(520,.16,.06,now+.40); }
  lastBeep=Date.now();
 }
+$('gasAlarmAck').onclick=()=>{if(role!=='display')return;const sig=refreshGasAlarmAcknowledgement();if(sig==='0000')return;gasAlarmAcked=true;lastBeep=Date.now();renderGas()};
 function setModule(mode){
  currentModule=mode;$('scopeModeBtn').classList.toggle('active',mode==='scope');$('gasModeBtn').classList.toggle('active',mode==='gas');
  $('monitorPage').classList.toggle('hidden',mode!=='scope');$('gasPage').classList.toggle('hidden',mode!=='gas');
