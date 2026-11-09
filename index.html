@@ -426,27 +426,47 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   <section class="panel"><h2>Configuration du patient</h2><div class="field"><label>Mode patient</label><select id="patient"><option value="adulte">Adulte</option><option value="pediatrie">Pédiatrie</option></select></div><div class="field"><label>Identifiant affiché</label><input id="patientName" type="text" value="PATIENT SIMULÉ"></div><p class="muted">Le mode pédiatrie adapte les plages de référence affichées dans l'interface, sans validation clinique automatique.</p></section>
   <section class="panel"><h2>Connexion formateur / stagiaire</h2><div class="field"><label>Code de session</label><input id="roomCode" type="text" maxlength="8" placeholder="Ex. 482731"></div><div class="row"><button class="primary" id="connectBtn">Connecter / rejoindre</button><button id="newCodeBtn">Nouveau code</button></div><div class="field"><label>URL Supabase</label><input id="sbUrl" type="text" placeholder="https://xxxx.supabase.co"></div><div class="field"><label>Clé anon / publishable</label><input id="sbKey" type="text" placeholder="Clé publique du projet"></div><button id="saveConfig">Enregistrer la configuration</button><p class="danger-note">La clé publique anon est destinée au navigateur. Ne place jamais de clé service_role ici. La V1 utilise une table publique de simulation : ne saisis aucune donnée nominative ou médicale réelle. Le code de session sert à rejoindre une simulation, ce n'est pas une authentification sécurisée.</p></section>
  </div></main>
- <section id="controlPanel" class="layout hidden" style="margin-top:12px">
-  <section class="panel"><h2>Pilotage formateur — constantes</h2>
-   <div class="row"><button type="button" class="primary" id="startScenarioClock">▶ Démarrer / reprendre le compteur</button><button type="button" id="resetScenarioClock">↺ Remise à zéro</button></div>
-   <p class="muted" id="scenarioClockStatus">Compteur de mise en situation à l’arrêt.</p>
-   <div id="sliders"></div>
-   <div class="field"><label>Tension artérielle (mmHg)</label><div class="row"><label>TAS <input id="manualSys" type="number" min="0" max="300" value="120" aria-label="Tension artérielle systolique"></label><label>TAD <input id="manualDia" type="number" min="0" max="200" value="80" aria-label="Tension artérielle diastolique"></label><button class="primary" id="applyTA">Appliquer T.A.</button></div><div class="next-ta-box"> Tension prévu <strong id="nextTAValue">120/80 mmHg</strong><br><span class="muted"></span></div></div>
-   <div class="field"><label>Intensité du signal SIQ (1 à 5)</label><div class="row"><select id="siqSettingControl"><option value="1">Niveau 1 : Signal très faible</option><option value="2">Niveau 2 : Signal faible</option><option value="3">Niveau 3 : Signal moyen</option><option value="4">Niveau 4 : Signal fort</option><option value="5">Niveau 5 : Signal maximal</option></select></div></div>
-   <div class="field"><label>Indice de perfusion (I.P.) — 0 à 5 %</label><div class="row"><label>Borne basse (%) <input id="piTrendFrom" type="number" min="0" max="5" step="0.1" value="3.5"></label><label>Borne haute (%) <input id="piTrendTo" type="number" min="0" max="5" step="0.1" value="5.00"></label><strong id="piControlValue">1,0 → 1,0 %</strong></div><small class="muted"></small></div>
-   <div id="variationRanges"></div>
-   <div class="field"><label>HbCO (0 à 100 %)</label><input id="hbcoControl" type="number" min="0" max="100" step="1" value="0"></div>
-   <div class="field"><label>Glycémie capillaire (g/L)</label><input id="glyControl" type="number" min="0" max="10" step="0.01" value="0.00"></div> <div class="row"><button type="button" class="primary" id="validateGly">Valider</button><button type="button" id="resetGly">Réinitialiser</button></div>
-   <div class="field"><label>Température corporelle (°C)</label><input id="tempControl" type="number" min="0" max="45" step="0.1" value="0.0"></div>
-   <div class="row"><button type="button" class="primary" id="validateTemp">Valider</button><button type="button" id="resetTemp">Réinitialiser</button></div>
-   <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> Activer / désactiver</label></div>
-   <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> Activer / désactiver</label></div>
-   <div class="field"><label>Évolution des constantes</label>
-    <div class="row"><label>FC <select id="fcDirection"><option value="none">Ne pas modifier</option><option value="down">Baisse</option><option value="up">Augmentation</option></select></label>
-    <label>SpO₂ <select id="spoDirection"><option value="none">Ne pas modifier</option><option value="up">Augmentation</option><option value="down">Baisse</option></select></label></div>
+  <section id="controlPanel" class="layout hidden" style="margin-top:12px;grid-template-columns:1fr;">
+  <section class="panel" style="width:100%">
+   <h2>Pilotage formateur — Réglages et Scénarios</h2>
+   <style>
+    .trainer-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;border-bottom:1px solid #293944;padding-bottom:10px}
+    .trainer-tabs button{flex:1;min-width:140px;padding:10px 12px;font-weight:700;font-size:13px;background:#18242d;border:1px solid #344653;color:#c5d0d6;border-radius:8px;cursor:pointer}
+    .trainer-tabs button.active{background:#12683c;border-color:#218c56;color:#fff;box-shadow:0 0 10px #12683c66}
+    .trainer-tab-content{display:block}
+    .trainer-tab-content.hidden{display:none!important}
+   </style>
+   <div class="trainer-tabs" role="tablist" aria-label="Onglets formateur">
+    <button type="button" class="trainer-tab-btn active" data-trainer-tab="tTabConst">1. Constantes</button>
+    <button type="button" class="trainer-tab-btn" data-trainer-tab="tTabVar">2. Variation constantes</button>
+    <button type="button" class="trainer-tab-btn" data-trainer-tab="tTabScenarios">3. Scénarios Pédagogiques</button>
+    <button type="button" class="trainer-tab-btn" data-trainer-tab="tTabAlarms">4. Alarmes &amp; seuils</button>
    </div>
-   <div class="row"><button id="worsenBtn">⚠ Déclenchement progressive</button><button class="warn" id="resetAllBtn">↺ Réinitialiser toutes les valeurs</button></div>
-   <div class="field"><label>Scénarios Cliniques</label><select id="condition"><option value="normal">MSP Personnalisé</option><option value="sepsis">Sepsis avec aggravation</option><option value="hemorrhage">Hémorragie / choc hypovolémique</option><option value="cardiogenic">Choc cardiogénique</option><option value="respiratory">Détresse respiratoire aiguë</option><option value="asthma">Crise d’asthme sévère</option><option value="copd">Exacerbation BPCO</option><option value="pneumonia">Pneumonie avec hypoxémie</option><option value="pe">Embolie pulmonaire</option><option value="anaphylaxis">Anaphylaxie</option><option value="acs">Syndrome coronarien aigu</option><option value="stroke">AVC avec aggravation neurologique</option><option value="decomp">Décompensation cardiaque</option><option value="heat_exhaustion">Épuisement lié à la chaleur</option><option value="heatstroke">Coup de chaleur / insolation</option><option value="hypothermia_moderate">Hypothermie modérée</option><option value="hypothermia_severe">Hypothermie grave / sévère</option><option value="alcohol">Intoxication alcoolique</option><option value="opioid">Intoxication morphinique</option><option value="drugs">Intoxication par autres drogues</option><option value="co">Intoxication au monoxyde de carbone (CO)</option><option value="hypoglycemia">Hypoglycémie grave</option><option value="ketoacidosis">Hyperglycémie avec acidocétose</option><optgroup label="Malaises et pertes de connaissance">
+
+   <!-- ONGLET 1: CONSTANTES -->
+   <div id="tTabConst" class="trainer-tab-content">
+    <div id="sliders"></div>
+    <div class="field"><label>Tension artérielle (mmHg)</label><div class="row"><label>TAS <input id="manualSys" type="number" min="0" max="300" value="120" aria-label="Tension artérielle systolique"></label><label>TAD <input id="manualDia" type="number" min="0" max="200" value="80" aria-label="Tension artérielle diastolique"></label><button class="primary" id="applyTA">Appliquer T.A.</button></div><div class="next-ta-box"> Tension prévu <strong id="nextTAValue">120/80 mmHg</strong><br><span class="muted"></span></div></div>
+    <div class="field"><label>HbCO (0 à 100 %)</label><input id="hbcoControl" type="number" min="0" max="100" step="1" value="0"></div>
+    <div class="field"><label>Glycémie capillaire (g/L)</label><input id="glyControl" type="number" min="0" max="10" step="0.01" value="0.00"></div> <div class="row"><button type="button" class="primary" id="validateGly">Valider</button><button type="button" id="resetGly">Réinitialiser</button></div>
+    <div class="field"><label>Température corporelle (°C)</label><input id="tempControl" type="number" min="0" max="45" step="0.1" value="0.0"></div>
+    <div class="row"><button type="button" class="primary" id="validateTemp">Valider</button><button type="button" id="resetTemp">Réinitialiser</button></div>
+   </div>
+
+   <!-- ONGLET 2: VARIATION CONSTANTES -->
+   <div id="tTabVar" class="trainer-tab-content hidden">
+    <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> Activer / désactiver</label></div>
+    <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> Activer / désactiver</label></div>
+    <div id="variationRanges"></div>
+    <div class="field"><label>Indice de perfusion (I.P.) — 0 à 5 %</label><div class="row"><label>Borne basse (%) <input id="piTrendFrom" type="number" min="0" max="5" step="0.1" value="3.5"></label><label>Borne haute (%) <input id="piTrendTo" type="number" min="0" max="5" step="0.1" value="5.00"></label><strong id="piControlValue">1,0 → 1,0 %</strong></div><small class="muted"></small></div>
+    <div class="field"><label>Intensité du signal SIQ (1 à 5)</label><div class="row"><select id="siqSettingControl"><option value="1">Niveau 1 : Signal très faible</option><option value="2">Niveau 2 : Signal faible</option><option value="3">Niveau 3 : Signal moyen</option><option value="4">Niveau 4 : Signal fort</option><option value="5">Niveau 5 : Signal maximal</option></select></div></div>
+   </div>
+
+   <!-- ONGLET 3: SCÉNARIOS PÉDAGOGIQUES -->
+   <div id="tTabScenarios" class="trainer-tab-content hidden">
+    <div class="row" style="margin-bottom:10px"><button type="button" class="primary" id="startScenarioClock">▶ Démarrer / reprendre le compteur</button><button type="button" id="resetScenarioClock">↺ Remise à zéro</button></div>
+    <p class="muted" id="scenarioClockStatus" style="margin-bottom:12px">Compteur de mise en situation à l’arrêt.</p>
+    <div class="field"><label>Scénarios Cliniques</label><select id="condition"><option value="normal">MSP Personnalisé</option><option value="sepsis">Sepsis avec aggravation</option><option value="hemorrhage">Hémorragie / choc hypovolémique</option><option value="cardiogenic">Choc cardiogénique</option><option value="respiratory">Détresse respiratoire aiguë</option><option value="asthma">Crise d’asthme sévère</option><option value="copd">Exacerbation BPCO</option><option value="pneumonia">Pneumonie avec hypoxémie</option><option value="pe">Embolie pulmonaire</option><option value="anaphylaxis">Anaphylaxie</option><option value="acs">Syndrome coronarien aigu</option><option value="stroke">AVC avec aggravation neurologique</option><option value="decomp">Décompensation cardiaque</option><option value="heat_exhaustion">Épuisement lié à la chaleur</option><option value="heatstroke">Coup de chaleur / insolation</option><option value="hypothermia_moderate">Hypothermie modérée</option><option value="hypothermia_severe">Hypothermie grave / sévère</option><option value="alcohol">Intoxication alcoolique</option><option value="opioid">Intoxication morphinique</option><option value="drugs">Intoxication par autres drogues</option><option value="co">Intoxication au monoxyde de carbone (CO)</option><option value="hypoglycemia">Hypoglycémie grave</option><option value="ketoacidosis">Hyperglycémie avec acidocétose</option><optgroup label="Malaises et pertes de connaissance">
 <option value="syncope_vasovagal">Malaise vagal / syncope</option>
 <option value="syncope_cardiac">Malaise avec suspicion d’origine cardiaque</option>
 <option value="malaise_hypoglycemia">Malaise hypoglycémique</option>
@@ -470,20 +490,29 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 <option value="asthma_exhaustion">Asthme avec épuisement respiratoire</option>
 <option value="diabetic_decomp">Décompensation diabétique</option>
 </optgroup></select></div>
-   <div id="clinicalInfo" class="muted" style="padding:8px 10px;background:#0a141b;border:1px solid #293944;border-radius:8px;margin:8px 0">État stable : variations discrètes autour des constantes de référence.</div>
-   <div class="row"><button class="warn" id="cardiacArrestBtn">ARRÊT CARDIAQUE</button></div>
-   <p class="muted">Shut down de votre MSP - FC 0 / SPO2 0</p>
-   <h3>NOTE PATIENT</h3><textarea id="controlNotes" rows="3" placeholder="Informations à transmettre aux stagiaires…" style="width:100%;background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:10px;resize:vertical"></textarea>
+    <div id="clinicalInfo" class="muted" style="padding:8px 10px;background:#0a141b;border:1px solid #293944;border-radius:8px;margin:8px 0">État stable : variations discrètes autour des constantes de référence.</div>
+    <div class="row" style="margin:12px 0"><button class="warn" id="cardiacArrestBtn" style="width:100%;padding:12px">ARRÊT CARDIAQUE</button></div>
+    <p class="muted">Shut down de votre MSP - FC 0 / SPO2 0</p>
+    <div class="field" style="margin-top:14px"><label>Évolution des constantes</label>
+     <div class="row"><label>FC <select id="fcDirection"><option value="none">Ne pas modifier</option><option value="down">Baisse</option><option value="up">Augmentation</option></select></label>
+     <label>SpO₂ <select id="spoDirection"><option value="none">Ne pas modifier</option><option value="up">Augmentation</option><option value="down">Baisse</option></select></label></div>
+    </div>
+    <div class="row"><button id="worsenBtn" type="button">⚠ Déclenchement progressive</button><button class="warn" id="resetAllBtn" type="button">↺ Réinitialiser toutes les valeurs</button></div>
+   </div>
+
+   <!-- ONGLET 4: ALARMES & SEUILS -->
+   <div id="tTabAlarms" class="trainer-tab-content hidden">
+    <div class="field"><label>FC — seuil bas / haut (bpm)</label><div class="row"><input id="lowFC" type="number" value="60" min="0" max="250"><input id="highFC" type="number" value="100" min="1" max="300"></div></div>
+    <div class="field"><label>TA systolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowSys" type="number" value="90" min="0" max="300"><input id="highSys" type="number" value="140" min="1" max="350"></div></div>
+    <div class="field"><label>TA diastolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowDia" type="number" value="70" min="0" max="200"><input id="highDia" type="number" value="90" min="1" max="250"></div></div>
+    <div class="field"><label>SpO₂ — seuil bas / haut (%)</label><div class="row"><input id="lowSpo" type="number" value="94" min="0" max="100"><input id="highSpo" type="number" value="100" min="1" max="100"></div></div>
+    <div class="field"><label>HbCO — seuil bas (%)</label><input id="lowHbco" type="number" min="0" max="100" value="10"></div>
+    <div class="row" style="margin-bottom:14px"><button id="applyLimits">Appliquer seuils</button><label><input id="soundToggle" type="checkbox" checked> Son ON/OFF</label><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button></div>
+    <h3>NOTE PATIENT</h3><textarea id="controlNotes" rows="3" placeholder="Informations à transmettre aux stagiaires…" style="width:100%;background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:10px;resize:vertical"></textarea>
+   </div>
   </section>
-  <section class="panel"><h2>Alarmes & seuils</h2>
-   <div class="field"><label>FC — seuil bas / haut (bpm)</label><div class="row"><input id="lowFC" type="number" value="60" min="0" max="250"><input id="highFC" type="number" value="100" min="1" max="300"></div></div>
-   <div class="field"><label>TA systolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowSys" type="number" value="90" min="0" max="300"><input id="highSys" type="number" value="140" min="1" max="350"></div></div>
-   <div class="field"><label>TA diastolique — seuil bas / haut (mmHg)</label><div class="row"><input id="lowDia" type="number" value="70" min="0" max="200"><input id="highDia" type="number" value="90" min="1" max="250"></div></div>
-   <div class="field"><label>SpO₂ — seuil bas / haut (%)</label><div class="row"><input id="lowSpo" type="number" value="94" min="0" max="100"><input id="highSpo" type="number" value="100" min="1" max="100"></div></div>
-   <div class="field"><label>HbCO — seuil bas (%)</label><input id="lowHbco" type="number" min="0" max="100" value="10"></div>
-<div class="row"><button id="applyLimits">Appliquer seuils</button><label><input id="soundToggle" type="checkbox" checked> Son ON/OFF</label><button id="testAlarmBtn">Tester l’alarme (3 + 2 tons)</button></div>
-  </section>
-  <section class="panel hidden" id="gasControlPanel">
+ </section>
+ <section class="panel hidden" id="gasControlPanel">
    <h2>Pilotage FORMATEUR — Détecteur 4 gaz</h2><p class="muted">Faites évoluer votre MSP</p>
    <div class="gas-control-grid">
     <div class="gas-control"><h3>O₂ — Oxygène (% vol)</h3><div class="field"><label>Valeur</label><input id="gasO2Input" type="number" min="0" max="100" step=".1" value="20.9"></div><input id="gasO2Range" type="range" min="0" max="100" step=".1" value="20.9"><div class="field"><label>Seuil bas / haut</label><div class="row"><input id="gasO2Low" type="number" step=".1" value="19"><input id="gasO2High" type="number" step=".1" value="23"></div></div></div>
@@ -987,6 +1016,17 @@ function beepGasAlarm(){
  lastBeep=Date.now();
 }
 $('gasAlarmAck').onclick=()=>{if(role!=='display')return;const sig=refreshGasAlarmAcknowledgement();if(sig==='0000')return;gasAlarmAcked=true;lastBeep=Date.now();renderGas()};
+
+document.querySelectorAll('.trainer-tab-btn').forEach(btn => {
+ btn.addEventListener('click', () => {
+  document.querySelectorAll('.trainer-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.trainer-tab-content').forEach(c => c.classList.add('hidden'));
+  btn.classList.add('active');
+  const targetId = btn.dataset.trainerTab;
+  if($(targetId)) $(targetId).classList.remove('hidden');
+ });
+});
+
 function setModule(mode){
  currentModule=mode;$('scopeModeBtn').classList.toggle('active',mode==='scope');$('gasModeBtn').classList.toggle('active',mode==='gas');
  $('monitorPage').classList.toggle('hidden',mode!=='scope');$('gasPage').classList.toggle('hidden',mode!=='gas');
