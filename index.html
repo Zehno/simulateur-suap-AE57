@@ -175,7 +175,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 }
 
 /* Interface LCD portable du détecteur 4 gaz — stagiaire uniquement */
-.trainee-gas-ui #gasScreen{
+.trainee-gas-ui #gasScreen, .trainee-gas-ui #coScreen{
   max-width:560px;
   margin:14px auto;
   padding:0;
@@ -328,7 +328,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   font-size:9px;
 }
 @media(max-width:650px){
-  .trainee-gas-ui #gasScreen{max-width:100%;margin:8px auto;border-width:6px;border-radius:18px}
+  .trainee-gas-ui #gasScreen, .trainee-gas-ui #coScreen{max-width:100%;margin:8px auto;border-width:6px;border-radius:18px}
   .trainee-gas-ui .gas-head{min-height:65px;padding:12px 14px;font-size:16px}
   .trainee-gas-ui .gas-grid{margin:0 8px;padding:3px 8px}
   .trainee-gas-ui .gas-metric{min-height:88px;padding:9px 5px;gap:4px}
@@ -388,146 +388,100 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .trainee-gas-ui .gas-gauge-fill{background:#17260c!important;}
 
 
-
-/* Styles Réalistes Détecteur Mono-Gaz CO Dräger (Formateur vs Stagiaire) */
-
-/* Formateur : Texture Carte (Capture d'écran 1) */
-.gas-metric.co-card-exact {
-  max-width: 650px;
+/* Styles Réalistes Détecteur Mono-Gaz CO Dräger Pac 6500/8000 */
+.draeger-pac-body {
+  max-width: 320px;
   margin: 15px auto;
-  background: #301d1d !important;
-  border: 1.5px solid #854141 !important;
-  border-radius: 16px !important;
-  padding: 22px 26px !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
-}
-.gas-metric.co-card-exact .gas-name {
-  color: #ff7777 !important;
-  font-size: 15px !important;
-  font-weight: 850 !important;
-  letter-spacing: 0.05em !important;
-}
-.gas-metric.co-card-exact .gas-value {
-  color: #ff7777 !important;
-  font-size: 62px !important;
-  font-weight: 850 !important;
-  margin: 12px 0 6px !important;
-}
-.gas-metric.co-card-exact .gas-unit {
-  color: #b5c2ca !important;
-  font-size: 14px !important;
-}
-.gas-metric.co-card-exact .gas-threshold {
-  color: #c5d0d6 !important;
-  font-size: 12px !important;
-  margin-top: 10px !important;
-}
-
-/* Stagiaire : Boîtier Réaliste Dräger Pac (Image 2) */
-.draeger-pac-device {
-  max-width: 310px;
-  margin: 10px auto;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.pac-metal-loop {
-  width: 90px;
-  height: 38px;
-  border: 6px solid #8e99a2;
-  border-bottom: 0;
-  border-radius: 45px 45px 0 0;
-  background: transparent;
-  margin-bottom: -14px;
-  z-index: 1;
-}
-.pac-top-grill {
-  width: 140px;
-  height: 34px;
-  background: linear-gradient(180deg, #b0b8bf, #6e7880);
-  border-radius: 12px 12px 0 0;
-  border: 3px solid #1a2126;
-  border-bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2;
-  box-shadow: inset 0 2px 4px rgba(255,255,255,0.5);
-}
-.pac-grill-slits {
-  display: flex;
-  gap: 8px;
-  height: 18px;
-  align-items: center;
-}
-.pac-grill-slits span {
-  width: 6px;
-  height: 100%;
-  background: #11181c;
-  border-radius: 3px;
-  box-shadow: inset 0 1px 2px #000;
-}
-.pac-main-case {
-  width: 290px;
-  background: #1b2329;
-  border: 4px solid #0d1216;
-  border-radius: 45px;
-  padding: 16px 14px 22px;
-  box-shadow: inset 0 0 0 2px #34424d, 0 16px 36px rgba(0,0,0,0.8);
+  padding: 22px 18px;
+  background: linear-gradient(145deg, #f5b000, #d49200 45%, #b87c00);
+  border: 4px solid #332200;
+  border-radius: 28px;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 14px 30px rgba(0,0,0,0.7);
   position: relative;
 }
-.pac-main-case::before, .pac-main-case::after {
+.draeger-pac-body::before {
   content: "";
   position: absolute;
-  top: 70px;
-  width: 10px;
-  height: 120px;
-  background: repeating-linear-gradient(180deg, #0d1216, #0d1216 8px, #26333c 8px, #26333c 14px);
-  border-radius: 5px;
+  top: 10px;
+  left: 20px;
+  right: 20px;
+  height: 6px;
+  background: #222;
+  border-radius: 3px;
 }
-.pac-main-case::before { left: -12px; }
-.pac-main-case::after { right: -12px; }
-
-.pac-lcd-bezel {
-  background: #0f1519;
-  border: 3px solid #2b3740;
-  border-radius: 16px;
-  padding: 10px;
-  box-shadow: inset 0 3px 8px rgba(0,0,0,0.9);
-}
-.pac-lcd-screen {
-  background: linear-gradient(145deg, #a4be8d, #8ba873);
-  border: 3px solid #28361e;
-  border-radius: 8px;
-  padding: 8px 12px;
-  color: #0d1a05;
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
-}
-.pac-lcd-header {
+.pac-top-branding {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
-  font-weight: 850;
+  color: #111;
+  font-weight: 900;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+.pac-logo {
+  font-size: 22px;
+  font-family: Arial, sans-serif;
+  letter-spacing: -0.03em;
+}
+.pac-model {
+  font-size: 11px;
+  background: #111;
+  color: #f5b000;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-weight: 800;
+}
+.pac-sensor-cap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1a1a1a;
+  border: 2px solid #000;
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 14px;
+}
+.pac-sensor-grille {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #444 30%, #111 80%);
+  border: 2px solid #555;
+  box-shadow: inset 0 0 6px #000;
+}
+.pac-gas-label {
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.05em;
+  font-family: ui-monospace, monospace;
+}
+.pac-lcd-screen {
+  background: linear-gradient(145deg, #a4be8d, #8ba873);
+  border: 4px solid #28361e;
+  border-radius: 12px;
+  padding: 12px;
+  color: #0d1a05;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.3);
+}
+.pac-lcd-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 800;
   border-bottom: 1px dashed #4b5e3d;
   padding-bottom: 4px;
 }
-.pac-lcd-gasname {
-  font-size: 16px;
-  font-weight: 900;
-  letter-spacing: 0.05em;
-}
-.pac-lcd-center {
+.pac-lcd-main {
   display: flex;
   align-items: baseline;
   justify-content: center;
   gap: 6px;
-  margin: 12px 0 6px;
+  margin: 10px 0;
 }
 .pac-co-value {
-  font-size: 62px;
+  font-size: 56px;
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.05em;
@@ -536,65 +490,44 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 }
 .pac-co-unit {
   font-size: 16px;
-  font-weight: 850;
-}
-.pac-lcd-footer {
-  text-align: center;
-  font-size: 11px;
   font-weight: 800;
 }
-.pac-white-face {
-  background: linear-gradient(180deg, #e8ecef, #c5ccd3);
-  border-radius: 0 0 32px 32px;
-  margin-top: 10px;
-  padding: 14px 10px 12px;
-  border: 2px solid #9aa5b0;
+.pac-lcd-bottom {
   text-align: center;
-  box-shadow: inset 0 2px 4px #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
 }
 .pac-buttons-row {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 10px;
+  gap: 15px;
+  margin-top: 16px;
 }
-.pac-round-btn {
-  width: 52px;
-  height: 52px;
-  border-radius: 50% !important;
-  border: 3px solid #1a2329 !important;
+.pac-buttons-row button {
+  flex: 1;
+  height: 44px;
+  background: #222;
+  border: 2px solid #000;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 900;
+  box-shadow: 0 4px 0 #000;
+}
+.pac-buttons-row button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #000;
+}
+.pac-lcd-screen.co-alarm-a1 {
+  background: linear-gradient(145deg, #e69d24, #c97e08) !important;
+  color: #000 !important;
+  animation: gasAlarmBlink .55s steps(2,start) infinite;
+}
+.pac-lcd-screen.co-alarm-a2 {
+  background: linear-gradient(145deg, #d63030, #9e1b1b) !important;
   color: #fff !important;
-  font-weight: 900 !important;
-  font-size: 16px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.4) !important;
-  padding: 0 !important;
+  animation: gasAlarmBlink .55s steps(2,start) infinite;
 }
-.pac-round-btn:active {
-  transform: translateY(2px) scale(0.96) !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.4) !important;
-}
-.btn-blue {
-  background: linear-gradient(145deg, #2b93d4, #18689c) !important;
-}
-.btn-green {
-  background: linear-gradient(145deg, #62b32b, #3e7e17) !important;
-}
-.pac-brand-logo {
-  font-size: 22px;
-  font-weight: 900;
-  color: #0b2447;
-  font-family: Arial, sans-serif;
-  letter-spacing: -0.04em;
-  line-height: 1;
-}
-.pac-gas-type-badge {
-  font-size: 15px;
-  font-weight: 900;
-  color: #111;
-  margin-top: 2px;
-}
+
 </style>
 </head>
 <body>
@@ -640,57 +573,27 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   </section>
  
  <main id="coPage" class="hidden">
-  <section class="co-screen" id="coScreen">
-   <!-- Boîtier Réaliste Dräger Pac (Stagiaire - Image 2) -->
-   <div class="draeger-pac-device" id="coTraineeDevice">
-    <div class="pac-metal-loop"></div>
-    <div class="pac-top-grill">
-     <div class="pac-grill-slits"><span></span><span></span><span></span><span></span></div>
-    </div>
-    <div class="pac-main-case">
-     <div class="pac-lcd-bezel">
-      <div class="pac-lcd-screen" id="coPacLcd">
-       <div class="pac-lcd-header">
-        <span class="pac-lcd-bt">⚡ 🛈</span>
-        <span class="pac-lcd-gasname">CO</span>
-        <span class="pac-lcd-icons">🔋</span>
-       </div>
-       <div class="pac-lcd-center">
-        <span class="pac-co-value" id="coSingleValue">0</span>
-        <span class="pac-co-unit">ppm</span>
-       </div>
-       <div class="pac-lcd-footer">
-        <span class="pac-alarm-state" id="coSingleAlarmState">PPM CO</span>
-       </div>
-      </div>
-     </div>
-     <div class="pac-white-face">
-      <div class="pac-buttons-row">
-       <button type="button" class="pac-round-btn btn-blue" id="coAckBtn">▼</button>
-       <button type="button" class="pac-round-btn btn-green" id="coOkBtn">OK</button>
-      </div>
-      <div class="pac-brand-logo">Dräger</div>
-      <div class="pac-gas-type-badge">CO</div>
-     </div>
-    </div>
-   </div>
-
-   <!-- Carte Formateur (Formateur - Capture d'écran 1) -->
-   <div class="co-trainer-card-preview hidden" id="coTrainerCard">
-    <article class="gas-metric co co-card-exact">
+  <section class="gas-screen" id="coScreen">
+   <div class="gas-head"><span>DÉTECTEUR MONO-GAZ CO</span><span class="gas-live">● SIMULATION</span></div>
+   <div class="gas-grid" style="grid-template-columns:1fr;">
+    <article class="gas-metric co" id="coCardMetric" style="min-height:140px;">
      <div class="gas-name">CO — MONOXYDE DE CARBONE</div>
-     <div class="gas-value" id="coTrainerCardValue">0</div>
+     <div class="gas-value" id="coSingleValue">0</div>
      <div class="gas-unit">ppm</div>
-     <div class="gas-gauge-wrap"><div class="gas-gauge-fill" id="coTrainerCardGauge" style="width:0%"></div></div>
-     <div class="gas-threshold" id="coTrainerCardThreshold">A1 : 20 · A2 : 50 ppm</div>
+     <div class="gas-gauge-wrap"><div class="gas-gauge-fill" id="coGauge" style="width:0%"></div></div>
+     <div class="gas-threshold" id="coThreshold">A1 : 20 · A2 : 50 ppm</div>
     </article>
    </div>
-
-   <div class="co-ack-wrap" style="text-align:center;margin-top:16px;">
-    <button type="button" class="gas-ack-btn" id="coAlarmAckBtn" disabled>🔇 Acquitter l'alarme sonore CO</button>
-    <p class="muted" id="coAlarmAckStatus" style="margin-top:6px;">Aucune alarme CO active.</p>
+   <div class="gas-status-row">
+    <span class="gas-status-pill">CAPTEUR : CO SIMULÉ</span>
+    <span class="gas-status-pill">BATTERIE : 100 %</span>
+    <span class="gas-status-pill" id="coAlarmStatus">ÉTAT : NORMAL</span>
    </div>
-   <p class="gas-note" style="text-align:center;margin-top:10px;">SIMULATEUR PÉDAGOGIQUE — Monoxyde de Carbone (CO) — Dräger Pac Series</p>
+   <div class="gas-ack-wrap" id="coAlarmAckWrap">
+    <button type="button" class="gas-ack-btn" id="coAlarmAckBtn" disabled>🔇 Acquitter l'alarme sonore CO</button>
+    <span class="muted" id="coAlarmAckStatus">Aucune alarme sonore CO active.</span>
+   </div>
+   <p class="gas-note">SIMULATEUR PÉDAGOGIQUE — Monoxyde de Carbone (CO) — Dräger Pac Series</p>
   </section>
  </main>
 
@@ -951,38 +854,41 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   </section>
 
  <section class="panel hidden" id="coControlPanel">
-   <h2>Pilotage FORMATEUR — Détecteur Mono-Gaz CO Dräger Pac</h2>
-   <p class="muted">Réglage indépendant du Monoxyde de Carbone (CO)</p>
-   <div class="gas-control" style="max-width:600px;margin:0 auto 15px;">
-    <h3>CO — Monoxyde de carbone (ppm)</h3>
-    <div class="field"><label>Valeur directe (ppm)</label><input id="coSingleInput" type="number" min="0" max="2000" value="0"></div>
-    <input id="coSingleRange" type="range" min="0" max="2000" value="0">
-    <div class="field"><label>Seuils d'alarme A1 / A2 (ppm)</label>
-     <div class="row">
-      <label>A1 (Avertissement) <input id="coSingleA1" type="number" min="0" max="2000" value="20"></label>
-      <label>A2 (Danger) <input id="coSingleA2" type="number" min="0" max="2000" value="50"></label>
+   <h2>Pilotage FORMATEUR — Détecteur Mono-Gaz CO Dräger</h2>
+   <p class="muted">Faites évoluer votre MSP pour le Monoxyde de Carbone</p>
+   <div class="gas-control-grid" style="grid-template-columns:1fr;max-width:650px;margin:0 auto;">
+    <div class="gas-control">
+     <h3>CO — Monoxyde de carbone (ppm)</h3>
+     <div class="field"><label>Valeur</label><input id="coSingleInput" type="number" min="0" max="2000" value="0"></div>
+     <input id="coSingleRange" type="range" min="0" max="2000" value="0">
+     <div class="field"><label>A1 / A2</label>
+      <div class="row">
+       <input id="coSingleA1" type="number" min="0" max="2000" value="20">
+       <input id="coSingleA2" type="number" min="0" max="2000" value="50">
+      </div>
      </div>
     </div>
    </div>
-   <div class="gas-evolution" style="max-width:600px;margin:0 auto;">
-    <h3>Évolution progressive du CO</h3>
-    <p class="muted">Simulez la montée ou baisse progressive du CO dans un local.</p>
+   <div class="gas-evolution" id="coEvolution" style="max-width:650px;margin:15px auto 0;">
+    <h3>Évolution du CO — progression dans la pièce</h3>
+    <p class="muted">Choisissez un sens d’évolution, puis <strong>DÉMARRER</strong>. Le formateur peut arrêter l’évolution à tout moment. Les valeurs sont transmises au stagiaire en temps réel.</p>
     <div class="gas-evo-panel">
      <div class="gas-evo-current" id="coSingleEvoCurrent">CO · 0 ppm</div>
      <div class="gas-evo-actions">
       <button type="button" id="coSingleEvoDown">↘ NÉGATIVE</button>
       <button type="button" id="coSingleEvoUp" class="primary">↗ POSITIVE</button>
-      <label>Pas / sec <input id="coSingleEvoStep" type="number" min="1" step="1" value="5"></label>
+      <label>Pas / seconde <input id="coSingleEvoStep" type="number" min="1" step="1" value="5"></label>
       <button type="button" class="primary" id="coSingleEvoStart">▶ DÉMARRER</button>
-      <button type="button" class="warn" id="coSingleEvoStop">■ ARRÊTER</button>
+      <button type="button" class="warn" id="coSingleEvoStop" disabled>■ ARRÊTER</button>
      </div>
      <div class="gas-evo-status" id="coSingleEvoStatus">Évolution arrêtée</div>
     </div>
    </div>
-   <div class="row" style="justify-content:center;margin-top:15px;">
+   <div class="row" style="margin-top:12px;justify-content:center;">
     <button class="primary" id="applyCoSingleValues">Appliquer la valeur CO</button>
-    <button id="resetCoSingleValues">Réinitialiser à 0 ppm</button>
+    <button id="resetCoSingleValues">Réinitialiser le détecteur CO</button>
    </div>
+   <p class="danger-note" style="text-align:center;margin-top:10px;">Seuils pédagogiques d'exemple, à adapter au scénario.</p>
  </section>
 
  </section>
@@ -1508,16 +1414,15 @@ function renderCoSingle() {
   const a2 = Number(state.gas?.coA2 ?? coSingleState.a2 ?? 50);
   
   if ($('coSingleValue')) $('coSingleValue').textContent = Math.round(v);
-  if ($('coTrainerCardValue')) $('coTrainerCardValue').textContent = Math.round(v);
-  if ($('coTrainerCardGauge')) $('coTrainerCardGauge').style.width = (Math.min(2000, Math.max(0, v)) / 2000 * 100) + '%';
-  if ($('coTrainerCardThreshold')) $('coTrainerCardThreshold').textContent = `A1 : ${a1} · A2 : ${a2} ppm`;
+  if ($('coGauge')) $('coGauge').style.width = (Math.min(2000, Math.max(0, v)) / 2000 * 100) + '%';
+  if ($('coThreshold')) $('coThreshold').textContent = `A1 : ${a1} · A2 : ${a2} ppm`;
   
-  const trainerCard = $('coTrainerCard')?.querySelector('.co-card-exact');
+  const card = $('coCardMetric');
   const level = getCoSingleAlarmLevel();
-  if (trainerCard) {
-    trainerCard.classList.remove('gas-alarm-a1', 'gas-alarm-a2');
-    if (level === 1) trainerCard.classList.add('gas-alarm-a1');
-    if (level === 2) trainerCard.classList.add('gas-alarm-a2');
+  if (card) {
+    card.classList.remove('gas-alarm-a1', 'gas-alarm-a2');
+    if (level === 1) card.classList.add('gas-alarm-a1');
+    if (level === 2) card.classList.add('gas-alarm-a2');
   }
 
   if ($('coSingleInput') && document.activeElement !== $('coSingleInput')) $('coSingleInput').value = Math.round(v);
@@ -1525,17 +1430,7 @@ function renderCoSingle() {
   if ($('coSingleA1') && document.activeElement !== $('coSingleA1')) $('coSingleA1').value = a1;
   if ($('coSingleA2') && document.activeElement !== $('coSingleA2')) $('coSingleA2').value = a2;
   
-  const lcd = $('coPacLcd');
-  if (lcd) {
-    lcd.classList.remove('co-alarm-a1', 'co-alarm-a2');
-    if (level === 1) lcd.classList.add('co-alarm-a1');
-    if (level === 2) lcd.classList.add('co-alarm-a2');
-  }
-  
-  const stateTxt = $('coSingleAlarmState');
-  if (stateTxt) {
-    stateTxt.textContent = level === 2 ? '⚠️ ALARME A2' : level === 1 ? '⚠️ ALARME A1' : 'PPM CO';
-  }
+  if ($('coAlarmStatus')) $('coAlarmStatus').textContent = level > 0 ? 'ÉTAT : ALARME' : 'ÉTAT : NORMAL';
   
   const ackBtn = $('coAlarmAckBtn');
   const ackStatus = $('coAlarmAckStatus');
@@ -1544,7 +1439,7 @@ function renderCoSingle() {
     ackBtn.textContent = coSingleState.acked ? '🔇 Alarme CO acquittée' : '🔇 Acquitter l\'alarme sonore CO';
   }
   if (ackStatus) {
-    ackStatus.textContent = level > 0 ? (coSingleState.acked ? 'Son coupé. L\'affichage clignote tant que le CO dépasse le seuil.' : 'Alarme sonore CO active.') : 'Aucune alarme CO active.';
+    ackStatus.textContent = level > 0 ? (coSingleState.acked ? 'Son coupé. L\'affichage clignote tant que le CO dépasse le seuil.' : 'Alarme sonore CO active.') : 'Aucune alarme sonore CO active.';
   }
   if ($('coSingleEvoCurrent')) $('coSingleEvoCurrent').textContent = `CO · ${Math.round(v)} ppm`;
 }
