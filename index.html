@@ -517,7 +517,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   transform: translateY(2px);
   box-shadow: 0 2px 0 #000;
 }
-/* Alarme visuelle Dräger Pac CO */
 .pac-lcd-screen.co-alarm-a1 {
   background: linear-gradient(145deg, #e69d24, #c97e08) !important;
   color: #000 !important;
@@ -584,7 +583,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
      <div class="pac-sensor-grille"></div>
      <span class="pac-gas-label">CO</span>
     </div>
-    <div class="pac-lcd-screen">
+    <div class="pac-lcd-screen" id="coPacLcd">
      <div class="pac-lcd-top">
       <span class="pac-icon-ok">✔ OK</span>
       <span class="pac-icon-batt">🔋 100%</span>
@@ -765,7 +764,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   transform: translateY(2px);
   box-shadow: 0 2px 0 #000;
 }
-/* Alarme visuelle Dräger Pac CO */
 .pac-lcd-screen.co-alarm-a1 {
   background: linear-gradient(145deg, #e69d24, #c97e08) !important;
   color: #000 !important;
@@ -1406,6 +1404,80 @@ document.querySelectorAll('.trainer-tab-btn').forEach(btn => {
  });
 });
 
+let coSingleState = { value: 0, a1: 20, a2: 50, acked: false };
+let coSingleEvoTimer = null;
+let coSingleEvoDir = 1;
+
+function getCoSingleAlarmLevel() {
+  const v = Number(state.gas?.co ?? coSingleState.value ?? 0);
+  const a1 = Number(state.gas?.coA1 ?? coSingleState.a1 ?? 20);
+  const a2 = Number(state.gas?.coA2 ?? coSingleState.a2 ?? 50);
+  if (v >= a2) return 2;
+  if (v >= a1) return 1;
+  return 0;
+}
+
+function renderCoSingle() {
+  const v = Number(state.gas?.co ?? coSingleState.value ?? 0);
+  const a1 = Number(state.gas?.coA1 ?? coSingleState.a1 ?? 20);
+  const a2 = Number(state.gas?.coA2 ?? coSingleState.a2 ?? 50);
+  
+  if ($('coSingleValue')) $('coSingleValue').textContent = Math.round(v);
+  if ($('coSingleInput') && document.activeElement !== $('coSingleInput')) $('coSingleInput').value = Math.round(v);
+  if ($('coSingleRange') && document.activeElement !== $('coSingleRange')) $('coSingleRange').value = Math.round(v);
+  if ($('coSingleA1') && document.activeElement !== $('coSingleA1')) $('coSingleA1').value = a1;
+  if ($('coSingleA2') && document.activeElement !== $('coSingleA2')) $('coSingleA2').value = a2;
+  
+  const lcd = $('coPacLcd');
+  const level = getCoSingleAlarmLevel();
+  if (lcd) {
+    lcd.classList.remove('co-alarm-a1', 'co-alarm-a2');
+    if (level === 1) lcd.classList.add('co-alarm-a1');
+    if (level === 2) lcd.classList.add('co-alarm-a2');
+  }
+  
+  const stateTxt = $('coSingleAlarmState');
+  if (stateTxt) {
+    stateTxt.textContent = level === 2 ? '⚠️ ALARME A2 (DANGER)' : level === 1 ? '⚠️ ALARME A1 (SEUIL)' : 'PPM CO · NORMAL';
+  }
+  
+  const ackBtn = $('coAlarmAckBtn');
+  const ackStatus = $('coAlarmAckStatus');
+  if (ackBtn) {
+    ackBtn.disabled = level === 0 || coSingleState.acked;
+    ackBtn.textContent = coSingleState.acked ? '🔇 Alarme CO acquittée' : '🔇 Acquitter l\'alarme sonore CO';
+  }
+  if (ackStatus) {
+    ackStatus.textContent = level > 0 ? (coSingleState.acked ? 'Son coupé. L\'affichage clignote tant que le CO dépasse le seuil.' : 'Alarme sonore CO active.') : 'Aucune alarme CO active.';
+  }
+  if ($('coSingleEvoCurrent')) $('coSingleEvoCurrent').textContent = `CO · ${Math.round(v)} ppm`;
+}
+
+function updateCoSingleFromControls() {
+  const v = Math.max(0, Math.min(2000, Number($('coSingleInput').value) || 0));
+  const a1 = Math.max(0, Math.min(2000, Number($('coSingleA1').value) || 20));
+  const a2 = Math.max(0, Math.min(2000, Number($('coSingleA2').value) || 50));
+  
+  coSingleState.value = v;
+  coSingleState.a1 = a1;
+  coSingleState.a2 = a2;
+  
+  if (!state.gas) state.gas = {...gasDefaults};
+  state.gas.co = v;
+  state.gas.coA1 = a1;
+  state.gas.coA2 = a2;
+  
+  renderCoSingle();
+  renderGas();
+  publish();
+}
+
+function stopCoSingleEvo() {
+  if (coSingleEvoTimer) { clearInterval(coSingleEvoTimer); coSingleEvoTimer = null; }
+  if ($('coSingleEvoStatus')) { $('coSingleEvoStatus').textContent = 'Évolution arrêtée'; $('coSingleEvoStatus').classList.remove('running'); }
+  if ($('coSingleEvoStart')) $('coSingleEvoStart').disabled = false;
+  if ($('coSingleEvoStop')) $('coSingleEvoStop').disabled = true;
+}
 
 function setModule(mode){
  currentModule=mode;
@@ -1417,7 +1489,7 @@ function setModule(mode){
  $('gasPage').classList.toggle('hidden',mode!=='gas');
  if($('coPage')) $('coPage').classList.toggle('hidden',mode!=='co');
  
- if(mode==='gas'){ stopFlatlineTone(); renderGasEvolution(); }
+ if(mode==='gas'){ stopFlatlineTone(); stopCoSingleEvo(); renderGasEvolution(); }
  else if(mode==='co'){ stopFlatlineTone(); stopGasEvolution(); renderCoSingle(); }
  else { stopGasEvolution(); stopCoSingleEvo(); }
  
@@ -1437,25 +1509,11 @@ function setModule(mode){
  if(mode==='co') renderCoSingle();
  document.title=mode==='co'?'Détecteur CO Dräger Pac — Simulation':mode==='gas'?'Détecteur 4 gaz — Simulation SUAP':'Scope SUAP — Simulateur pédagogique';
 }
+
+$('scopeModeBtn').onclick=()=>setModule('scope');
+$('gasModeBtn').onclick=()=>setModule('gas');
 if($('coModeBtn')) $('coModeBtn').onclick=()=>setModule('co');
 
- currentModule=mode;$('scopeModeBtn').classList.toggle('active',mode==='scope');$('gasModeBtn').classList.toggle('active',mode==='gas');
- $('monitorPage').classList.toggle('hidden',mode!=='scope');$('gasPage').classList.toggle('hidden',mode!=='gas');
- if(mode==='gas'){ stopFlatlineTone(); renderGasEvolution(); }
- else { stopGasEvolution(); ; }
- $('controlPanel').classList.toggle('hidden',role!=='control');
- $('gasControlPanel').classList.toggle('hidden',role!=='control'||mode!=='gas');
- $('controlPanel').querySelectorAll(':scope > .panel:not(#gasControlPanel)').forEach(el=>el.classList.toggle('hidden',mode==='gas'));
- // Le changement de module ne doit jamais réafficher le Scope par effet de bord de setPage('monitor').
- // On force ici la visibilité des deux modules, puis on remet simplement l'onglet Moniteur actif.
- $('monitorPage').style.display=mode==='scope'?'':'none';
- $('gasPage').style.display=mode==='gas'?'':'none';
- $('eventsPage').classList.add('hidden');$('settingsPage').classList.add('hidden');
- $('tabMonitor').classList.add('active');$('tabEvents').classList.remove('active');$('tabSettings').classList.remove('active');
- renderGas();
- document.title=mode==='gas'?'Détecteur 4 gaz — Simulation SUAP':'Scope SUAP — Simulateur pédagogique';
-}
-$('scopeModeBtn').onclick=()=>setModule('scope');$('gasModeBtn').onclick=()=>setModule('gas');
 function updateGasFromControls(){
  const g={...gasDefaults,...(state.gas||{})};
  [['O2','o2',0,100],['LIE','lie',0,100],['CO','co',0,2000],['H2S','h2s',0,500]].forEach(([id,k,min,max])=>{const n=Number($('gas'+id+'Input').value);g[k]=Math.max(min,Math.min(max,Number.isFinite(n)?n:0))});
@@ -1477,7 +1535,8 @@ function updateRole(){
  state.alarms=true;audioEnabled=state.soundEnabled!==false;if($('soundToggle'))$('soundToggle').checked=audioEnabled;
  $('controlPanel').classList.toggle('hidden',!control);
   $('gasControlPanel').classList.toggle('hidden',!control||currentModule!=='gas');
-  $('controlPanel').querySelectorAll(':scope > .panel:not(#gasControlPanel)').forEach(el=>el.classList.toggle('hidden',currentModule==='gas'));
+  if($('coControlPanel')) $('coControlPanel').classList.toggle('hidden',!control||currentModule!=='co');
+  $('controlPanel').querySelectorAll(':scope > .panel:not(#gasControlPanel):not(#coControlPanel)').forEach(el=>el.classList.toggle('hidden',currentModule!=='scope'));
 
  $('tabSettings').classList.remove('hidden');$('tabEvents').classList.toggle('hidden',!control);
  $('menuBtn').classList.add('hidden');
@@ -1506,75 +1565,6 @@ $('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value
 $('saveConfig').onclick=()=>{localStorage.sbUrl=$('sbUrl').value.trim();localStorage.sbKey=$('sbKey').value.trim();initSupabase();alert('Configuration enregistrée sur cet appareil.')};
 $('sbUrl').value=localStorage.sbUrl||'';$('sbKey').value=localStorage.sbKey||'';
 
-// Module Mono-Gaz CO Dräger Pac 6500
-let coSingleState = { value: 0, a1: 20, a2: 50, acked: false };
-let coSingleEvoTimer = null;
-let coSingleEvoDir = 1;
-
-function getCoSingleAlarmLevel() {
-  const v = Number(state.gas?.co ?? coSingleState.value ?? 0);
-  const a1 = Number(state.gas?.coA1 ?? coSingleState.a1 ?? 20);
-  const a2 = Number(state.gas?.coA2 ?? coSingleState.a2 ?? 50);
-  if (v >= a2) return 2;
-  if (v >= a1) return 1;
-  return 0;
-}
-
-function renderCoSingle() {
-  const v = Number(state.gas?.co ?? coSingleState.value ?? 0);
-  const a1 = Number(state.gas?.coA1 ?? coSingleState.a1 ?? 20);
-  const a2 = Number(state.gas?.coA2 ?? coSingleState.a2 ?? 50);
-  
-  if ($('coSingleValue')) $('coSingleValue').textContent = Math.round(v);
-  if ($('coSingleInput') && document.activeElement !== $('coSingleInput')) $('coSingleInput').value = Math.round(v);
-  if ($('coSingleRange') && document.activeElement !== $('coSingleRange')) $('coSingleRange').value = Math.round(v);
-  if ($('coSingleA1') && document.activeElement !== $('coSingleA1')) $('coSingleA1').value = a1;
-  if ($('coSingleA2') && document.activeElement !== $('coSingleA2')) $('coSingleA2').value = a2;
-  
-  const lcd = document.querySelector('.pac-lcd-screen');
-  const level = getCoSingleAlarmLevel();
-  if (lcd) {
-    lcd.classList.remove('co-alarm-a1', 'co-alarm-a2');
-    if (level === 1) lcd.classList.add('co-alarm-a1');
-    if (level === 2) lcd.classList.add('co-alarm-a2');
-  }
-  
-  const stateTxt = $('coSingleAlarmState');
-  if (stateTxt) {
-    stateTxt.textContent = level === 2 ? '⚠️ ALARME A2 (DANGER)' : level === 1 ? '⚠️ ALARME A1 (SEUIL)' : 'PPM CO · NORMAL';
-  }
-  
-  const ackBtn = $('coAlarmAckBtn');
-  const ackStatus = $('coAlarmAckStatus');
-  if (ackBtn) {
-    ackBtn.disabled = level === 0 || coSingleState.acked;
-    ackBtn.textContent = coSingleState.acked ? '🔇 Alarme CO acquittée' : '🔇 Acquitter l'alarme sonore CO';
-  }
-  if (ackStatus) {
-    ackStatus.textContent = level > 0 ? (coSingleState.acked ? 'Son coupé. L'affichage clignote tant que le CO dépasse le seuil.' : 'Alarme sonore CO active.') : 'Aucune alarme CO active.';
-  }
-  if ($('coSingleEvoCurrent')) $('coSingleEvoCurrent').textContent = `CO · ${Math.round(v)} ppm`;
-}
-
-function updateCoSingleFromControls() {
-  const v = Math.max(0, Math.min(2000, Number($('coSingleInput').value) || 0));
-  const a1 = Math.max(0, Math.min(2000, Number($('coSingleA1').value) || 20));
-  const a2 = Math.max(0, Math.min(2000, Number($('coSingleA2').value) || 50));
-  
-  coSingleState.value = v;
-  coSingleState.a1 = a1;
-  coSingleState.a2 = a2;
-  
-  if (!state.gas) state.gas = {...gasDefaults};
-  state.gas.co = v;
-  state.gas.coA1 = a1;
-  state.gas.coA2 = a2;
-  
-  renderCoSingle();
-  renderGas();
-  publish();
-}
-
 if ($('coSingleInput')) {
   $('coSingleInput').oninput = () => { if ($('coSingleRange')) $('coSingleRange').value = $('coSingleInput').value; updateCoSingleFromControls(); };
   $('coSingleRange').oninput = () => { $('coSingleInput').value = $('coSingleRange').value; updateCoSingleFromControls(); };
@@ -1592,13 +1582,6 @@ if ($('resetCoSingleValues')) $('resetCoSingleValues').onclick = () => {
   publish();
   log('Détecteur CO réinitialisé à 0 ppm');
 };
-
-function stopCoSingleEvo() {
-  if (coSingleEvoTimer) { clearInterval(coSingleEvoTimer); coSingleEvoTimer = null; }
-  if ($('coSingleEvoStatus')) { $('coSingleEvoStatus').textContent = 'Évolution arrêtée'; $('coSingleEvoStatus').classList.remove('running'); }
-  if ($('coSingleEvoStart')) $('coSingleEvoStart').disabled = false;
-  if ($('coSingleEvoStop')) $('coSingleEvoStop').disabled = true;
-}
 
 if ($('coSingleEvoStart')) {
   $('coSingleEvoUp').onclick = () => { coSingleEvoDir = 1; $('coSingleEvoUp').classList.add('primary'); $('coSingleEvoDown').classList.remove('primary'); };
