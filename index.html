@@ -15,99 +15,15 @@
 <style>
 :root{--bg:#05090d;--panel:#101820;--line:#26333d;--muted:#8da0ad;--green:#53f28b;--blue:#4aa8ff;--yellow:#ffe16a;--orange:#ff9d45;--red:#ff5555;--white:#e8eef2}
 *{box-sizing:border-box}body{margin:0;background:#080d12;color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}button,input,select{font:inherit}button{border:1px solid #344653;background:#18242d;color:#eef5f8;border-radius:9px;padding:10px 12px;cursor:pointer}button:active{transform:scale(.98)}button.primary{background:#12683c;border-color:#218c56}button.warn{background:#662b2b;border-color:#a74444}.app{max-width:1400px;margin:auto;padding:12px}.top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}.brand{font-weight:800;letter-spacing:.06em}.tag{font-size:11px;color:#9fb0bb;border:1px solid #33434e;padding:4px 7px;border-radius:20px}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button.active{background:#284052;border-color:#5d8298}.screen{background:#020507;border:1px solid #2d3942;border-radius:12px;padding:10px;box-shadow:0 8px 30px #0008}.screen.alarm-frame{border:4px solid #ff2525;animation:alarmFrame .55s steps(2,start) infinite;box-shadow:none!important}@keyframes alarmFrame{50%{border-color:transparent;box-shadow:none}}.monitor-head{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#aab8c0;font-size:13px;font-variant-numeric:tabular-nums;padding:2px 4px 8px}.monitor-grid{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:10px}.traces{min-width:0;display:flex;flex-direction:column;gap:7px}.trace{height:94px;background:#06100d;border:1px solid #13251c;border-radius:6px;position:relative;overflow:hidden}.trace canvas{width:100%;height:100%;display:block}.trace-label{position:absolute;left:8px;top:5px;font-size:11px;font-weight:700;z-index:1;text-shadow:0 1px 3px #000}.numbers{display:grid;grid-template-columns:1fr;gap:7px}.metric{min-height:80px;background:#10171c;border:1px solid #27343d;border-radius:7px;padding:8px;cursor:pointer;text-align:left}.metric .name{font-size:11px;color:#a9b6bd;letter-spacing:.06em}.metric{position:relative}.metric .thresholds{position:absolute;right:6px;top:5px;font-size:9px;line-height:1.25;text-align:right;color:#d2dce2;opacity:.9;pointer-events:none}.metric .name{padding-right:56px}.metric .value{font-size:29px;font-weight:750;line-height:1.2;font-variant-numeric:tabular-nums}.metric .unit{font-size:11px;color:#a9b6bd}.metric.fc{background:#07552f;border-color:#16804b}.metric.fc .name,.metric.fc .value,.metric.fc .unit{color:#fff}.metric.spo{background:#07508a;border-color:#1678bd}.metric.spo .name,.metric.spo .value,.metric.spo .unit{color:#fff}.metric.ta{background:#41484e;border-color:#66717a}.metric.ta .name,.metric.ta .value,.metric.ta .unit,.metric.ta .subvalue{color:#fff}.metric.rr .value{color:var(--yellow)}.metric.co2 .value{color:var(--red)}.metric.temp .value{color:var(--orange)}.metric.ta .value{color:#e5e8eb}.metric.metric-alarm{background-color:transparent!important;border:3px solid #ff2525!important;animation:metricAlarm .55s steps(2,start) infinite;box-shadow:none!important}@keyframes metricAlarm{50%{border-color:transparent;box-shadow:none}}.alarm-zone{border:2px solid #ff2525;border-radius:7px;padding:3px 8px;animation:metricAlarm .55s steps(2,start) infinite}.subvalue{font-size:11px;color:#b7c2c9}.bottom{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.alarm{color:#ff7777;font-weight:800;letter-spacing:.1em;animation:blink 1s steps(2,start) infinite}.alarm.off{visibility:hidden}@keyframes blink{to{visibility:hidden}}.layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.panel{background:#111a21;border:1px solid #293944;border-radius:12px;padding:12px}.panel h2{font-size:16px;margin:0 0 10px}.field{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:10px 0}.field input[type=range]{grid-column:1/-1;width:100%;accent-color:#fff;cursor:pointer;appearance:none;-webkit-appearance:none;background:transparent}.field input[type=range]::-webkit-slider-runnable-track{height:5px;background:#64727d;border-radius:8px}.field input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;margin-top:-6px;border-radius:50%;background:#fff;border:2px solid #dce5eb;box-shadow:0 0 0 2px #26343d}.field input[type=range]::-moz-range-track{height:5px;background:#64727d;border-radius:8px}.field input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:#fff;border:2px solid #dce5eb}
-/* Flèches haut/bas des champs numériques : blanches et bien visibles */
 .field input[type=number]::-webkit-inner-spin-button,.field input[type=number]::-webkit-outer-spin-button{opacity:1;filter:invert(1) brightness(1.35);cursor:pointer}
 .field input[type=number]{color-scheme:white}
 .field output{font-weight:700;font-variant-numeric:tabular-nums}.field select,.field input[type=number],.field input[type=text]{background:#071017;border:1px solid #3b4c57;color:#fff;border-radius:7px;padding:8px;max-width:180px}.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.muted{color:var(--muted);font-size:12px}.hidden{display:none!important}.leadgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.ecg-tabs{border-bottom:1px solid #31414c;padding-bottom:8px}.ecg-tabs button.active{background:#284052;border-color:#5d8298}.ecg-preset{padding:8px 10px;font-size:13px}.lead{height:120px}.lead{height:110px;background:#050d0a;border:1px solid #24372c;border-radius:7px;position:relative}.lead b{position:absolute;top:5px;left:7px;font-size:11px;color:var(--green)}.lead canvas{width:100%;height:100%}.event{padding:8px;border-bottom:1px solid #26343d;font-size:13px}.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:15px;z-index:10}.modalbox{background:#111c24;border:1px solid #496070;border-radius:12px;padding:18px;max-width:430px;width:100%}.modalbox h3{margin-top:0}.modalbox button{margin:4px}.danger-note{font-size:11px;color:#ffbf8b;line-height:1.45;margin-top:10px}.code{font-family:ui-monospace,monospace;letter-spacing:.12em;font-weight:800}.footer{color:#81919b;font-size:11px;text-align:center;padding:12px}
 .gas-evolution{margin-top:14px;padding:14px;border:1px solid #334753;border-radius:10px;background:#0a141b}.gas-evolution h3{margin:0 0 6px}.gas-evolution-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.gas-evo-tab{min-width:72px}.gas-evo-tab.active{border-color:#66d9ff;background:#17303b;box-shadow:0 0 0 1px #66d9ff inset}.gas-evo-panel{border:1px solid #293944;border-radius:8px;padding:10px;background:#071017}.gas-evo-current{font-weight:900;font-size:18px;margin-bottom:10px}.gas-evo-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.gas-evo-actions label{display:flex;gap:6px;align-items:center;color:#c5d0d6}.gas-evo-actions input{width:90px}.gas-evo-status{margin-top:9px;font-weight:800;color:#aebdc5}.gas-evo-status.running{color:#7ee787}
 @media(max-width:650px){.app{padding:7px}.monitor-grid{grid-template-columns:minmax(0,1fr) 118px;gap:5px}.trace{height:75px}.metric{min-height:66px;padding:6px}.metric .value{font-size:23px}.metric .name{font-size:9px}.metric .unit{font-size:9px}.layout{grid-template-columns:1fr}.leadgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.screen{padding:6px}}
 
-/* Flèches des champs numériques visibles en blanc sur fond sombre */
 input[type="number"]{color-scheme:white}
 input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{filter:invert(1);opacity:1}
 
-/* Moniteur simplifié : uniquement les quatre constantes et l'auscultation */
-.monitor-grid{display:block}
-.numbers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
-.metric{min-height:145px;padding:16px}
-.metric .name{font-size:14px;letter-spacing:.08em}
-.metric .thresholds{font-size:11px;right:12px;top:12px}
-#thFC,#thSpo,#thTA{display:none!important}
-.metric .value{font-size:clamp(36px,5vw,52px);margin-top:12px}
-.metric .unit,.metric .subvalue{font-size:14px}
-.ta-wide{grid-column:auto;min-height:145px;padding:10px;cursor:pointer}
-.ta-main{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.ta-main .value{font-size:clamp(27px,3vw,36px)}
-.ta-history{margin-top:7px;background:#111a20;border:1px solid #8b9aa3;border-radius:7px;padding:6px;min-height:0;text-align:left}
-.ta-history-head{display:flex;justify-content:space-between;gap:5px;align-items:center;font-size:10px;font-weight:850;letter-spacing:.04em;color:#fff;border-bottom:1px solid #50606a;padding-bottom:4px}
-.ta-history-head span{font-size:10px;color:#c4d0d7;font-weight:600}
-.ta-history-list{max-height:64px;overflow-y:auto;padding-top:3px}
-.ta-history-row{display:grid;grid-template-columns:65px 1fr auto;gap:5px;align-items:center;padding:3px 2px;border-bottom:1px solid #2c3a43;font-size:11px}
-.ta-history-row strong{font-size:14px;color:#fff;font-variant-numeric:tabular-nums}
-.ta-history-row .pam{font-size:11px;color:#b5c2ca}
-.ta-empty{padding:5px 2px;color:#b5c2ca;font-size:13px}
-/* Mesure PNI temporisée et indice de perfusion SpO2 */
-.spo-layout{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:100%;}
-.spo-reading{min-width:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;}
-.spo-reading .value{margin-top:8px!important;}
-.pi-meter-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;align-self:stretch;padding:4px 3px 4px 8px;border-left:1px solid #ffffff55;}
-.pi-meter{position:relative;width:15px;height:86px;border:2px solid #d5edff;border-radius:9px;background:#06345c;overflow:hidden;box-shadow:inset 0 0 5px #001a33;}
-.pi-meter-fill{position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(180deg,#9ce4ff,#25a9ff 55%,#0873d1);border-radius:0 0 5px 5px;transition:height .25s ease;}
-.pi-reading{min-width:43px;text-align:center;font-size:12px;font-weight:850;color:#e8f7ff;font-variant-numeric:tabular-nums;}
-.pi-reading small{display:block;font-size:9px;font-weight:700;opacity:.85;letter-spacing:.05em;}
-/* Jauge SIQ de la fréquence cardiaque : même format que l'indice de perfusion */
-.fc-layout{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:100%;}
-.fc-reading{min-width:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;}
-.fc-reading .value{margin-top:8px!important;}
-.siq-meter-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;align-self:stretch;padding:4px 3px 4px 8px;border-left:1px solid #ffffff55;}
-.siq-meter{position:relative;width:15px;height:86px;border:2px solid #d5ffe6;border-radius:9px;background:#063a22;overflow:hidden;box-shadow:inset 0 0 5px #00190e;}
-.siq-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#b8ffd2,#3ef08a 55%,#0f9d4f);border-radius:0 0 5px 5px;transition:height .08s linear;}
-.siq-reading{min-width:43px;text-align:center;font-size:12px;font-weight:850;color:#e9fff1;font-variant-numeric:tabular-nums;}
-.siq-reading small{display:block;font-size:9px;font-weight:700;opacity:.85;letter-spacing:.05em;}
-.ta-cycle{display:none;align-items:center;gap:9px;margin:7px 0 2px;padding:7px 9px;border:1px solid #83929c;border-radius:7px;background:#252d33;text-align:left;}
-.ta-cycle.active{display:flex;}
-.ta-cycle-gauge{position:relative;flex:1;height:9px;border-radius:8px;background:#11191f;overflow:hidden;border:1px solid #82909a;}
-.ta-cycle-fill{height:100%;width:0;background:linear-gradient(90deg,#65c7ff,#d7efff);transition:width .12s linear;}
-.ta-cycle-info{min-width:115px;font-size:10px;line-height:1.35;color:#eaf3f8;font-variant-numeric:tabular-nums;}
-.ta-cycle-info strong{font-size:11px;}
-.ta-cycle-result{font-size:10px;color:#d5e4ec;white-space:nowrap;}
-.next-ta-box{margin:8px 0;padding:8px 10px;border:1px solid #3b6f8f;border-radius:8px;background:#0b1d29;font-size:13px;}
-.next-ta-box strong{font-size:16px;color:#7fd3ff;font-variant-numeric:tabular-nums;}
-@media(max-width:430px){.pi-meter,.siq-meter{height:72px}.pi-reading,.siq-reading{font-size:11px;min-width:38px}.ta-cycle-info{min-width:95px}}
-
-.breath-buttons button{flex:1;padding:9px 6px}
-
-.breath-source a{color:#8fcaff}
-@media(max-width:650px){.app{padding:7px}.numbers{gap:8px}.metric{min-height:120px;padding:10px}.metric .value{font-size:34px}.metric .name{font-size:11px}.ta-wide{min-height:120px;padding:8px}.ta-history-row{grid-template-columns:76px 1fr auto;font-size:13px}.ta-history-row strong{font-size:16px}}
-
-.module-switch{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
-.module-switch button{flex:1;min-width:145px;padding:13px 16px;font-weight:850;background:#1b2b38;border:1px solid #3b5668}
-.module-switch button.active{background:#126b50;border:2px solid #48d9a2;box-shadow:0 0 14px #21b78333}
-.gas-screen{background:#020507;border:1px solid #35434c;border-radius:12px;padding:14px}
-.gas-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;font-weight:850}
-.gas-live{font-size:11px;color:#53f28b;border:1px solid #286b4b;padding:4px 8px;border-radius:20px}
-.gas-grid,.gas-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.gas-metric{border:1px solid #35434c;border-radius:10px;padding:15px;min-height:125px;background:#101820}
-.gas-name{font-size:13px;font-weight:850}.gas-value{font-size:clamp(32px,5vw,48px);font-weight:850;line-height:1.2;margin:10px 0 2px;font-variant-numeric:tabular-nums}.gas-unit{font-size:12px;color:#b5c2ca}
-.gas-metric.o2{background:#142c20;border-color:#28794c}.gas-metric.o2 .gas-name,.gas-metric.o2 .gas-value{color:#53f28b}
-.gas-metric.lie{background:#302819;border-color:#79602d}.gas-metric.lie .gas-name,.gas-metric.lie .gas-value{color:#ffe16a}
-.gas-metric.co{background:#301d1d;border-color:#854141}.gas-metric.co .gas-name,.gas-metric.co .gas-value{color:#ff7777}
-.gas-metric.h2s{background:#1b293a;border-color:#3d5d85}.gas-metric.h2s .gas-name,.gas-metric.h2s .gas-value{color:#80b7ff}
-.gas-metric.gas-alarm{background:#8e1010!important;border:3px solid #ff3030;animation:metricAlarm .55s steps(2,start) infinite}
-.gas-metric.gas-alarm .gas-name,.gas-metric.gas-alarm .gas-value,.gas-metric.gas-alarm .gas-unit{color:white!important}
-.gas-threshold{font-size:10px;color:#c5d0d6;margin-top:6px}.gas-note{font-size:11px;color:#a8b7c0;line-height:1.45;margin-top:12px}
-.gas-control{background:#0b141b;border:1px solid #344653;border-radius:9px;padding:12px}.gas-control h3{font-size:14px;margin:0 0 8px}
-.gas-control .field{grid-template-columns:1fr auto;margin:8px 0}.gas-control input[type=range]{grid-column:1/-1;width:100%;accent-color:#fff}.gas-control input[type=number]{width:100px}
-.gas-status-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.gas-status-pill{font-size:11px;color:#c5d0d6;background:#17232c;border:1px solid #3b4b56;border-radius:20px;padding:5px 9px}
-.gas-ack-wrap{display:flex;align-items:center;gap:8px;margin-top:10px}.gas-ack-btn{font-weight:900}.gas-ack-btn:disabled{opacity:.45;cursor:not-allowed}
-@keyframes gasAlarmBlink{50%{opacity:.45;box-shadow:0 0 4px currentColor}}
-.gas-metric.gas-alarm-a1{background:#6b3d00!important;border:3px solid #ff9d00!important;animation:gasAlarmBlink .55s steps(2,start) infinite;color:#ff9d00}
-.gas-metric.gas-alarm-a2{background:#8e1010!important;border:3px solid #ff3030!important;animation:gasAlarmBlink .55s steps(2,start) infinite;color:#ff3030}
-.gas-metric.gas-alarm-a1 .gas-name,.gas-metric.gas-alarm-a1 .gas-value,.gas-metric.gas-alarm-a1 .gas-unit,.gas-metric.gas-alarm-a2 .gas-name,.gas-metric.gas-alarm-a2 .gas-value,.gas-metric.gas-alarm-a2 .gas-unit{color:#fff!important}
-.gas-alarm-label{font-weight:900;margin-left:8px}
-@media(max-width:650px){.gas-screen{padding:8px}.gas-metric{padding:10px;min-height:112px}.gas-metric .gas-name{font-size:11px}.gas-metric .gas-value{font-size:34px}}
-
-/* Refonte visuelle du moniteur stagiaire — affichage sans tracés animés */
 .monitor-grid{display:block!important}
 .numbers{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;align-content:start}
 .numbers>.ta-wide{grid-column:1/-1}
@@ -150,8 +66,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 @media(max-width:760px){.numbers{grid-template-columns:repeat(2,minmax(0,1fr))!important}.numbers>.ta-wide{grid-column:1/-1!important}.numbers>.metric{min-height:100px}.ta-wide{min-height:150px!important}}
 @media(max-width:430px){.numbers{grid-template-columns:1fr!important}.numbers>.ta-wide{grid-column:auto!important}.long-metric{min-height:65px!important}.ta-history-list{max-height:55px}}
 
-/* Ajustement de la grille : TA/PNI à gauche, HbCO à droite,
-   puis Température et Glycémie sur la rangée inférieure. */
 @media(min-width:761px){
   .numbers{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
   .numbers>.ta-wide{grid-column:auto!important;min-height:184px!important;padding:9px 10px!important}
@@ -167,14 +81,15 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   .numbers>.long-metric .value{font-size:clamp(25px,2.6vw,38px)!important}
 }
 @media(max-width:760px){
-  .numbers>.ta-wide{grid-column:1/-1!important;min-height:150px!important}
-  .numbers>.metric.co2{min-height:100px!important}
+  .numbers>.ta-wide{grid-column:1/-1!important;grid-row:auto!important}
+  .numbers>.metric.co2,
+  .numbers>.temp-long,
+  .numbers>.gly-long{grid-column:auto!important;grid-row:auto!important}
 }
 @media(max-width:430px){
   .numbers>.ta-wide{grid-column:auto!important}
 }
 
-/* Interface LCD portable du détecteur 4 gaz — stagiaire uniquement */
 .trainee-gas-ui #gasScreen{
   max-width:560px;
   margin:14px auto;
@@ -335,7 +250,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   .trainee-gas-ui .gas-value{font-size:clamp(31px,9vw,46px)}
 }
 
-/* Disposition desktop : TA/PNI à gauche sur trois niveaux, HbCO / température / glycémie empilés à droite. */
 @media (min-width: 761px) {
   .numbers {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
@@ -377,7 +291,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   .numbers > .gly-long { grid-column: auto !important; grid-row: auto !important; }
 }
 
-
 .gas-gauge-wrap{width:100%;height:8px;background:#1a2730;border-radius:4px;overflow:hidden;margin:6px 0;border:1px solid #364854;grid-column:1/-1;}
 .gas-gauge-fill{height:100%;transition:width .2s ease;border-radius:3px;}
 .gas-metric.o2 .gas-gauge-fill{background:linear-gradient(90deg,#2ea05b,#53f28b);}
@@ -387,8 +300,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .trainee-gas-ui .gas-gauge-wrap{background:#3d522b;border-color:#293b1a;}
 .trainee-gas-ui .gas-gauge-fill{background:#17260c!important;}
 
-
-/* Styles Réalistes Détecteur Mono-Gaz CO Dräger Pac 6500/8000 */
 .draeger-pac-body {
   max-width: 320px;
   margin: 15px auto;
@@ -528,8 +439,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   animation: gasAlarmBlink .55s steps(2,start) infinite;
 }
 
-
-/* Mono gaz CO — vue formateur : case rouge "CO" comme sur le détecteur 4 gaz */
 #coTrainerWrap{max-width:360px;margin:15px auto}
 #coTrainerWrap .gas-metric{min-height:150px;text-align:left}
 #coTrainerWrap .gas-name{font-size:18px}
@@ -710,52 +619,111 @@ body.trainee-gas-ui #coTrainerWrap{display:none}
    </div>
   </section>
  </section>
+
  <section class="panel hidden" id="gasControlPanel">
-   <h2>Pilotage FORMATEUR — Détecteur 4 gaz</h2><p class="muted">Faites évoluer votre MSP</p>
-   <div class="gas-control-grid">
-    <div class="gas-control"><h3>O₂ — Oxygène (% vol)</h3><div class="field"><label>Valeur</label><input id="gasO2Input" type="number" min="0" max="100" step=".1" value="20.9"></div><input id="gasO2Range" type="range" min="0" max="100" step=".1" value="20.9"><div class="field"><label>Seuil bas / haut</label><div class="row"><input id="gasO2Low" type="number" step=".1" value="19"><input id="gasO2High" type="number" step=".1" value="23"></div></div></div>
-    <div class="gas-control"><h3>CH₄ / LIE — Explosimétrie (% LIE)</h3><div class="field"><label>Valeur</label><input id="gasLIEInput" type="number" min="0" max="100" value="0"></div><input id="gasLIERange" type="range" min="0" max="100" value="0"><div class="field"><label>A1 / A2</label><div class="row"><input id="gasLIEA1" type="number" min="0" max="100" value="20"><input id="gasLIEA2" type="number" min="0" max="100" value="40"></div></div></div>
-    <div class="gas-control"><h3>CO — Monoxyde de carbone (ppm)</h3><div class="field"><label>Valeur</label><input id="gasCOInput" type="number" min="0" max="2000" value="0"></div><input id="gasCORange" type="range" min="0" max="2000" value="0"><div class="field"><label>A1 / A2</label><div class="row"><input id="gasCOA1" type="number" min="0" max="2000" value="20"><input id="gasCOA2" type="number" min="0" max="2000" value="50"></div></div></div>
-    <div class="gas-control"><h3>H₂S — Hydrogène sulfuré (ppm)</h3><div class="field"><label>Valeur</label><input id="gasH2SInput" type="number" min="0" max="500" value="0"></div><input id="gasH2SRange" type="range" min="0" max="500" value="0"><div class="field"><label>A1 / A2</label><div class="row"><input id="gasH2SA1" type="number" min="0" max="500" value="5"><input id="gasH2SA2" type="number" min="0" max="500" value="30"></div></div></div>
+   <h2>Pilotage FORMATEUR — Détecteur 4 gaz</h2>
+   <p class="muted">Faites évoluer votre MSP</p>
+   
+   <!-- SOUS-ONGLETS FORMATEUR 4 GAZ -->
+   <style>
+    .sub-trainer-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 14px;border-bottom:1px solid #293944;padding-bottom:10px}
+    .sub-trainer-tabs button{flex:1;min-width:140px;padding:9px 12px;font-weight:700;font-size:12px;background:#18242d;border:1px solid #344653;color:#c5d0d6;border-radius:7px;cursor:pointer}
+    .sub-trainer-tabs button.active{background:#12683c;border-color:#218c56;color:#fff;box-shadow:0 0 8px #12683c66}
+    .sub-trainer-content{display:block}
+    .sub-trainer-content.hidden{display:none!important}
+   </style>
+   <div class="sub-trainer-tabs" role="tablist" aria-label="Sous-onglets détecteur 4 gaz">
+    <button type="button" class="sub-gas-tab-btn active" data-sub-tab="gasSubTypes">1. Types de GAZ</button>
+    <button type="button" class="sub-gas-tab-btn" data-sub-tab="gasSubEvo">2. Évolution des Gaz</button>
    </div>
-   <div class="gas-evolution" id="gasEvolution"><h3>Évolution des gaz — progression dans la pièce</h3><p class="muted">Choisis un gaz, un sens d’évolution, puis <strong>DÉMARRER</strong>. Le formateur peut arrêter l’évolution à tout moment. Les valeurs sont transmises au stagiaire en temps réel.</p><div class="gas-evolution-tabs" role="tablist" aria-label="Gaz à faire évoluer"><button type="button" class="gas-evo-tab active" data-gas-tab="o2" role="tab">O₂</button><button type="button" class="gas-evo-tab" data-gas-tab="lie" role="tab">LIE</button><button type="button" class="gas-evo-tab" data-gas-tab="co" role="tab">CO</button><button type="button" class="gas-evo-tab" data-gas-tab="h2s" role="tab">H₂S</button></div><div class="gas-evo-panel"><div class="gas-evo-current" id="gasEvoCurrent">O₂ · 20,9 % vol</div><div class="gas-evo-actions"><button type="button" id="gasEvoDown">↘ NÉGATIVE</button><button type="button" id="gasEvoUp">↗ POSITIVE</button><label>Pas / seconde <input id="gasEvoStep" type="number" min="0.1" step="0.1" value="0.5"></label><button type="button" class="primary" id="gasEvoStart">▶ DÉMARRER</button><button type="button" class="warn" id="gasEvoStop">■ ARRÊTER</button></div><div class="gas-evo-status" id="gasEvoStatus">Évolution arrêtée</div></div></div>
-   <div class="row" style="margin-top:12px"><button class="primary" id="applyGasValues">Appliquer les valeurs</button><button id="resetGasValues">Réinitialiser le détecteur</button></div>
-   <p class="danger-note">Seuils pédagogiques d'exemple, à adapter au scénario. Ils ne remplacent pas les seuils réglementaires ni les procédures d'intervention.</p>
+
+   <!-- SOUS-ONGLET 1: TYPES DE GAZ -->
+   <div id="gasSubTypes" class="sub-trainer-content">
+    <div class="gas-control-grid">
+     <div class="gas-control"><h3>O₂ — Oxygène (% vol)</h3><div class="field"><label>Valeur</label><input id="gasO2Input" type="number" min="0" max="100" step=".1" value="20.9"></div><input id="gasO2Range" type="range" min="0" max="100" step=".1" value="20.9"><div class="field"><label>Seuil bas / haut</label><div class="row"><input id="gasO2Low" type="number" step=".1" value="19"><input id="gasO2High" type="number" step=".1" value="23"></div></div></div>
+     <div class="gas-control"><h3>CH₄ / LIE — Explosimétrie (% LIE)</h3><div class="field"><label>Valeur</label><input id="gasLIEInput" type="number" min="0" max="100" value="0"></div><input id="gasLIERange" type="range" min="0" max="100" value="0"><div class="field"><label>A1 / A2</label><div class="row"><input id="gasLIEA1" type="number" min="0" max="100" value="20"><input id="gasLIEA2" type="number" min="0" max="100" value="40"></div></div></div>
+     <div class="gas-control"><h3>CO — Monoxyde de carbone (ppm)</h3><div class="field"><label>Valeur</label><input id="gasCOInput" type="number" min="0" max="2000" value="0"></div><input id="gasCORange" type="range" min="0" max="2000" value="0"><div class="field"><label>A1 / A2</label><div class="row"><input id="gasCOA1" type="number" min="0" max="2000" value="20"><input id="gasCOA2" type="number" min="0" max="2000" value="50"></div></div></div>
+     <div class="gas-control"><h3>H₂S — Hydrogène sulfuré (ppm)</h3><div class="field"><label>Valeur</label><input id="gasH2SInput" type="number" min="0" max="500" value="0"></div><input id="gasH2SRange" type="range" min="0" max="500" value="0"><div class="field"><label>A1 / A2</label><div class="row"><input id="gasH2SA1" type="number" min="0" max="500" value="5"><input id="gasH2SA2" type="number" min="0" max="500" value="30"></div></div></div>
+    </div>
+    <div class="row" style="margin-top:12px"><button class="primary" id="applyGasValues">Appliquer les valeurs</button><button id="resetGasValues">Réinitialiser le détecteur</button></div>
+   </div>
+
+   <!-- SOUS-ONGLET 2: EVOLUTION DES GAZ -->
+   <div id="gasSubEvo" class="sub-trainer-content hidden">
+    <div class="gas-evolution" id="gasEvolution" style="margin-top:0">
+     <h3>Évolution des gaz — progression dans la pièce</h3>
+     <p class="muted">Choisis un gaz, un sens d’évolution, puis <strong>DÉMARRER</strong>. Le formateur peut arrêter l’évolution à tout moment. Les valeurs sont transmises au stagiaire en temps réel.</p>
+     <div class="gas-evolution-tabs" role="tablist" aria-label="Gaz à faire évoluer">
+      <button type="button" class="gas-evo-tab active" data-gas-tab="o2" role="tab">O₂</button>
+      <button type="button" class="gas-evo-tab" data-gas-tab="lie" role="tab">LIE</button>
+      <button type="button" class="gas-evo-tab" data-gas-tab="co" role="tab">CO</button>
+      <button type="button" class="gas-evo-tab" data-gas-tab="h2s" role="tab">H₂S</button>
+     </div>
+     <div class="gas-evo-panel">
+      <div class="gas-evo-current" id="gasEvoCurrent">O₂ · 20,9 % vol</div>
+      <div class="gas-evo-actions">
+       <button type="button" id="gasEvoDown">↘ NÉGATIVE</button>
+       <button type="button" id="gasEvoUp">↗ POSITIVE</button>
+       <label>Pas / seconde <input id="gasEvoStep" type="number" min="0.1" step="0.1" value="0.5"></label>
+       <button type="button" class="primary" id="gasEvoStart">▶ DÉMARRER</button>
+       <button type="button" class="warn" id="gasEvoStop">■ ARRÊTER</button>
+      </div>
+      <div class="gas-evo-status" id="gasEvoStatus">Évolution arrêtée</div>
+     </div>
+    </div>
+   </div>
+
+   <p class="danger-note" style="margin-top:14px">Seuils pédagogiques d'exemple, à adapter au scénario. Ils ne remplacent pas les seuils réglementaires ni les procédures d'intervention.</p>
   </section>
 
  <section class="panel hidden" id="coControlPanel">
    <h2>Pilotage FORMATEUR — Détecteur Mono-Gaz CO Dräger Pac</h2>
    <p class="muted">Réglage indépendant du Monoxyde de Carbone (CO)</p>
-   <div class="gas-control" style="max-width:600px;margin:0 auto 15px;">
-    <h3>CO — Monoxyde de carbone (ppm)</h3>
-    <div class="field"><label>Valeur directe (ppm)</label><input id="coSingleInput" type="number" min="0" max="2000" value="0"></div>
-    <input id="coSingleRange" type="range" min="0" max="2000" value="0">
-    <div class="field"><label>Seuils d'alarme A1 / A2 (ppm)</label>
-     <div class="row">
-      <label>A1 (Avertissement) <input id="coSingleA1" type="number" min="0" max="2000" value="20"></label>
-      <label>A2 (Danger) <input id="coSingleA2" type="number" min="0" max="2000" value="50"></label>
+
+   <!-- SOUS-ONGLETS FORMATEUR MONO-GAZ CO -->
+   <div class="sub-trainer-tabs" role="tablist" aria-label="Sous-onglets détecteur mono-gaz CO">
+    <button type="button" class="sub-co-tab-btn active" data-sub-co-tab="coSubTypes">1. Monoxyde de carbone</button>
+    <button type="button" class="sub-co-tab-btn" data-sub-co-tab="coSubEvo">2. Évolution du GAZ</button>
+   </div>
+
+   <!-- SOUS-ONGLET 1: MONOXYDE DE CARBONE -->
+   <div id="coSubTypes" class="sub-trainer-content">
+    <div class="gas-control" style="max-width:600px;margin:0 auto 15px;">
+     <h3>CO — Monoxyde de carbone (ppm)</h3>
+     <div class="field"><label>Valeur directe (ppm)</label><input id="coSingleInput" type="number" min="0" max="2000" value="0"></div>
+     <input id="coSingleRange" type="range" min="0" max="2000" value="0">
+     <div class="field"><label>Seuils d'alarme A1 / A2 (ppm)</label>
+      <div class="row">
+       <label>A1 (Avertissement) <input id="coSingleA1" type="number" min="0" max="2000" value="20"></label>
+       <label>A2 (Danger) <input id="coSingleA2" type="number" min="0" max="2000" value="50"></label>
+      </div>
+     </div>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:15px;">
+     <button class="primary" id="applyCoSingleValues">Appliquer la valeur CO</button>
+     <button id="resetCoSingleValues">Réinitialiser à 0 ppm</button>
+    </div>
+   </div>
+
+   <!-- SOUS-ONGLET 2: EVOLUTION DU GAZ -->
+   <div id="coSubEvo" class="sub-trainer-content hidden">
+    <div class="gas-evolution" style="max-width:600px;margin:0 auto;">
+     <h3>Évolution progressive du CO</h3>
+     <p class="muted">Simulez la montée ou baisse progressive du CO dans un local.</p>
+     <div class="gas-evo-panel">
+      <div class="gas-evo-current" id="coSingleEvoCurrent">CO · 0 ppm</div>
+      <div class="gas-evo-actions">
+       <button type="button" id="coSingleEvoDown">↘ NÉGATIVE</button>
+       <button type="button" id="coSingleEvoUp" class="primary">↗ POSITIVE</button>
+       <label>Pas / sec <input id="coSingleEvoStep" type="number" min="1" step="1" value="5"></label>
+       <button type="button" class="primary" id="coSingleEvoStart">▶ DÉMARRER</button>
+       <button type="button" class="warn" id="coSingleEvoStop">■ ARRÊTER</button>
+      </div>
+      <div class="gas-evo-status" id="coSingleEvoStatus">Évolution arrêtée</div>
      </div>
     </div>
    </div>
-   <div class="gas-evolution" style="max-width:600px;margin:0 auto;">
-    <h3>Évolution progressive du CO</h3>
-    <p class="muted">Simulez la montée ou baisse progressive du CO dans un local.</p>
-    <div class="gas-evo-panel">
-     <div class="gas-evo-current" id="coSingleEvoCurrent">CO · 0 ppm</div>
-     <div class="gas-evo-actions">
-      <button type="button" id="coSingleEvoDown">↘ NÉGATIVE</button>
-      <button type="button" id="coSingleEvoUp" class="primary">↗ POSITIVE</button>
-      <label>Pas / sec <input id="coSingleEvoStep" type="number" min="1" step="1" value="5"></label>
-      <button type="button" class="primary" id="coSingleEvoStart">▶ DÉMARRER</button>
-      <button type="button" class="warn" id="coSingleEvoStop">■ ARRÊTER</button>
-     </div>
-     <div class="gas-evo-status" id="coSingleEvoStatus">Évolution arrêtée</div>
-    </div>
-   </div>
-   <div class="row" style="justify-content:center;margin-top:15px;">
-    <button class="primary" id="applyCoSingleValues">Appliquer la valeur CO</button>
-    <button id="resetCoSingleValues">Réinitialiser à 0 ppm</button>
-   </div>
+
  </section>
 
  </section>
@@ -765,7 +733,7 @@ body.trainee-gas-ui #coTrainerWrap{display:none}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=id=>document.getElementById(id);
-const GLYCEMIE_CODES={LO:{operator:'<',value:0.20,label:'LO'},HI:{operator:'>',value:5.00,label:'HI'}}; // Seuils internes uniquement : LO <0,20 g/L ; HI >5,00 g/L
+const GLYCEMIE_CODES={LO:{operator:'<',value:0.20,label:'LO'},HI:{operator:'>',value:5.00,label:'HI'}};
 function glycemiaDisplay(value){const n=Number(value);if(!Number.isFinite(n))return null;if(n<GLYCEMIE_CODES.LO.value)return GLYCEMIE_CODES.LO.label;if(n>GLYCEMIE_CODES.HI.value)return GLYCEMIE_CODES.HI.label;return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 const defaults={siqSetting:3,scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:1,piTrendFrom:1,piTrendTo:1,piTrendStartAt:null,piNextTarget:1,piNextAt:0,taCycleStartAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
 let state={...defaults};
@@ -781,7 +749,6 @@ let siqLevel=0,siqLastBeatAt=0;
 let gasAlarmLastSignature="0000",gasAlarmAcked=false;
 let activeTASnapshot=null;
 let scopeAlarmAcked=false,scopeAlarmLastRevision=0,scopeAlarmLastUnackedSignature="";
-// Valeurs de référence capturées au moment de l’acquittement, une par seuil déclenché.
 const scopeAlarmAckSnapshots=Object.create(null);
 const scopeAlarmOscillators=new Set();
 const fmt=n=>Math.round(n);
@@ -809,7 +776,6 @@ function updateTACycle(){
  box.classList.toggle('active',active);
  if(!active)return;
  const duration=20000,elapsed=Math.max(0,Date.now()-Number(state.taCycleStartAt)),progress=Math.min(1,elapsed/duration),remaining=Math.max(0,Math.ceil((duration-elapsed)/1000));
- // Gonflage sur les 7 premières secondes, puis décompression/recherche jusqu'à 20 s.
  let pressure;
  if(elapsed<=7000)pressure=Math.round( Math.min(1,elapsed/7000)*180 );
  else pressure=Math.round(180*(1-(elapsed-7000)/13000));
@@ -824,8 +790,6 @@ function updateTACycle(){
   render();publish();
  }
 }
-// I.P. : la valeur cible est tirée aléatoirement entre les bornes imposées par le formateur,
-// puis la jauge rejoint progressivement chaque nouvelle cible (montée et descente irrégulières).
 function updatePITrend(){
  const lo=Math.max(0,Math.min(5,Number(state.piTrendFrom??state.pi??0)));
  const hi=Math.max(0,Math.min(5,Number(state.piTrendTo??lo)));
@@ -846,7 +810,6 @@ function updatePITrend(){
  if($('piMeterFill'))$('piMeterFill').style.height=(Math.max(0,Math.min(5,value))/5*100)+'%';
 }
 function updateSIQ(){
- // Jauge SIQ : se remplit à chaque battement puis redescend, cadence = 60/FC. Intensité pilotée par formateur (1 à 5).
  const fill=$('siqMeterFill'),label=$('vSIQ');
  const active=state.fcMeasured===true&&Number(state.fc)>0&&state.rhythm!=='asystole'&&state.rhythm!=='fv';
  if(!active){siqLevel=Math.max(0,siqLevel-0.08);}
@@ -863,7 +826,7 @@ function updateSIQ(){
 }
 function render(){
  updatePITrend();
- $('vFC').textContent=state.fcMeasured===true?fmt(state.fc):'—';$('uFC').textContent=state.fcMeasured===true?'Pince à SAT connectée':'Pince à SAT non posée';$('uSpO2').textContent=state.spoMeasured===true?'Pince à SAT connectée':'Pince à SAT non posée';$('vGly').textContent=state.glyMeasured!==true?'—':glycemiaDisplay(state.gly);$('glyStatus').textContent=state.glyMeasured!==true?'Non mesurée':Number(state.gly)<GLYCEMIE_CODES.LO.value?'LO · valeur inférieure au seuil':Number(state.gly)>GLYCEMIE_CODES.HI.value?'HI · valeur supérieure au seuil':'Mesurée';$('vTemp').textContent=state.tempMeasured===true?Number(state.temp??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1}):'—';$('tempStatus').textContent=state.tempMeasured===true?'Mesurée':'Non mesurée';if($('tempControl')&&document.activeElement!==$('tempControl'))$('tempControl').value=Number(state.temp??0).toFixed(1);$('vTA').textContent=state.taMeasured===true?`${fmt(state.sys)}/${fmt(state.dia)}`:'—/—';$('vPAM').textContent=state.taMeasured===true?`PAM ${pam()} mmHg`:'Brassard non posé';$('vSpO2').textContent=state.spoMeasured===true?fmt(state.spo):'—';updatePITrend();updateSIQ();$('vHbCO').textContent=fmt(state.hbco??0);$('thFC').textContent=state.fcMeasured===true?`Bas ${state.lowFC} · Haut ${state.highFC}`:'Électrodes ECG à poser';$('thTA').innerHTML=state.taMeasured===true?`TAS ${state.lowSys}–${state.highSys}<br>TAD ${state.lowDia}–${state.highDia}`:'Mesure non réalisée';$('thSpo').textContent=state.spoMeasured===true?`Bas ${state.lowSpo} · Haut ${state.highSpo}`:'Pince à SAT à poser';$('thHbco').textContent=`Bas ${state.lowHbco??0}`;if($('hbcoControl')&&document.activeElement!==$('hbcoControl'))$('hbcoControl').value=fmt(state.hbco??0);if($('glyControl')&&document.activeElement!==$('glyControl'))$('glyControl').value=Number(state.gly??0).toFixed(2);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;renderScenarioClock();renderTAHistory();updateTACycle();
+ $('vFC').textContent=state.fcMeasured===true?fmt(state.fc):'—';$('uFC').textContent=state.fcMeasured===true?'Pince à SAT connectée':'Pince à SAT non posée';$('uSpO2').textContent=state.spoMeasured===true?'Pince à SAT connectée':'Pince à SAT non posée';$('vGly').textContent=state.glyMeasured!==true?'—':glycemiaDisplay(state.gly);$('glyStatus').textContent=state.glyMeasured!==true?'Non mesurée':Number(state.gly)<GLYCEMIE_CODES.LO.value?'LO · valeur inférieure au seuil':Number(state.gly)>GLYCEMIE_CODES.HI.value?'HI · valeur supérieure au seuil':'Mesurée';$('vTemp').textContent=state.tempMeasured===true?Number(state.temp??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1}):'—';$('tempStatus').textContent=state.tempMeasured===true?'Mesurée':'Non mesurée';if($('tempControl')&&document.activeElement!==$('tempControl'))$('tempControl').value=Number(state.temp??0).toFixed(1);$('vTA').textContent=state.taMeasured===true?`${fmt(state.sys)}/${fmt(state.dia)}`:'—/—';$('vPAM').textContent=state.taMeasured===true?`PAM ${pam()} mmHg`:'Brassard non posé';$('vSpO2').textContent=state.spoMeasured===true?fmt(state.spo):'—';updatePITrend();updateSIQ();$('vHbCO').textContent=fmt(state.hbco??0);$('thFC').textContent=state.fcMeasured===true?`Bas ${state.lowFC} · Haut ${state.highFC}`:'Électrodes ECG à poser';$('thTA').innerHTML=state.taMeasured===true?`TAS ${state.lowSys}–${state.highSys}<br>TAD ${state.lowDia}–${state.highDia}`:'Mesure non réalisée';$('thSpo').textContent=state.spoMeasured===true?`Bas ${state.lowSpo} · Haut ${state.highSpo}`:'Pince à SAT à poser';$('thHbco').textContent=`Bas ${state.lowHbco??0}`;if($('hbcoControl')&&document.activeElement!==$('hbcoControl'))$('hbcoControl').value=fmt(state.hbco??0);if($('glyControl')&&document.activeElement!==$('glyControl'))$('glyControl').value=Number(state.gly??0).toFixed(2);$('vTemp').textContent=state.tempMeasured===true?Number(state.temp??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1}):'—';renderScenarioClock();renderTAHistory();updateTACycle();
  refreshScopeAlarms();
  if($('irregularFCToggle'))$('irregularFCToggle').checked=!!state.irregularFC;
  if($('variationFCToggle'))$('variationFCToggle').checked=!!state.variationFCEnabled;
@@ -912,12 +875,10 @@ function scopeAlarmCardStates(conditions=scopeAlarmConditions()){
   TA:{blinking:false,acknowledged:false},
   HbCO:{blinking:false,acknowledged:false}
  };
- // Un contour acquitté reste affiché jusqu'à une variation réelle de 20 % de la valeur mémorisée.
  Object.keys(scopeAlarmAckSnapshots).forEach(metricKey=>{
   const info=scopeAlarmMetricInfo(metricKey);
   if(info&&result[info.card])result[info.card].acknowledged=true;
  });
- // Un autre paramètre qui devient alarmant reste indépendant et peut donc relancer l'alarme.
  conditions.forEach(condition=>{
   const metricKey=scopeAlarmMetricKey(condition);
   if(metricKey&&!Object.prototype.hasOwnProperty.call(scopeAlarmAckSnapshots,metricKey)){
@@ -935,8 +896,6 @@ function updateScopeAlarmAckSnapshots(){
   if(!info||!Number.isFinite(info.value)||!Number.isFinite(base)){
    delete scopeAlarmAckSnapshots[metricKey];released=true;return;
   }
-  // L'acquittement ne se réarme qu'après un écart d'au moins 20 % par rapport à la valeur mémorisée.
-  // Pour une référence égale à zéro (ex. FC à l'arrêt), on utilise 1 unité comme seuil minimal.
   const limit=Math.abs(base)>0?Math.abs(base)*0.20:1;
   if(Math.abs(info.value-base)>=limit){delete scopeAlarmAckSnapshots[metricKey];released=true;}
  });
@@ -954,8 +913,6 @@ function stopScopeAlarmAudio(){
 }
 function refreshScopeAlarms(){
  const conditions=scopeAlarmConditions();
- // L'acquittement est strictement lié au déplacement de la valeur (+/-20 %),
- // pas aux rafraîchissements de la synchronisation ni aux réglages du formateur.
  const released=updateScopeAlarmAckSnapshots();
  const unacked=scopeAlarmUnacknowledgedConditions(conditions);
  const unackedSignature=unacked.slice().sort().join('|');
@@ -984,7 +941,6 @@ function refreshScopeAlarms(){
 function alarmActive(){return scopeAlarmConditions().length>0;}
 
 function renderSliders(){
- // Ne pas reconstruire les champs pendant que le formateur est en train de saisir une valeur.
  if($('sliders').contains(document.activeElement))return;
  const defs=[['fc','FC',0,240,'bpm'],['spo','SpO₂',0,100,'%']];
  $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l} (${u})</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${fmt(state[k])}"></div>`).join('');
@@ -1001,7 +957,7 @@ function renderSliders(){
 }
 
 function renderEvents(){$('events').innerHTML=(state.events||[]).map(e=>`<div class="event"><span class="muted">${e.t}</span> — ${escapeHtml(e.msg)}</div>`).join('')||'<p class="muted">Aucun événement enregistré.</p>'}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;min'}[c]))}
 function openModal(title,body){$('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modal').classList.remove('hidden')}
 function showMetric(k){
  if(k==='FC'){openModal('Fréquence cardiaque — ECG',`<p>Valeur patient pilotée par le formateur : ${fmt(state.fc)} bpm.</p><p class="muted">${state.fcMeasured?'Électrodes ECG actuellement connectées.':'Aucune donnée affichée : les électrodes ECG ne sont pas encore posées.'}</p><button type="button" class="primary" id="toggleFCProbe">${state.fcMeasured?'Retirer les électrodes':'Poser les électrodes ECG'}</button>`);$('toggleFCProbe').onclick=()=>{state.fcMeasured=!state.fcMeasured;log(state.fcMeasured?'Électrodes ECG posées par le stagiaire':'Électrodes ECG retirées');$('modal').classList.add('hidden');render();publish()};return}
@@ -1018,7 +974,6 @@ function saveTaHistory(){try{localStorage.setItem(taHistoryKey(),JSON.stringify(
 function recordTA(){state.taHistory=Array.isArray(state.taHistory)?state.taHistory:[];const entry={time:new Date().toLocaleTimeString('fr-FR'),sys:fmt(state.sys),dia:fmt(state.dia),pam:pam()};state.taHistory.unshift(entry);state.taHistory=state.taHistory.slice(0,30);saveTaHistory();renderTAHistory()}
 function renderTAHistory(){const el=$('taHistoryList');if(!el)return;const rows=state.taHistory||[];el.innerHTML=rows.length?rows.map(m=>`<div class="ta-history-row"><span>${escapeHtml(m.time||'--:--:--')}</span><strong>${m.sys}/${m.dia}</strong><span class="pam">PAM ${m.pam??'—'}</span></div>`).join(''):'<div class="ta-empty">En attente de la pose du brassard par le stagiaire</div>'}
 function taHistoryMarkup(){return (state.taHistory||[]).length?'<div>'+(state.taHistory||[]).map((m,i)=>`<div class="event"><b>${escapeHtml(m.time)}</b> — ${m.sys}/${m.dia} mmHg <span class="muted">· PAM ${m.pam} mmHg${i===0?' · dernière mesure':''}</span></div>`).join('')+'</div>':'<p class="muted">Aucune mesure enregistrée.</p>'}
-function showTAHistory(){openModal('Historique T.A / P.N.I.',taHistoryMarkup())}
 $('applyTA').onclick=()=>{const sys=$('manualSys').value.trim(),dia=$('manualDia').value.trim();if(sys===''||dia===''||!Number.isFinite(Number(sys))||!Number.isFinite(Number(dia))){alert('Saisis une TAS et une TAD valides.');return}state.pendingSys=Math.max(0,Math.min(300,Number(sys)));state.pendingDia=Math.max(0,Math.min(200,Number(dia)));log(`Nouvelle tension préparée : ${state.pendingSys}/${state.pendingDia} mmHg — elle sera affichée à la prochaine mesure du stagiaire`);render();publish()};
 function applyPITrend(){const fromRaw=$('piTrendFrom').value.trim(),toRaw=$('piTrendTo').value.trim();if(fromRaw===''||toRaw===''||!Number.isFinite(Number(fromRaw))||!Number.isFinite(Number(toRaw))){alert('Saisis deux valeurs d’I.P. valides entre 0 et 5 %.');render();return}state.piTrendFrom=Math.max(0,Math.min(5,Number(fromRaw)));state.piTrendTo=Math.max(0,Math.min(5,Number(toRaw)));state.piTrendStartAt=Date.now();state.piNextAt=0;state.pi=state.piTrendFrom;log(`Variation I.P. réglée : entre ${state.piTrendFrom.toFixed(1)} et ${state.piTrendTo.toFixed(1)} %`);render();publish()}
 $('siqSettingControl').onchange=e=>{state.siqSetting=Number(e.target.value);log('Intensité du signal SIQ réglée à le niveau '+state.siqSetting);render();publish()};
@@ -1027,67 +982,66 @@ $('soundToggle').onchange=e=>{audioEnabled=e.target.checked;state.soundEnabled=a
 $('menuBtn').onclick=()=>setPage('settings');
 $('patient').onchange=e=>{state.patient=e.target.value;if(state.condition!=='normal')applyAlarmThresholds();log(`Mode patient : ${state.patient} — seuils d’alarme adaptés`);render();publish()};
 $('patientName').onchange=e=>{state.name=e.target.value||'VICTIME SIMULÉ';render();publish()};
-function setRhythm(id){state.rhythm=id;state.irregularFC=id==='fa';if(id==='brady'){state.fc=45;state.variationFCEnabled=false}else if(id==='tachy'){state.fc=145;state.variationFCEnabled=false}else if(id==='svt'){state.fc=170;state.variationFCEnabled=false}else if(id==='tv'){state.fc=180;state.variationFCEnabled=false}else if(id==='flutter'){state.fc=150;state.variationFCEnabled=false}else if(id==='fv'||id==='asystole'){state.fc=0;state.spo=0;state.variationFCEnabled=false;state.variationSpoEnabled=false}else if(id==='sinusal'){state.irregularFC=false;if(Number(state.fc)<=0)state.fc=72;if(Number(state.spo)<=0)state.spo=98}lastHeartBeat=0;log('Rythme sélectionné : '+id);render();publish()}
 $('variationFCToggle').onchange=e=>{state.variationFCEnabled=e.target.checked;log('Variation FC '+(e.target.checked?'activée':'désactivée'));render();publish()};
 $('variationSpoToggle').onchange=e=>{state.variationSpoEnabled=e.target.checked;log('Variation SpO₂ '+(e.target.checked?'activée':'désactivée'));render();publish()};
 
 const conditions={
  normal:{label:'MSP Personnalisé',fc:[70,82],spo:[96,99],base:[74,98],sys:[110,130],dia:[70,85],desc:'Constantes stables : FC 80–90 bpm, SpO₂ 98–100 %. Variations discrètes.'},
- sepsis:{label:'Sepsis avec aggravation',fc:[105,145],spo:[88,95],base:[122,92],sys:[85,110],dia:[45,65],desc:'Tachycardie, désaturation possible et tendance à l’hypotension. L’évolution peut être progressive vers un choc septique.'},
- hemorrhage:{label:'Hémorragie / choc hypovolémique',fc:[115,155],spo:[90,97],base:[132,94],sys:[70,100],dia:[40,65],desc:'Tachycardie compensatrice, pression artérielle qui baisse avec la perte sanguine ; SpO₂ parfois conservée au début.'},
- cardiogenic:{label:'Choc cardiogénique',fc:[105,140],spo:[86,94],base:[120,91],sys:[70,95],dia:[45,65],desc:'Tachycardie fréquente, hypotension et hypoxémie possible en cas d’œdème pulmonaire.'},
- respiratory:{label:'Détresse respiratoire aiguë',fc:[110,150],spo:[78,90],base:[128,86],sys:[105,145],dia:[65,90],desc:'Tachycardie et désaturation marquée ; la pression artérielle dépend de la cause et de la sévérité.'},
- asthma:{label:'Crise d’asthme sévère',fc:[120,160],spo:[82,92],base:[138,88],sys:[105,145],dia:[65,90],desc:'Tachycardie, hypoxémie variable ; une aggravation peut conduire à l’épuisement respiratoire.'},
- copd:{label:'Exacerbation BPCO',fc:[95,130],spo:[84,92],base:[112,89],sys:[110,145],dia:[65,90],desc:'Désaturation souvent modérée à importante, tachycardie ; l’oxygénation cible dépend du contexte clinique.'},
- pneumonia:{label:'Pneumonie avec hypoxémie',fc:[100,135],spo:[85,93],base:[118,90],sys:[105,145],dia:[65,90],desc:'Tachycardie liée à l’infection et hypoxémie variable selon l’atteinte pulmonaire.'},
- pe:{label:'Embolie pulmonaire',fc:[110,150],spo:[82,93],base:[130,88],sys:[85,120],dia:[55,80],desc:'Tachycardie, désaturation possible ; hypotension en cas de forme à haut risque.'},
- anaphylaxis:{label:'Anaphylaxie',fc:[115,155],spo:[82,94],base:[135,90],sys:[65,100],dia:[35,65],desc:'Tachycardie, hypotension et désaturation possibles en cas d’atteinte respiratoire.'},
- acs:{label:'Syndrome coronarien aigu',fc:[85,125],spo:[90,97],base:[105,95],sys:[95,145],dia:[60,90],desc:'FC variable, SpO₂ souvent préservée sauf complication ; hypotension possible selon l’atteinte.'},
- stroke:{label:'AVC avec aggravation neurologique',fc:[75,115],spo:[90,97],base:[95,95],sys:[140,190],dia:[80,110],desc:'FC variable ; hypertension possible. La SpO₂ peut rester normale hors complication respiratoire.'},
- decomp:{label:'Décompensation cardiaque',fc:[100,135],spo:[86,94],base:[118,90],sys:[95,145],dia:[60,90],desc:'Tachycardie et désaturation possibles en cas de congestion/œdème pulmonaire.'},
- heat_exhaustion:{label:'Épuisement lié à la chaleur',fc:[95,130],spo:[94,99],base:[112,97],sys:[100,130],dia:[60,85],taBase:[115,72],hbco:0,desc:'Simulation pédagogique : tachycardie liée à la chaleur et à la déshydratation ; SpO₂ souvent préservée.'},
- heatstroke:{label:'Coup de chaleur / insolation',fc:[120,160],spo:[90,98],base:[140,95],sys:[90,130],dia:[50,85],taBase:[105,65],hbco:0,desc:'Simulation pédagogique : tachycardie marquée ; désaturation possible selon les complications.'},
- hypothermia_moderate:{label:'Hypothermie modérée',fc:[40,65],spo:[90,98],base:[52,95],sys:[90,120],dia:[55,80],taBase:[105,65],hbco:0,desc:'Simulation pédagogique : ralentissement possible de la fréquence cardiaque ; constantes dépendantes de la profondeur de l’hypothermie.'},
- hypothermia_severe:{label:'Hypothermie grave / sévère',fc:[20,45],spo:[80,94],base:[34,88],sys:[70,100],dia:[40,65],taBase:[85,50],hbco:0,desc:'Simulation pédagogique : bradycardie importante et oxygénation parfois difficile à mesurer.'},
- alcohol:{label:'Intoxication alcoolique',fc:[55,115],spo:[88,99],base:[82,96],sys:[100,140],dia:[60,90],taBase:[120,75],hbco:0,desc:'Simulation pédagogique : vigilance et ventilation à surveiller ; désaturation possible.'},
- opioid:{label:'Intoxication morphinique',fc:[35,85],spo:[65,90],base:[52,82],sys:[85,115],dia:[50,75],taBase:[100,60],hbco:0,desc:'Simulation pédagogique : dépression respiratoire, bradypnée et désaturation possibles.'},
- drugs:{label:'Intoxication par autres drogues',fc:[85,155],spo:[88,99],base:[120,96],sys:[100,160],dia:[60,100],taBase:[130,80],hbco:0,desc:'Simulation pédagogique : effets cardiovasculaires et respiratoires variables selon le produit.'},
- co:{label:'Intoxication au monoxyde de carbone',fc:[85,135],spo:[97,100],base:[112,99],sys:[100,150],dia:[60,95],taBase:[125,80],hbco:30,desc:'Simulation pédagogique : HbCO modifiable de 0 à 100 %. La SpO₂ affichée peut rester artificiellement rassurante en cas d’intoxication au CO.'},
- hypoglycemia:{label:'Hypoglycémie grave',fc:[85,130],spo:[94,100],base:[108,97],sys:[100,150],dia:[60,95],taBase:[120,75],hbco:0,desc:'Simulation pédagogique : tachycardie possible ; SpO₂ généralement préservée hors complication associée.'},
- ketoacidosis:{label:'Hyperglycémie avec acidocétose',fc:[110,155],spo:[92,100],base:[132,96],sys:[95,140],dia:[55,90],taBase:[115,70],hbco:0,desc:'Simulation pédagogique : tachycardie, déshydratation et polypnée de Kussmaul possibles ; SpO₂ souvent préservée.'},
- syncope_vasovagal:{label:'Malaise vagal / syncope',fc:[42,58],spo:[96,100],base:[50,98],sys:[75,95],dia:[40,60],taBase:[85,50],desc:'Bradycardie et hypotension transitoires possibles, avec récupération spontanée progressive en décubitus. Les constantes peuvent se normaliser.'},
- syncope_cardiac:{label:'Malaise avec suspicion d’origine cardiaque',fc:[35,150],spo:[88,97],base:[118,93],sys:[85,115],dia:[50,75],taBase:[95,60],desc:'Malaise/syncope potentiellement rythmique : fréquence très variable, hypotension possible et risque de récidive ou d’aggravation.'},
- malaise_hypoglycemia:{label:'Malaise hypoglycémique',fc:[90,130],spo:[95,100],base:[108,98],sys:[100,145],dia:[60,90],taBase:[120,75],desc:'Signes neurovégétatifs et neurologiques possibles ; glycémie basse à confirmer par mesure capillaire.'},
- seizure:{label:'Crise convulsive généralisée',fc:[120,160],spo:[82,94],base:[140,89],sys:[130,170],dia:[75,105],taBase:[150,90],desc:'Pendant la phase convulsive : tachycardie, désaturation transitoire et élévation tensionnelle possibles.'},
- post_ictal:{label:'Phase post-critique',fc:[90,120],spo:[88,96],base:[105,93],sys:[110,150],dia:[65,95],taBase:[125,80],desc:'Somnolence et confusion post-critiques ; ventilation et SpO₂ à surveiller, avec amélioration progressive possible.'},
- vertigo:{label:'Vertige aigu / syndrome vestibulaire',fc:[75,110],spo:[96,100],base:[92,98],sys:[120,165],dia:[70,100],taBase:[140,85],desc:'Constantes souvent conservées ; nausées, vomissements et instabilité dominent. Rechercher les signes neurologiques associés.'},
- panic:{label:'Crise d’angoisse / hyperventilation',fc:[105,140],spo:[98,100],base:[122,99],sys:[125,160],dia:[75,100],taBase:[140,88],desc:'Tachycardie et hyperventilation possibles ; SpO₂ généralement conservée. Diagnostic d’exclusion en contexte de secours.'},
- angina:{label:'Angor instable / douleur thoracique',fc:[85,125],spo:[93,99],base:[105,96],sys:[105,155],dia:[65,95],taBase:[130,80],desc:'Douleur thoracique avec FC variable ; une dégradation hémodynamique ou rythmique peut survenir.'},
- arrhythmia_fa:{label:'Fibrillation atriale rapide',fc:[130,175],spo:[92,98],base:[150,96],sys:[90,130],dia:[55,85],taBase:[105,65],desc:'Tachyarythmie irrégulière ; tolérance variable, hypotension possible. Le tracé ECG est simulé.'},
- brady_symptomatic:{label:'Bradycardie symptomatique',fc:[30,48],spo:[90,97],base:[38,94],sys:[75,105],dia:[40,65],taBase:[90,55],desc:'Bradycardie avec mauvaise tolérance possible : hypotension, altération de conscience et signes de choc.'},
- gi_bleed:{label:'Hémorragie digestive',fc:[115,155],spo:[94,99],base:[135,97],sys:[75,105],dia:[40,65],taBase:[90,55],desc:'Hypovolémie progressive : tachycardie compensatrice puis hypotension. SpO₂ parfois conservée malgré la gravité.'},
- dehydration:{label:'Déshydratation sévère',fc:[105,145],spo:[95,100],base:[125,98],sys:[80,110],dia:[45,70],taBase:[95,60],desc:'Tachycardie, hypotension orthostatique ou persistante et signes de déshydratation ; aggravation vers le choc possible.'},
- renal_colic:{label:'Colique néphrétique douloureuse',fc:[95,130],spo:[96,100],base:[112,98],sys:[135,175],dia:[80,105],taBase:[155,92],desc:'Douleur intense avec tachycardie et poussée tensionnelle réactionnelle ; fièvre associée = signe d’alerte.'},
- pancreatitis:{label:'Pancréatite aiguë',fc:[110,145],spo:[92,98],base:[128,95],sys:[95,130],dia:[55,85],taBase:[110,70],desc:'Douleur abdominale, inflammation et déshydratation ; tachycardie, fièvre et hypotension si aggravation.'},
- meningitis:{label:'Suspicion de méningite',fc:[110,145],spo:[94,100],base:[128,97],sys:[105,145],dia:[60,90],taBase:[125,75],desc:'Fièvre élevée et tachycardie ; altération neurologique et instabilité hémodynamique possibles en cas de sepsis.'},
- febrile_infection:{label:'Infection fébrile avec aggravation',fc:[110,150],spo:[92,98],base:[132,95],sys:[85,115],dia:[45,70],taBase:[100,60],desc:'Syndrome infectieux fébrile avec tachycardie et tendance hypotensive ; possible évolution vers un sepsis.'},
- pulmonary_edema:{label:'Œdème aigu du poumon',fc:[115,150],spo:[75,88],base:[132,83],sys:[150,200],dia:[85,115],taBase:[175,100],desc:'Détresse respiratoire aiguë avec hypoxémie ; poussée hypertensive fréquente dans certaines formes, puis épuisement possible.'},
- acute_respiratory_failure:{label:'Insuffisance respiratoire aiguë',fc:[115,155],spo:[70,88],base:[138,82],sys:[100,150],dia:[60,95],taBase:[125,78],desc:'Tachycardie et hypoxémie importante ; l’évolution dépend de la cause et de l’épuisement ventilatoire.'},
- asthma_exhaustion:{label:'Asthme avec épuisement respiratoire',fc:[130,165],spo:[75,88],base:[145,82],sys:[105,150],dia:[65,95],taBase:[125,80],desc:'Aggravation avec épuisement, diminution possible du murmure vésiculaire et hypoxémie : urgence vitale.'},
- diabetic_decomp:{label:'Décompensation diabétique',fc:[110,155],spo:[93,99],base:[132,96],sys:[90,130],dia:[50,85],taBase:[110,68],desc:'Hyperglycémie importante, déshydratation et tachycardie ; tableau compatible avec une décompensation, à préciser biologiquement.'}
+ sepsis:{label:'Sepsis avec aggravation',fc:[105,145],spo:[88,95],base:[122,92],sys:[85,110],dia:[45,65],desc:'Tachycardie, désaturation possible et tendance à l’hypotension.'},
+ hemorrhage:{label:'Hémorragie / choc hypovolémique',fc:[115,155],spo:[90,97],base:[132,94],sys:[70,100],dia:[40,65],desc:'Tachycardie compensatrice, pression artérielle qui baisse avec la perte sanguine.'},
+ cardiogenic:{label:'Choc cardiogénique',fc:[105,140],spo:[86,94],base:[120,91],sys:[70,95],dia:[45,65],desc:'Tachycardie fréquente, hypotension et hypoxémie possible.'},
+ respiratory:{label:'Détresse respiratoire aiguë',fc:[110,150],spo:[78,90],base:[128,86],sys:[105,145],dia:[65,90],desc:'Tachycardie et désaturation marquée.'},
+ asthma:{label:'Crise d’asthme sévère',fc:[120,160],spo:[82,92],base:[138,88],sys:[105,145],dia:[65,90],desc:'Tachycardie, hypoxémie variable.'},
+ copd:{label:'Exacerbation BPCO',fc:[95,130],spo:[84,92],base:[112,89],sys:[110,145],dia:[65,90],desc:'Désaturation modérée à importante, tachycardie.'},
+ pneumonia:{label:'Pneumonie avec hypoxémie',fc:[100,135],spo:[85,93],base:[118,90],sys:[105,145],dia:[65,90],desc:'Tachycardie liée à l’infection et hypoxémie variable.'},
+ pe:{label:'Embolie pulmonaire',fc:[110,150],spo:[82,93],base:[130,88],sys:[85,120],dia:[55,80],desc:'Tachycardie, désaturation possible.'},
+ anaphylaxis:{label:'Anaphylaxie',fc:[115,155],spo:[82,94],base:[135,90],sys:[65,100],dia:[35,65],desc:'Tachycardie, hypotension et désaturation.'},
+ acs:{label:'Syndrome coronarien aigu',fc:[85,125],spo:[90,97],base:[105,95],sys:[95,145],dia:[60,90],desc:'FC variable, SpO₂ souvent préservée.'},
+ stroke:{label:'AVC avec aggravation neurologique',fc:[75,115],spo:[90,97],base:[95,95],sys:[140,190],dia:[80,110],desc:'FC variable, hypertension possible.'},
+ decomp:{label:'Décompensation cardiaque',fc:[100,135],spo:[86,94],base:[118,90],sys:[95,145],dia:[60,90],desc:'Tachycardie et désaturation possibles.'},
+ heat_exhaustion:{label:'Épuisement lié à la chaleur',fc:[95,130],spo:[94,99],base:[112,97],sys:[100,130],dia:[60,85],taBase:[115,72],hbco:0,desc:'Tachycardie liée à la chaleur.'},
+ heatstroke:{label:'Coup de chaleur / insolation',fc:[120,160],spo:[90,98],base:[140,95],sys:[90,130],dia:[50,85],taBase:[105,65],hbco:0,desc:'Tachycardie marquée, désaturation.'},
+ hypothermia_moderate:{label:'Hypothermie modérée',fc:[40,65],spo:[90,98],base:[52,95],sys:[90,120],dia:[55,80],taBase:[105,65],hbco:0,desc:'Ralentissement possible de la FC.'},
+ hypothermia_severe:{label:'Hypothermie grave / sévère',fc:[20,45],spo:[80,94],base:[34,88],sys:[70,100],dia:[40,65],taBase:[85,50],hbco:0,desc:'Bradycardie importante.'},
+ alcohol:{label:'Intoxication alcoolique',fc:[55,115],spo:[88,99],base:[82,96],sys:[100,140],dia:[60,90],taBase:[120,75],hbco:0,desc:'Vigilance et ventilation à surveiller.'},
+ opioid:{label:'Intoxication morphinique',fc:[35,85],spo:[65,90],base:[52,82],sys:[85,115],dia:[50,75],taBase:[100,60],hbco:0,desc:'Dépression respiratoire, bradypnée.'},
+ drugs:{label:'Intoxication par autres drogues',fc:[85,155],spo:[88,99],base:[120,96],sys:[100,160],dia:[60,100],taBase:[130,80],hbco:0,desc:'Effets cardiovasculaires variables.'},
+ co:{label:'Intoxication au monoxyde de carbone',fc:[85,135],spo:[97,100],base:[112,99],sys:[100,150],dia:[60,95],taBase:[125,80],hbco:30,desc:'HbCO modifiable de 0 à 100 %.'},
+ hypoglycemia:{label:'Hypoglycémie grave',fc:[85,130],spo:[94,100],base:[108,97],sys:[100,150],dia:[60,95],taBase:[120,75],hbco:0,desc:'Tachycardie possible.'},
+ ketoacidosis:{label:'Hyperglycémie avec acidocétose',fc:[110,155],spo:[92,100],base:[132,96],sys:[95,140],dia:[55,90],taBase:[115,70],hbco:0,desc:'Tachycardie, déshydratation.'},
+ syncope_vasovagal:{label:'Malaise vagal / syncope',fc:[42,58],spo:[96,100],base:[50,98],sys:[75,95],dia:[40,60],taBase:[85,50],desc:'Bradycardie et hypotension transitoires.'},
+ syncope_cardiac:{label:'Malaise avec suspicion d’origine cardiaque',fc:[35,150],spo:[88,97],base:[118,93],sys:[85,115],dia:[50,75],taBase:[95,60],desc:'Malaise potentiellement rythmique.'},
+ malaise_hypoglycemia:{label:'Malaise hypoglycémique',fc:[90,130],spo:[95,100],base:[108,98],sys:[100,145],dia:[60,90],taBase:[120,75],desc:'Signes neurovégétatifs.'},
+ seizure:{label:'Crise convulsive généralisée',fc:[120,160],spo:[82,94],base:[140,89],sys:[130,170],dia:[75,105],taBase:[150,90],desc:'Phase convulsive.'},
+ post_ictal:{label:'Phase post-critique',fc:[90,120],spo:[88,96],base:[105,93],sys:[110,150],dia:[65,95],taBase:[125,80],desc:'Somnolence et confusion.'},
+ vertigo:{label:'Vertige aigu / syndrome vestibulaire',fc:[75,110],spo:[96,100],base:[92,98],sys:[120,165],dia:[70,100],taBase:[140,85],desc:'Nausées, vertiges.'},
+ panic:{label:'Crise d’angoisse / hyperventilation',fc:[105,140],spo:[98,100],base:[122,99],sys:[125,160],dia:[75,100],taBase:[140,88],desc:'Hyperventilation.'},
+ angina:{label:'Angor instable / douleur thoracique',fc:[85,125],spo:[93,99],base:[105,96],sys:[105,155],dia:[65,95],taBase:[130,80],desc:'Douleur thoracique.'},
+ arrhythmia_fa:{label:'Fibrillation atriale rapide',fc:[130,175],spo:[92,98],base:[150,96],sys:[90,130],dia:[55,85],taBase:[105,65],desc:'Tachyarythmie irrégulière.'},
+ brady_symptomatic:{label:'Bradycardie symptomatique',fc:[30,48],spo:[90,97],base:[38,94],sys:[75,105],dia:[40,65],taBase:[90,55],desc:'Bradycardie symptomatique.'},
+ gi_bleed:{label:'Hémorragie digestive',fc:[115,155],spo:[94,99],base:[135,97],sys:[75,105],dia:[40,65],taBase:[90,55],desc:'Hypovolémie progressive.'},
+ dehydration:{label:'Déshydratation sévère',fc:[105,145],spo:[95,100],base:[125,98],sys:[80,110],dia:[45,70],taBase:[95,60],desc:'Tachycardie, hypotension.'},
+ renal_colic:{label:'Colique néphrétique douloureuse',fc:[95,130],spo:[96,100],base:[112,98],sys:[135,175],dia:[80,105],taBase:[155,92],desc:'Douleur intense.'},
+ pancreatitis:{label:'Pancréatite aiguë',fc:[110,145],spo:[92,98],base:[128,95],sys:[95,130],dia:[55,85],taBase:[110,70],desc:'Douleur abdominale.'},
+ meningitis:{label:'Suspicion de méningite',fc:[110,145],spo:[94,100],base:[128,97],sys:[105,145],dia:[60,90],taBase:[125,75],desc:'Fièvre élevée et tachycardie.'},
+ febrile_infection:{label:'Infection fébrile avec aggravation',fc:[110,150],spo:[92,98],base:[132,95],sys:[85,115],dia:[45,70],taBase:[100,60],desc:'Syndrome infectieux fébrile.'},
+ pulmonary_edema:{label:'Œdème aigu du poumon',fc:[115,150],spo:[75,88],base:[132,83],sys:[150,200],dia:[85,115],taBase:[175,100],desc:'Détresse respiratoire aiguë.'},
+ acute_respiratory_failure:{label:'Insuffisance respiratoire aiguë',fc:[115,155],spo:[70,88],base:[138,82],sys:[100,150],dia:[60,95],taBase:[125,78],desc:'Tachycardie et hypoxémie.'},
+ asthma_exhaustion:{label:'Asthme avec épuisement respiratoire',fc:[130,165],spo:[75,88],base:[145,82],sys:[105,150],dia:[65,95],taBase:[125,80],desc:'Épuisement respiratoire.'},
+ diabetic_decomp:{label:'Décompensation diabétique',fc:[110,155],spo:[93,99],base:[132,96],sys:[90,130],dia:[50,85],taBase:[110,68],desc:'Hyperglycémie importante.'}
 };
 function applyAlarmThresholds(){if(state.condition==='normal')return;const pediatric=state.patient==='pediatrie';state.lowFC=pediatric?70:60;state.highFC=pediatric?140:100;state.lowSys=90;state.highSys=140;state.lowDia=70;state.highDia=90;state.lowSpo=94;state.highSpo=100;}
-function applyCondition(id){if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}const c=conditions[id]||conditions.normal;state.condition=id;$('worsenBtn').textContent='⚠ Déclencher une aggravation / amélioration';state.fcMin=c.fc[0];state.fcMax=c.fc[1];state.spoMin=c.spo[0];state.spoMax=c.spo[1];state.fc=c.base[0];state.spo=c.base[1];state.rhythm=id==='arrhythmia_fa'?'fa':'sinusal';state.irregularFC=id==='arrhythmia_fa';state.hbco=c.hbco??0;state.gly=0;state.glyMeasured=false;state.temp=0;state.tempMeasured=false;state.fcMeasured=false;state.spoMeasured=false;state.taMeasured=false;state.taCycleStartAt=null;state.taHistory=[];if(id!=='normal'&&c.sys&&c.dia){const ta=c.taBase||[Math.round((c.sys[0]+c.sys[1])/2),Math.round((c.dia[0]+c.dia[1])/2)];state.sys=ta[0];state.dia=ta[1];state.pendingSys=ta[0];state.pendingDia=ta[1];$('manualSys').value=state.pendingSys;$('manualDia').value=state.pendingDia;}if(id==='normal'){state.sys=defaults.sys;state.dia=defaults.dia;state.pendingSys=defaults.sys;state.pendingDia=defaults.dia;state.lowFC=defaults.lowFC;state.highFC=defaults.highFC;state.lowSys=defaults.lowSys;state.highSys=defaults.highSys;state.lowDia=defaults.lowDia;state.highDia=defaults.highDia;state.lowSpo=defaults.lowSpo;state.highSpo=defaults.highSpo}else{applyAlarmThresholds()}state.variationFCEnabled=false;state.variationSpoEnabled=false;smoothTarget={fc:state.fc,spo:state.spo};lastTargetAt=0;$('clinicalInfo').textContent=c.desc;log('Affection sélectionnée : '+c.label+' — seuils d’alarme '+(id==='normal'?'conservés':'standards adaptés au mode patient')+', variations désactivées pour laisser jouer le scénario prévu');render();publish()}
+function applyCondition(id){if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}const c=conditions[id]||conditions.normal;state.condition=id;$('worsenBtn').textContent='⚠ Déclencher une aggravation / amélioration';state.fcMin=c.fc[0];state.fcMax=c.fc[1];state.spoMin=c.spo[0];state.spoMax=c.spo[1];state.fc=c.base[0];state.spo=c.base[1];state.rhythm=id==='arrhythmia_fa'?'fa':'sinusal';state.irregularFC=id==='arrhythmia_fa';state.hbco=c.hbco??0;state.gly=0;state.glyMeasured=false;state.temp=0;state.tempMeasured=false;state.fcMeasured=false;state.spoMeasured=false;state.taMeasured=false;state.taCycleStartAt=null;state.taHistory=[];if(id!=='normal'&&c.sys&&c.dia){const ta=c.taBase||[Math.round((c.sys[0]+c.sys[1])/2),Math.round((c.dia[0]+c.dia[1])/2)];state.sys=ta[0];state.dia=ta[1];state.pendingSys=ta[0];state.pendingDia=ta[1];$('manualSys').value=state.pendingSys;$('manualDia').value=state.pendingDia;}if(id==='normal'){state.sys=defaults.sys;state.dia=defaults.dia;state.pendingSys=defaults.sys;state.pendingDia=defaults.dia;state.lowFC=defaults.lowFC;state.highFC=defaults.highFC;state.lowSys=defaults.lowSys;state.highSys=defaults.highSys;state.lowDia=defaults.lowDia;state.highDia=defaults.highDia;state.lowSpo=defaults.lowSpo;state.highSpo=defaults.highSpo}else{applyAlarmThresholds()}state.variationFCEnabled=false;state.variationSpoEnabled=false;smoothTarget={fc:state.fc,spo:state.spo};lastTargetAt=0;$('clinicalInfo').textContent=c.desc;log('Affection sélectionnée : '+c.label);render();publish()}
 $('condition').onchange=e=>applyCondition(e.target.value);
 $('hbcoControl').onchange=e=>{state.hbco=Math.max(0,Math.min(100,Math.round(Number(e.target.value)||0)));e.target.value=state.hbco;log('HbCO réglée à '+state.hbco+' %');render();publish()};
-$('glyControl').onchange=e=>{const raw=e.target.value.trim();if(raw==='')return;state.gly=Math.max(0,Math.min(10,Number(raw)));e.target.value=state.gly.toFixed(2);log('Valeur de glycémie saisie : '+state.gly.toFixed(2)+' g/L — en attente de validation');render();publish()};
-$('tempControl').onchange=e=>{const raw=e.target.value.trim();if(raw==='')return;state.temp=Math.max(0,Math.min(45,Number(raw)));e.target.value=state.temp.toFixed(1);log('Valeur de température saisie : '+state.temp.toFixed(1)+' °C — en attente de validation');render();publish()};
-$('validateGly').onclick=()=>{const raw=$('glyControl').value.trim();if(raw===''||!Number.isFinite(Number(raw))){alert('Saisis une glycémie valide avant de la valider.');return}state.gly=Math.max(0,Math.min(10,Number(raw)));state.glyMeasured=true;log('Glycémie mesurée et validée : '+state.gly.toFixed(2)+' g/L');render();publish()};
-$('resetGly').onclick=()=>{state.gly=0;state.glyMeasured=false;$('glyControl').value='0.00';log('Glycémie réinitialisée — non mesurée');render();publish()};
-$('validateTemp').onclick=()=>{const raw=$('tempControl').value.trim();if(raw===''||!Number.isFinite(Number(raw))){alert('Saisis une température valide avant de la valider.');return}state.temp=Math.max(0,Math.min(45,Number(raw)));state.tempMeasured=true;log('Température mesurée et validée : '+state.temp.toFixed(1)+' °C');render();publish()};
-$('resetTemp').onclick=()=>{state.temp=0;state.tempMeasured=false;$('tempControl').value='0.0';log('Température réinitialisée — non mesurée');render();publish()};
+$('glyControl').onchange=e=>{const raw=e.target.value.trim();if(raw==='')return;state.gly=Math.max(0,Math.min(10,Number(raw)));e.target.value=state.gly.toFixed(2);render();publish()};
+$('tempControl').onchange=e=>{const raw=e.target.value.trim();if(raw==='')return;state.temp=Math.max(0,Math.min(45,Number(raw)));e.target.value=state.temp.toFixed(1);render();publish()};
+$('validateGly').onclick=()=>{const raw=$('glyControl').value.trim();if(raw===''||!Number.isFinite(Number(raw))){alert('Saisis une glycémie valide.');return}state.gly=Math.max(0,Math.min(10,Number(raw)));state.glyMeasured=true;log('Glycémie validée : '+state.gly.toFixed(2)+' g/L');render();publish()};
+$('resetGly').onclick=()=>{state.gly=0;state.glyMeasured=false;$('glyControl').value='0.00';log('Glycémie réinitialisée');render();publish()};
+$('validateTemp').onclick=()=>{const raw=$('tempControl').value.trim();if(raw===''||!Number.isFinite(Number(raw))){alert('Saisis une température valide.');return}state.temp=Math.max(0,Math.min(45,Number(raw)));state.tempMeasured=true;log('Température validée : '+state.temp.toFixed(1)+' °C');render();publish()};
+$('resetTemp').onclick=()=>{state.temp=0;state.tempMeasured=false;$('tempControl').value='0.0';log('Température réinitialisée');render();publish()};
 $('worsenBtn').onclick=()=>{
- if(worseningTimer){clearTimeout(worseningTimer);worseningTimer=null;$('worsenBtn').textContent='⚠ Déclencher une aggravation / amélioration';log('Évolution interrompue');return}
+ if(worseningTimer){clearTimeout(worseningTimer);worseningTimer=null;$('worsenBtn').textContent='⚠ Déclencher progressive';log('Évolution interrompue');return}
  const fcDir=$('fcDirection').value,spoDir=$('spoDirection').value;
  if(fcDir==='none'&&spoDir==='none'){alert('Choisis au moins une constante à faire évoluer.');return}
  $('worsenBtn').textContent='Arrêter l’évolution';
@@ -1100,75 +1054,30 @@ $('worsenBtn').onclick=()=>{
   if(spoDir==='down'){state.spo=Math.max(0,Number(state.spo)-1);doneSpo=state.spo<=0}
   smoothTarget.fc=state.fc;smoothTarget.spo=state.spo;
   updateLiveReadouts();publish();
-  if(doneFC&&doneSpo){worseningTimer=null;$('worsenBtn').textContent='Limite atteinte';log('Limite de simulation atteinte');return}
-  // Un point toutes les 3 à 5 secondes, avec un délai aléatoire à chaque étape.
+  if(doneFC&&doneSpo){worseningTimer=null;$('worsenBtn').textContent='Limite atteinte';return}
   worseningTimer=setTimeout(evolveOneStep,3000+Math.random()*2000);
  };
  worseningTimer=setTimeout(evolveOneStep,3000+Math.random()*2000);
 };
 $('startScenarioClock').onclick=()=>{
- if(state.scenarioElapsedEpoch===null){state.scenarioElapsedEpoch=Date.now();log('Compteur de mise en situation démarré / repris');}
- else {state.scenarioElapsedAccumulated=Number(state.scenarioElapsedAccumulated||0)+(Date.now()-Number(state.scenarioElapsedEpoch))/1000;state.scenarioElapsedEpoch=null;log('Compteur de mise en situation mis en pause');}
+ if(state.scenarioElapsedEpoch===null){state.scenarioElapsedEpoch=Date.now();log('Compteur démarré');}
+ else {state.scenarioElapsedAccumulated=Number(state.scenarioElapsedAccumulated||0)+(Date.now()-Number(state.scenarioElapsedEpoch))/1000;state.scenarioElapsedEpoch=null;log('Compteur en pause');}
  renderScenarioClock();publish();
 };
-$('resetScenarioClock').onclick=()=>{state.scenarioElapsedEpoch=null;state.scenarioElapsedAccumulated=0;renderScenarioClock();log('Compteur de mise en situation remis à zéro');publish()};
-$('resetAllBtn').onclick=()=>{if(worseningTimer){clearTimeout(worseningTimer);worseningTimer=null}state={...defaults,fcMeasured:false,spoMeasured:false,taMeasured:false,glyMeasured:false,tempMeasured:false,events:[],condition:'normal',gas:{...gasDefaults}};activeTASnapshot=null;$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';audioEnabled=true;state.soundEnabled=true;smoothTarget={fc:72,spo:98};state.hbco=0;lastTargetAt=0;lastHeartBeat=0;stopFlatlineTone();$('clinicalInfo').textContent=conditions.normal.desc;$('patientName').value=state.name;$('condition').value='normal';log('Réinitialisation générale : constantes normales');render();publish()};
-$('cardiacArrestBtn').onclick=()=>{state.variationFCEnabled=false;state.variationSpoEnabled=false;state.fc=0;state.spo=0;state.rhythm='asystole';state.irregularFC=false;lastHeartBeat=0;log('Simulation d’arrêt cardiaque : variations désactivées, FC 0, SpO₂ 0, asystolie');render();publish()};
+$('resetScenarioClock').onclick=()=>{state.scenarioElapsedEpoch=null;state.scenarioElapsedAccumulated=0;renderScenarioClock();log('Compteur remis à zéro');publish()};
+$('resetAllBtn').onclick=()=>{if(worseningTimer){clearTimeout(worseningTimer);worseningTimer=null}state={...defaults,fcMeasured:false,spoMeasured:false,taMeasured:false,glyMeasured:false,tempMeasured:false,events:[],condition:'normal',gas:{...gasDefaults}};activeTASnapshot=null;$('worsenBtn').textContent='⚠ Déclenchement progressive';audioEnabled=true;state.soundEnabled=true;smoothTarget={fc:72,spo:98};state.hbco=0;lastTargetAt=0;lastHeartBeat=0;stopFlatlineTone();$('clinicalInfo').textContent=conditions.normal.desc;$('patientName').value=state.name;$('condition').value='normal';log('Réinitialisation générale');render();publish()};
+$('cardiacArrestBtn').onclick=()=>{state.variationFCEnabled=false;state.variationSpoEnabled=false;state.fc=0;state.spo=0;state.rhythm='asystole';state.irregularFC=false;lastHeartBeat=0;log('Arrêt cardiaque simulé');render();publish()};
 $('applyLimits').onclick=()=>{
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo'].forEach(id=>state[id]=Number($(id).value));state.lowHbco=Math.max(0,Math.min(100,Number($('lowHbco').value)||0));$('lowHbco').value=state.lowHbco;state.lowTemp=Math.max(25,Math.min(45,Number($('lowTemp').value)||35));state.highTemp=Math.max(25,Math.min(45,Number($('highTemp').value)||38));$('lowTemp').value=state.lowTemp.toFixed(1);$('highTemp').value=state.highTemp.toFixed(1);
- log('Seuils hauts et bas des alarmes modifiés par le formateur');render();publish()
+ log('Seuils modifiés');render();publish()
 };
 $('testAlarmBtn').onclick=async()=>{
  if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}
- if(!audioCtx){alert('Audio indisponible sur cet appareil.');return}
- try{await audioCtx.resume();audioEnabled=state.soundEnabled!==false;render();playAlarmSequence(true)}catch(e){alert('Impossible de démarrer le son sur cet appareil.')}
+ if(!audioCtx){alert('Audio indisponible.');return}
+ try{await audioCtx.resume();audioEnabled=state.soundEnabled!==false;render();playAlarmSequence(true)}catch(e){}
 };
 $('clearEvents').onclick=()=>{state.events=[];renderEvents();publish()};$('controlNotes')?.addEventListener('input',e=>{state.notes=e.target.value;publish()});
-const leadAxis={II:1};
-function leadMorphology(t,leadName='II',idx=0){
- const id=state.rhythm,fc=Math.max(1,Number(state.fc)||60),period=60/fc;
- if(!state.fcMeasured||id==='asystole'||(Number(state.fc)<=0&&id!=='fv'))return 0;
- if(id==='fv')return Math.sin(t*31+idx*2.3)*.18+Math.sin(t*47+idx)*.12+Math.sin(t*67+idx*1.7)*.08;
- let cycles=t/period;
- if(state.irregularFC||id==='fa')cycles+=.24*Math.sin(cycles*2.17)+.11*Math.sin(cycles*4.73+1.2);
- const beat=Math.floor(cycles),local=(cycles-beat)*period;
- const axis=leadAxis[leadName]??1,pol=axis>=0?1:-1,amp=Math.max(.35,Math.abs(axis));
- const wide=id==='tv',qrsWidth=wide?.105:.055;
- let y=0;
- if(id==='flutter'){
-  const saw=(local/period*4.0)%1;
-  y+=(saw<.5?saw*2:(1-saw)*2)*.11-.055;
- }
- if(!['fa','flutter','svt','tv'].includes(id))y+=Math.exp(-Math.pow((local-.16*period)/(.035*period),2))*pol*.10*amp;
- const qrsCenter=.31*period,qAmp=(id==='tv'?1.15:1)*pol*amp;
- y+=-Math.exp(-Math.pow((local-(qrsCenter-qrsWidth*.30))/(qrsWidth*.18),2))*qAmp*.22;
- y+=Math.exp(-Math.pow((local-qrsCenter)/(qrsWidth*.24),2))*qAmp*.95;
- y+=-Math.exp(-Math.pow((local-(qrsCenter+qrsWidth*.34))/(qrsWidth*.2),2))*qAmp*.28;
- y+=Math.exp(-Math.pow((local-.70*period)/(.085*period),2))*(id==='tv'?.08:.16)*pol*amp;
- if(id==='fa')y+=Math.sin(t*27)*.018+Math.sin(t*39)*.012;
- return y;
-}
-function draw(canvas,type){
- if(!canvas||!canvas.clientWidth||!canvas.clientHeight)return;
- const ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;
- const w=Math.floor(canvas.clientWidth*dpr),h=Math.floor(canvas.clientHeight*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
- ctx.clearRect(0,0,w,h);ctx.strokeStyle='#193328';ctx.lineWidth=1*dpr;
- for(let x=0;x<w;x+=w/10){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
- for(let y=0;y<h;y+=h/4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
- ctx.strokeStyle=type==='ecg'?'#53f28b':'#4aa8ff';ctx.lineWidth=1.8*dpr;ctx.beginPath();
- const windowSec=5*(25/(Number(state.speed)||25)),offset=phase;
- for(let x=0;x<w;x++){
-  const t=x/w*windowSec+offset;let y=h*.5;
-  if(type==='ecg'){
-   const v=state.fcMeasured===true&&Number(state.fc)>0?leadMorphology(t,'II',0):0;y=h*.5-v*h*.72;
-  }else{
-   const beat=60/Math.max(1,Number(state.fc)||60),p=(t%beat)/beat;y=h*.78;
-   if(state.spoMeasured&&Number(state.fc)>0&&Number(state.spo)>0&&p>.05&&p<.45)y-=Math.pow(Math.sin((p-.05)/.4*Math.PI),2)*h*.55*(state.spo/100);
-  }
-  if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
- }
- ctx.stroke();
-}
+
 function shortTone(frequency,duration,gainValue,when=null){if(!audioCtx)return;try{let o=audioCtx.createOscillator(),g=audioCtx.createGain(),start=when===null?audioCtx.currentTime:when;o.type='sine';o.frequency.value=frequency;g.gain.setValueAtTime(gainValue,start);g.gain.exponentialRampToValueAtTime(.001,start+duration);o.connect(g);g.connect(audioCtx.destination);o.start(start);o.stop(start+duration)}catch(e){}}
 function alarmPulse(frequency,duration,when){
  if(!audioCtx)return;
@@ -1187,7 +1096,6 @@ function alarmPulse(frequency,duration,when){
 function playAlarmSequence(testOnly=false){
  if(!audioCtx||!audioEnabled)return;
  const now=audioCtx.currentTime, tone=.16, gap=.13, pause=.72;
- // Alarme distincte du battement cardiaque : onde carrée, alternance aigu/grave.
  const times=[0,tone+gap,2*(tone+gap),3*(tone+gap)+pause,3*(tone+gap)+pause+tone+gap];
  times.forEach((t,i)=>alarmPulse(i<3?1040:680,tone,now+t));
  lastBeep=Date.now();
@@ -1202,12 +1110,17 @@ function beepHeart(){if(!audioEnabled||!audioCtx||!state.fcMeasured||state.rhyth
 $('scopeAlarmAckBtn').onclick=()=>{if(role!=='display')return;const pending=scopeAlarmUnacknowledgedConditions();if(!pending.length)return;pending.forEach(condition=>{const metricKey=scopeAlarmMetricKey(condition),info=metricKey?scopeAlarmMetricInfo(metricKey):null;if(metricKey&&info&&Number.isFinite(info.value)&&!Object.prototype.hasOwnProperty.call(scopeAlarmAckSnapshots,metricKey))scopeAlarmAckSnapshots[metricKey]=info.value});scopeAlarmAcked=true;stopScopeAlarmAudio();refreshScopeAlarms()};
 function animate(){if(currentModule==='scope'){syncFlatlineTone();beepHeart();beepAlarm();updateSIQ();}else{stopFlatlineTone();}beepGasAlarm();beepCoAlarm();renderScenarioClock();requestAnimationFrame(animate)}
 
-// Module 4 gaz : le CO atmosphérique est indépendant de la HbCO du Scope.
 let currentModule='scope';
 const gasDefaults={o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,lieA1:20,lieA2:40,coA1:20,coA2:50,h2sA1:5,h2sA2:30};
-const gasEvolutionTimers={o2:null,lie:null,co:null,h2s:null};const gasEvolutionDirection={o2:1,lie:1,co:1,h2s:1};let gasEvolutionSelected='o2';const gasEvolutionMeta={o2:{label:'O₂',unit:'% vol',min:0,max:100,defaultStep:0.5,decimals:1},lie:{label:'LIE',unit:'% LIE',min:0,max:100,defaultStep:1,decimals:0},co:{label:'CO',unit:'ppm',min:0,max:2000,defaultStep:5,decimals:0},h2s:{label:'H₂S',unit:'ppm',min:0,max:500,defaultStep:1,decimals:0}};function stopGasEvolution(key){if(key){if(gasEvolutionTimers[key]){clearInterval(gasEvolutionTimers[key]);gasEvolutionTimers[key]=null}return}Object.keys(gasEvolutionTimers).forEach(k=>{if(gasEvolutionTimers[k]){clearInterval(gasEvolutionTimers[k]);gasEvolutionTimers[k]=null}})}function renderGasEvolution(){const m=gasEvolutionMeta[gasEvolutionSelected],g={...gasDefaults,...(state.gas||{})};document.querySelectorAll('[data-gas-tab]').forEach(b=>b.classList.toggle('active',b.dataset.gasTab===gasEvolutionSelected));$('gasEvoCurrent').textContent=`${m.label} · ${Number(g[gasEvolutionSelected]).toLocaleString('fr-FR',{minimumFractionDigits:m.decimals,maximumFractionDigits:m.decimals})} ${m.unit}`;const running=!!gasEvolutionTimers[gasEvolutionSelected],dir=gasEvolutionDirection[gasEvolutionSelected];$('gasEvoUp').classList.toggle('primary',dir>0);$('gasEvoDown').classList.toggle('primary',dir<0);$('gasEvoStart').disabled=running;$('gasEvoStop').disabled=!running;$('gasEvoStatus').textContent=running?`Évolution ${dir>0?'positive':'négative'} en cours…`:'Évolution arrêtée';$('gasEvoStatus').classList.toggle('running',running)}function startGasEvolution(key){const m=gasEvolutionMeta[key];stopGasEvolution(key);gasEvolutionTimers[key]=setInterval(()=>{const g={...gasDefaults,...(state.gas||{})};const step=Math.max(0.1,Number($('gasEvoStep').value)||m.defaultStep);const next=Math.max(m.min,Math.min(m.max,Number(g[key]||0)+gasEvolutionDirection[key]*step));g[key]=Number(next.toFixed(m.decimals));state.gas=g;renderGas();publish();if(next===m.min||next===m.max){stopGasEvolution(key);renderGasEvolution();log(`${m.label} : limite ${next===m.min?'minimale':'maximale'} atteinte`)}else renderGasEvolution()},1000);renderGasEvolution()}
+const gasEvolutionTimers={o2:null,lie:null,co:null,h2s:null};const gasEvolutionDirection={o2:1,lie:1,co:1,h2s:1};let gasEvolutionSelected='o2';const gasEvolutionMeta={o2:{label:'O₂',unit:'% vol',min:0,max:100,defaultStep:0.5,decimals:1},lie:{label:'LIE',unit:'% LIE',min:0,max:100,defaultStep:1,decimals:0},co:{label:'CO',unit:'ppm',min:0,max:2000,defaultStep:5,decimals:0},h2s:{label:'H₂S',unit:'ppm',min:0,max:500,defaultStep:1,decimals:0}};function stopGasEvolution(key){if(key){if(gasEvolutionTimers[key]){clearInterval(gasEvolutionTimers[key]);gasEvolutionTimers[key]=null}return}Object.keys(gasEvolutionTimers).forEach(k=>{if(gasEvolutionTimers[k]){clearInterval(gasEvolutionTimers[k]);gasEvolutionTimers[k]=null}})}function renderGasEvolution(){const m=gasEvolutionMeta[gasEvolutionSelected],g={...gasDefaults,...(state.gas||{})};document.querySelectorAll('[data-gas-tab]').forEach(b=>b.classList.toggle('active',b.dataset.gasTab===gasEvolutionSelected));if($('gasEvoCurrent'))$('gasEvoCurrent').textContent=`${m.label} · ${Number(g[gasEvolutionSelected]).toLocaleString('fr-FR',{minimumFractionDigits:m.decimals,maximumFractionDigits:m.decimals})} ${m.unit}`;const running=!!gasEvolutionTimers[gasEvolutionSelected],dir=gasEvolutionDirection[gasEvolutionSelected];if($('gasEvoUp'))$('gasEvoUp').classList.toggle('primary',dir>0);if($('gasEvoDown'))$('gasEvoDown').classList.toggle('primary',dir<0);if($('gasEvoStart'))$('gasEvoStart').disabled=running;if($('gasEvoStop'))$('gasEvoStop').disabled=!running;if($('gasEvoStatus')){$('gasEvoStatus').textContent=running?`Évolution ${dir>0?'positive':'négative'} en cours…`:'Évolution arrêtée';$('gasEvoStatus').classList.toggle('running',running)}}function startGasEvolution(key){const m=gasEvolutionMeta[key];stopGasEvolution(key);gasEvolutionTimers[key]=setInterval(()=>{const g={...gasDefaults,...(state.gas||{})};const step=Math.max(0.1,Number($('gasEvoStep').value)||m.defaultStep);const next=Math.max(m.min,Math.min(m.max,Number(g[key]||0)+gasEvolutionDirection[key]*step));g[key]=Number(next.toFixed(m.decimals));state.gas=g;renderGas();publish();if(next===m.min||next===m.max){stopGasEvolution(key);renderGasEvolution();log(`${m.label} : limite atteinte`)}else renderGasEvolution()},1000);renderGasEvolution()}
 
-document.querySelectorAll('[data-gas-tab]').forEach(btn=>btn.onclick=()=>{gasEvolutionSelected=btn.dataset.gasTab;$('gasEvoStep').value=gasEvolutionMeta[gasEvolutionSelected].defaultStep;renderGasEvolution()});$('gasEvoUp').onclick=()=>{gasEvolutionDirection[gasEvolutionSelected]=1;renderGasEvolution()};$('gasEvoDown').onclick=()=>{gasEvolutionDirection[gasEvolutionSelected]=-1;renderGasEvolution()};$('gasEvoStart').onclick=()=>startGasEvolution(gasEvolutionSelected);$('gasEvoStop').onclick=()=>{stopGasEvolution(gasEvolutionSelected);renderGasEvolution()};$('gasEvoStep').onchange=renderGasEvolution;
+document.querySelectorAll('[data-gas-tab]').forEach(btn=>btn.onclick=()=>{gasEvolutionSelected=btn.dataset.gasTab;if($('gasEvoStep'))$('gasEvoStep').value=gasEvolutionMeta[gasEvolutionSelected].defaultStep;renderGasEvolution()});
+if($('gasEvoUp'))$('gasEvoUp').onclick=()=>{gasEvolutionDirection[gasEvolutionSelected]=1;renderGasEvolution()};
+if($('gasEvoDown'))$('gasEvoDown').onclick=()=>{gasEvolutionDirection[gasEvolutionSelected]=-1;renderGasEvolution()};
+if($('gasEvoStart'))$('gasEvoStart').onclick=()=>startGasEvolution(gasEvolutionSelected);
+if($('gasEvoStop'))$('gasEvoStop').onclick=()=>{stopGasEvolution(gasEvolutionSelected);renderGasEvolution()};
+if($('gasEvoStep'))$('gasEvoStep').onchange=renderGasEvolution;
+
 function gasAlarmLevel(key){
  const g={...gasDefaults,...(state.gas||{})},v=Number(g[key])||0;
  if(key==='o2') return (v<Number(g.lowO2)||v>Number(g.highO2))?2:0;
@@ -1222,24 +1135,26 @@ function gasAlarmSignature(){return ['o2','lie','co','h2s'].map(k=>gasAlarmLevel
 function refreshGasAlarmAcknowledgement(){const sig=gasAlarmSignature();if(sig!==gasAlarmLastSignature){gasAlarmLastSignature=sig;gasAlarmAcked=false;}return sig}
 function renderGas(){
  const g={...gasDefaults,...(state.gas||{})},f=(v,d=0)=>Number(v).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
- $('gasValueO2').textContent=f(g.o2,1);$('gasValueLIE').textContent=f(g.lie);$('gasValueCO').textContent=f(g.co);$('gasValueH2S').textContent=f(g.h2s,1);
- $('gasGaugeO2').style.width=(Math.min(100,Math.max(0,g.o2))/100*100)+'%';$('gasGaugeLIE').style.width=(Math.min(100,Math.max(0,g.lie))/100*100)+'%';$('gasGaugeCO').style.width=(Math.min(2000,Math.max(0,g.co))/2000*100)+'%';$('gasGaugeH2S').style.width=(Math.min(500,Math.max(0,g.h2s))/500*100)+'%';
- $('gasThresholdO2').textContent=`Plage pédagogique : ${f(g.lowO2,1)} – ${f(g.highO2,1)} % vol`;
- $('gasThresholdLIE').textContent=`A1 : ${f(g.lieA1)} · A2 : ${f(g.lieA2)} % LIE`;
- $('gasThresholdCO').textContent=`A1 : ${f(g.coA1)} · A2 : ${f(g.coA2)} ppm`;
- $('gasThresholdH2S').textContent=`A1 : ${f(g.h2sA1)} · A2 : ${f(g.h2sA2)} ppm`;
+ if($('gasValueO2'))$('gasValueO2').textContent=f(g.o2,1);if($('gasValueLIE'))$('gasValueLIE').textContent=f(g.lie);if($('gasValueCO'))$('gasValueCO').textContent=f(g.co);if($('gasValueH2S'))$('gasValueH2S').textContent=f(g.h2s,1);
+ if($('gasGaugeO2'))$('gasGaugeO2').style.width=(Math.min(100,Math.max(0,g.o2))/100*100)+'%';if($('gasGaugeLIE'))$('gasGaugeLIE').style.width=(Math.min(100,Math.max(0,g.lie))/100*100)+'%';if($('gasGaugeCO'))$('gasGaugeCO').style.width=(Math.min(2000,Math.max(0,g.co))/2000*100)+'%';if($('gasGaugeH2S'))$('gasGaugeH2S').style.width=(Math.min(500,Math.max(0,g.h2s))/500*100)+'%';
+ if($('gasThresholdO2'))$('gasThresholdO2').textContent=`Plage pédagogique : ${f(g.lowO2,1)} – ${f(g.highO2,1)} % vol`;
+ if($('gasThresholdLIE'))$('gasThresholdLIE').textContent=`A1 : ${f(g.lieA1)} · A2 : ${f(g.lieA2)} % LIE`;
+ if($('gasThresholdCO'))$('gasThresholdCO').textContent=`A1 : ${f(g.coA1)} · A2 : ${f(g.coA2)} ppm`;
+ if($('gasThresholdH2S'))$('gasThresholdH2S').textContent=`A1 : ${f(g.h2sA1)} · A2 : ${f(g.h2sA2)} ppm`;
  [['O2','o2'],['LIE','lie'],['CO','co'],['H2S','h2s']].forEach(([id,k])=>{
    const card=$('gasCard'+id),level=gasAlarmLevel(k);
-   card.classList.remove('gas-alarm','gas-alarm-a1','gas-alarm-a2');
-   if(level===1)card.classList.add('gas-alarm-a1');
-   if(level===2)card.classList.add('gas-alarm-a2');
+   if(card){
+    card.classList.remove('gas-alarm','gas-alarm-a1','gas-alarm-a2');
+    if(level===1)card.classList.add('gas-alarm-a1');
+    if(level===2)card.classList.add('gas-alarm-a2');
+   }
    const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');if(n&&document.activeElement!==n)n.value=g[k];if(r)r.value=g[k];
  });
- const alarmSig=refreshGasAlarmAcknowledgement(); const alarmOn=alarmSig!=='0000'; $('gasAlarmStatus').textContent=alarmOn?'ÉTAT : ALARME':'ÉTAT : NORMAL'; const ackBtn=$('gasAlarmAck'),ackStatus=$('gasAlarmAckStatus'); if(ackBtn){ackBtn.disabled=!alarmOn||gasAlarmAcked; ackBtn.textContent=gasAlarmAcked?'🔇 Alarme sonore acquittée':'🔇 Acquitter l\'alarme sonore';} if(ackStatus)ackStatus.textContent=alarmOn?(gasAlarmAcked?'Le visuel reste actif tant que les valeurs sont hors plage.':'Alarme sonore active — acquitte le son si nécessaire.'):'Aucune alarme sonore active.';
+ const alarmSig=refreshGasAlarmAcknowledgement(); const alarmOn=alarmSig!=='0000'; if($('gasAlarmStatus'))$('gasAlarmStatus').textContent=alarmOn?'ÉTAT : ALARME':'ÉTAT : NORMAL'; const ackBtn=$('gasAlarmAck'),ackStatus=$('gasAlarmAckStatus'); if(ackBtn){ackBtn.disabled=!alarmOn||gasAlarmAcked; ackBtn.textContent=gasAlarmAcked?'🔇 Alarme sonore acquittée':'🔇 Acquitter l\'alarme sonore';} if(ackStatus)ackStatus.textContent=alarmOn?(gasAlarmAcked?'Le visuel reste actif tant que les valeurs sont hors plage.':'Alarme sonore active.'):'Aucune alarme active.';
  [['gasO2Low','lowO2'],['gasO2High','highO2'],['gasLIEA1','lieA1'],['gasLIEA2','lieA2'],['gasCOA1','coA1'],['gasCOA2','coA2'],['gasH2SA1','h2sA1'],['gasH2SA2','h2sA2']].forEach(([id,k])=>{if($(id)&&document.activeElement!==$(id))$(id).value=g[k]});
 }
-// ===== Sons d'alarme A1 / A2 (détecteur 4 gaz + mono gaz CO) =====
-const ALARM_CLIP_B64={a1:"data:audio/mp4;base64,AAAAHGZ0eXBNNEEgAAAAAE00QSBpc29tbXA0MgAAAAFtZGF0AAAAAAAAJbsA0AAHAQgVraxEaDX7+b3RI3vAZADFyssSz/gEPAVsQyTEEL2jId86oRye7J916oT32WJ5bWy1kiMoRPKZ8lByBDWYn3UhEnEyY0laskOCbQjLIQoa0hsKpOXSIBrETEJHKQpUMekSxxhCjQMKIFZJ1HbQqyj8NX/gCTEcBGZ4y5agRqHzDuAMH0aRG260iqhZGvAesxmARiK+R+BTDoxJZh4LVu6RT8ABGBWsdKtFCsdCsUDRAiceGdJUqfiezEtzd5GRTFMN5yEkN/5SlV0RzHcZjGiUqmE7Z279XZPRxoAVnUw5eN+D7Hjtv9YaPzR/n8Yt9tUVsj7vcV1C5pjqwH5m1DlmeJLfvPPRcZ5ky9mv9R5r1l6bXRd+07vDdtfdR7MwcazTUT7ZtNx645QzcNmCrMfbhm4XvWvqHqfM83TEsvmM0FVSPjJjq6P9zcZ/ltbRuegjhm07VfxfSYTkeHWet2bAMNBtOz5EVjWsynTbPbZPnsioL0jnw5FGVH0PAkh7Vs5n9ZuLmZZvpu4x+6xozKUmuc+hoZGGkRegzPExUENnAiidzt1QtAqyx7FyUXBKnkwlSCRJJJQDTaM8pQPboUwBfX5/+W4D5f+9an9um1dZ2+otvXxT42aE55WFaqxrPP3Y/Lc/9zgSZUR8EHjSBKVQBaaKaWZoQsSw4OV7CIBwARgVqaxkSpBWMglRYksRiKW1A2YGCejdW+o23KdMrqhU1o7hGC9zAnKFdAdIuSgDIhbGVJzBuZSWuoWAZEyHeMgylzD/hpIK5uLnBEdvV620iVM+BdLiCCBNYeWvGZBcx6O41rBU96EREZu6HPjvcFmNohEftzExeJsiNNkhegCKH9eUqxg2HheyN+EotX8hbTqtaNOt76oU9X+lzOxo0QWtG+zgyfVn3q39+C8/2c3ovBNcDgEaFaGJBxC0Cm9WHEYXQtMXNDDffQ3uH4Xm8jUetbD+SmT4wNXxKogbLbiXMJ7n3dlReuvLR+TcnqXONs+pKosWxCLM4pxvCt14M64OFoU1kDIt67LlFtXjIXfRU3QSYVzTV3Fm72qyXFZZxbIV2eQs176ic74tVs/PLXXtRHpvDerHt75oO+zvKSpLLA8cf28qSUllS0duI16k/32PPfwZt1vIAO0AOAEgFajslFqMSEgAiuqYXvq2hbAGaLsbMEzLvAGk8bAvGUgQHj4AudLup1vIaTERyr0V0RNRF0qwXijVE5j/a4thtenH737rrD6ysI8YMCIeilwChsdySoreKPYoDc1wPvXKOQKnYxc6SXhfNCB1/fe9Xra0CNPStEfZjjZ+Ui/Hc6zwyqimUYLbR0bqq7lptenDx0sTSgPzypGDy+vgVwNAhZMWJ0JXTk6EQMUs4eIcGBYHASAVoYxkMphaiyCF3AJiAaWNmAvO3Winv/PnU5eiwn0sXFlSm47ycs9vXAe8EW6eHqx90unQ18SQjjMx2LIX40CMIi6P/XndcuOl1VuXkcmuZiwtZejUqLuMJpm7TETSUMieMQyjfP/JdVGLNNVuP15DPH5cqygWvKDOw+bG4UA6s8GB23Mm2fOmEjvlk+ojKW9esPnjmKThunWF74IsM9F49KQAjGgDgAEeFamMVFqQjCVCWF0aCYgtNtXA2cgfJ9KpTGvtqIIWwRzhetQp6kZl204PSnoSW2URSo3TafVKN1u9psXraAyIUpPoPUAYAzEZma8Nu2aG5FoS2UwlXeS0EF2x7AotFiDlb1mbsNyr1md9/+OqM1ENRWlqn+8BU0pQLLLWbGbgmMyFpDHYTJrEKsJi/gMcLUSToAXNNWuPwoQw62NF1yjW7rr9FIsPD8I/t0nr2gVAHAEmFaHMhDKMTEQRLmsg5+kgsOWkVmpcDDsJfS0NrqeLS9pMa2w2hCq6FMy/sZn0MzYRigr0zdxUcTHnO6+ttMVVuZLRpZXMCQjoi5xZ5ZDa/bXUUNE2VjY+47283jD82DWdxPckcQr3rwWoHbgpUtiSXe/9bi2YVCJD78CG6Nwyqo0f2Cx1jnRrsYfbXk2eEU9SE8V8NZTJIxjQnd5h42r2k9EmPDUo5la2ua0Bx8BFJNWAAHABIhWpTFRJEURHEzVMu4F4rpbCBMu40YxgVExs1vgnTZSZf2JgJQkIh07MbwxNy7524LtLwlYEWfMJvcwEcgluBiKlV6jTQQEDT9+CrDUVm8vsU1JTSb3+uPvqpX/GaXB6jwxfWL5penH+mZM2qJpEH2gXX/REKJIWZRyMg6URi7vZyIawABcXaQ2xlHEGeOkEscRJtk65rEjL6NMGjRogVyXXP4J0wXmuTGEDgAEYVaEs1DmMlAE2hZmi5Bw8WRVaW0plA6vVrsGTuLvw29RWgkNbKCVbV9Ld+L7NTeeRtypTBty8C1zgEyyJZTnY8swI98DAgBeanEXy3SMjRbrnG4X6ELyDLt221K9A/g33QiTsCzFS1nIBST3QzCP8MYdcuQbX6cUdRFCFe2nOyr3nWZ040hQOgbBOFEfwRoOzyt6IjsDw7hCBYxPzEQUAVo0Yp3rOdikgGHkH9RQN1IxUwcABFJnGElJmrVVrCapWadNTzZ8/HDvxwPbfi/J/VpnWPZM/b6z2JnwEOvcvCH+HdM1sUkTU5BeM6S+kz8jKdkrfRXb/+uhd81TqA3Ndo/x9gDSJP/tRsCONaV0EAta0A8DxrgaZgtWuYDfw9I4LMSTW+5spftP2Nbpf2GAheLfhtniLl8b+95cshqpRq7JXtA812TSLXtCBhIQWmIBgzmoJLp+2WexvmkAD+nyK6gXGBiSnfwxhli7m6w0ZUJ39kZrF7j+GPAZqM5bjhan7Hn97/Nkhr/ihYj2e7FW9DfvquH1HwaWrDta9jbf2780jl1l0YJ8l/8XeKfgBFtWsUOQzBQqiIgpemaSahoCJeFCaEjbMDg0sJ0Mw1KyxYc9K8AgUseqyMMObbx4jACg15JZKKIn5bc8mTADOEHQ2gt5ypPk1a9tBm8keoHbfO0jRHV9YmCMkjx1Hjx1BhHTdYskPv4gLU7nLQy7vbeNrN3YiI+iV7AE72OLN+dENjUCrziBfqmu7qIwnpQgf01wqqqFZlrbD5erlaPp88o8N6vGttVjl8tsrEikUAADgASAVogilMSBGSJEiYoXqoGWSXoM22Hixvmka+x6hPdtUytvQPXexBqRYbDdd/L0lhqlxFNEjk25xMnhEN10ZKq2WIxZ41QJpHDtkonOw/PQTMt1DoiaoCVgKOpJXBcIsoROyjmiMVUZ+iLhJqdkXdepIkq1UtQAlME2YxGxA6e4eRHe0276T4r9hfh3pD5Z9hOdaGDCF++bYAn8J2OM+gdT+GiBbWOmGE56zoCwAcAEcFamsREqRAksAjoZAyZ7DbgZV78jRVNwDKdv51Szn4JcNpKcVNb3guQrIOCehhhHXoTFGaZm0u19DaLJ2SCfsENjggzlceh7Na7aa7ajPg7XcBBQ58yrXY8i7WteRGALq9KYXQVabZ3K6i4WWWRgpXV/lJosMjwkNzsKAAILpA6OpNqsyfTCrJWS9QulIAgyRHjx5F7SZZkxxiNIUMFsVoAulCmdgsMb2CHuEcov7WnBADhYF5DPe5Nu4AR4VqYyUOoiIg2EgxCJdC0DQYIFrCVTAi2VV2W1WLgLOyxYUKmvbF2e/JDZVUamNHHuWE3Jcawqgu9TAwmgFeSLRa2wgS3JmQjvFRw2JdKR0Uac+gDKKQw8jdDSGYvZ11B+/tx40oQdIg+X4N2Q3Fw3PjdQ3teiQ9sN7eW1NapQE1eS+wKR9qex75hiWVlV9rj2yrT0rm4Fw+bJwB7RAh3ezG5AjhDFVgCyyi7y0Zyk2apBRC5qZXBmoA/j4Bh8PPzD8GNhyezIgAIM6CsZAOAEYFamMgioMkoMRirxquhSwwJGJLUYZC5WbZHHA/5PC12My6w2WFVBYZWMcW+hhEpbJ0bNqeuvpp88H1A+KU6e/rkfI1jc8p4T9kJfOJ1zm0DPZZh8pyz3KxVjMtwOUdx82W7xuuPBTf0Ll1HAbgHXyXPwdAypN2kl04sscN3xuneqQcz6+Y7lMTIhbI67oBwcIFugGScnPkaWulYzAXEAEp5w1momobczO6lq1mrDrLiqclh01ZZEpFJGfOlM9tuQBwAEUVaxQ5iodgkhBCQ8Qs4JChFCGXLNG9wG8+3pTFttvBaN1GCzYq6EKdwjfu6EM9dEq3lkPv0Sk1ztW3HqrU1ewQRE9d4tq0ONMg0K5vPPJMjxiR1h3conGofARIuYhhdw1DUr2KbbCSz19XUvv84Fng7iYgiP1CkGR+fkW/L3H6AsUAfO1qhYWFCctLwEwp7I5MKABFKFRAQPl0M1MCMQIndrOojJPGBE07dN3AAxAojUrmhnEfzPu+7/GGnQBwAEgmfWqMUhE22pJiZe2rIvh65JaK1ogdW1B8erIIALTIkuFXVHkQQo4pOr1UkqDBz23PO/FJkuGK4KItSmBKQCKpHYVO4ZD5hVYPzksUC3bQ4EytSWBJM6nOp7vhIZh7DVPrli7BhjhBCx86q20545JDabMbZjvExjDGLfGY86wrO1YAASAQtidfjZxUu8PNbfcf8i17P7143d9JxfddJXYbaRnCJkxi6e0GiToynPp+2EEfol2UuqdAlsxjyPMMHMOAS7VrXBGShxKghKtsqVFodab0jFjQi3MQGasJbX2Sqdr72PYm6eQtIq6Iq7DnwWbevvcEakwBfk4jXxn1WajHOYFAKh2RwmDSU5RIuwVCCYhvcgaCcaXtsbkNjgomdwn1B0admbMV5nnvSwepmlx5T02FTPKxdqtvM9ArPls20JeHd70jRq6Ir2m15byKdxePJFIZyttJururgFJDxHq6WzDsSm54YIoQLZls8oBvleYqiutZ8wADgE0FaxUxVkNBEUUOu5ThgSdIsKhFpGRSr6DNS5QWd6uve+bp549QWIULaAOtg0HhgfWOZIOggNEdgjk8rXYieM16q6XpO2ZhuOEdV41HB0OdoilHi63HDcac2vY+TyhCncrpW/AyNVUQeoCsUJMCo8ih4w6+m27ur0sBRbN0gK8mUBbgF6knCTKvtq/+RTC76i+p2xh4RogWXMLRSbjeWr0m5+VFHCf41vW4AB3AewDgAEwFa1yViIURoIWmcQmFQn0MDLFquzMh0EMlbLmvfo+8ec3vvQ7PSqiFblUjb0Pc+aDp0Dz6lynVauHpr2d79iFq1N5Xmk51BCc7KdA6HZFDgPasxfqCeJq9SjNfk3mQrKtpOBkgmvsZ/C/PTBF7F+5jwclqukB8K1ldOvHJG0PRSTlW+mqonJ8fxyX7bJwjudnj0bEBgh0nuv7uFNHy/x8J8mX5wkSqCIkDbwmARJgcAEwFanoZgmoioESsZ5HMVwiOmnMQm9NZobcZ0IqHFGPTApul0VvKzEcQ8Z/C0Ij+BALm58yIKUNe0NWQeV6N0cHbQvkfdyfvqO+bRmlFI/XU6mQp9NJ6mx6Pnn+n71IU8t2uafBtPta8N9eJeyZy9D5++1OEdmxqRN3HQnCOobawwkU5IyGQ46jJQSvUQyfR51XMJEPLqojYg3UaoGqeOdMhV22u02ACT/HLTKWJFKINuADgAEqFazQhCqUiIUjGQbmWxCOlra3RB0YAfAMeLVA9/i6Rc/e63xUDEkxDd64H/rf5syjtg3Y4TD0R+qahH4GlDxBJ1oP87zYMr6HfWPBzIEPv7/v3XZvnueuTjDtfFxl2tZXHWpEm3QWwWaziq5ISr3PQGDFXmdB3IVxttOM4Z7KpNQTM7RaqPxqPGIxkTgkBVqACE4BCRq8SIqwSCMCCEuWF4qWJROS3r3ZbmCQICdSUkQs8GAHATAVrJCkUREEISQJAxQ37Dpa2Rmoo6BQzyClin4Z1iqd2RKnw2N4tll6fdERqAwWs2oOM2FgPCNdPcAU+FCt6l+/B1Wen0322EI7yxs8TZrxAnUXyYH4fBj7irbv0pWfqal8L8bVsdkE3DeU7j9D0GyKlo0MfKsKtXewCOEejjf9Y0u7R24uc9qn5O/y+fYHRiDe6oggyxXzMiXX9lMLGoHWMWNo8T9iYRIGk2/L8jUAP1iBwAE6FaluREiRhCYhCUaOGxGl2cNi1iEVjpYQFtS7FSvzyhO0RbLBnaWmQ4pDzZC+uc8+O9j3j4LX2buDlMdBD03g7nkg1rGyXugR9OJp+D+U1jYQD3y8HSnt3weyeJGq/3z0/KNk1jWQU1JQqKbxQcsb3ap2YgACMMG75dYc9C+1ylMUnUpaU2InXFeGTTgSgI+BQgmjsuOQ4+tkBS+vDkAAPMQYQAiBwAEwFa1wNEqciihUWMiCai1LAtYBXQRHdCLPlI3q1WKXOqGOVs+M5YYL4CZwarGPaT+aZF+wzTfmN1w/e8HsBd41RqWzRXbotl93huIpKyGwz0FBjtYNhmby+h26q0O9vsYUJamJxG5iLql6mUbQRSt7crzcKXToXrjChERi7vAA/X7QLIzFNhaYneXbLve6/wDr7Oj6I6YKJJVXXBsbEpwlW1MdLU/LdPbylUASzFpzUrAAZgOAASxVqehmGhhabLYCL6mSaVlrw0vIZDgWTtHotq7Rd9yvNSuYLwgwPdVkPZC13JQcgYZEABTF8WFRFXnrww3sP7dqzSg2PvyeK87KVJKACllnPyxukQBKLlLSvRrFuwZ8HGupkRUu1Mhrd5H7kkLuznWw+YOoA6QX76bCmkTbpqbUJz6Sm1WeM2jb2v+PX6+vyM8sUpx0EAv14J1rPf+OO2383b3/4v8rAlCgkigkv+wBQBwBLJk+EptIbIFlRM3wJtuYdkVRAybaV/7/s/m817/2a/z+0+//j/1X4/+P19vn+348f7ewuvwDk/l8eA6WC5oam0Ld7EMml2Q92GxHh1tZ37xwFH4u7ppCSZg4ZW4JDLAT/Xt6pQMwSXz895nVulxxLF4ti9iyM5Eed8qP9d6IdubSk70bUdAgvUVIbVU5sHum+bEiEn4yhMMSoqiIhDJgM7kxqE4jYWGcWRFJyu8l+444t4n/xr4SHZrlHiGZPGNEbO/SW+oAtaKrfhgGOcE63is9s+P0NchNnUEIQRSBRYTpTA6Kz1k53/CfEjmMOce05M6ud8YkjP7+HJ/RIJ7TvbK+4eMgMCI7J+nsygM19iTbAwMY+BhwHnLCAGmvl9lmFg3J5yqECzFLEuMgA00WURAACnpMSAGFidh9XLZQAABCAAAAA5MKLAAAN2DFgAAEXGAAAA4BHtWs7MsIkAVhAaiAUiEVBUIDFW3khe51HrwPP59n1GMAf/d6aivNQkSMXBNTkSWXs667ZarwGeVlEpoMoGGBIIyiu+Rma2L/Ayd6/IlSzb+salr+PIASaLhhixi1KoFvQy8Y0AcGc/z/1x3Tr8wAAKc9lpY/etHX0Oh94y1pAAACpAI9A8NEMYEEVj87a0kHf0/uvcCwOAEsFaHIWwiECyIBOIBWFwiKRANK9kDl0SV6d+H1r2KdhxenkSTcUyDv6fC9SQKIFdoyCQiO8EbKaQjPJAokevrkwnW90/a5ERHJFQpBCwgnD/4v1jTphIAAAvIvo4ePgxqfcAAAAAAAaIJEC0P1Kao82l82AAAAN40NpeCrMP6n8b3/Fsu02rABwAEuFalsiwkMB2EBuIBSIxSIBtXn02vICV47Ov29uvbJpsIBqNEYhHt91NXe8qcnilqxTDMRqvvAXsMyaUfKWoAC4ckKuEZAte8AIYYQEb/74+I7qq0swGPSLwADClOTxVSfAAAAbtrkRxu8gAABxtGqr9Qy4+UdEAAAn28fL+Hx/pxlIV3SDje2/v2h6jX3brAAHAEkFalMeBWQRyMBGOTANHj6LPnjoZrvvbhfjeb/Xh5usAHTtIcQohJB2ObrjeyRraN3yRyqu91hWKYPw6tZO71klsK4g5lnb1V2SknMzsl6VuG/2aQgwozCpN+MPscGHFMRlGHmlqQlFmlAlH6/KwKROfI9W9t//r8d6bOgzqrmYwv+yaEgAP0W9gAM5/PwABeNS5fqvB53dvlvxXEAAAByO5c/xHgeM5HS/KPYeikACubBh0Xcuj4GXF0ZAA4BIBWpTIkgDIMBsIhAbhAQikIFWpKVLSY6d9+uf5eu/31VAG57HTJG9PrDy5palWrpuGjBOjbAOip9KTPhwiu2oaUEwAyGVpJ5tGufOGFEznnAzrx/8NpiwO6EDRSnDJSass5FGa4AACjBgNOjIbvJtmiX2AA7vmFaO3EAAPGfH4a1+faHxgBwASQVoWx5IBDDYQIIQGIaCAlCwQCBdxFkO/nOfrfX34Ant5PoA7zCCHGxF4euxdGzuRyZiQ8+2LBGimNa1rYsXdAFdltNtULJW6rucRQE9D/eIAH8IAAAAAABAPnUV5h/BTCBT21HKsotKYVJUux3AGKJE8AAA9PKxNKAB9mnX22fsdezgAEiFakMywyECCGwgQQgNQ2ERsEQhPLtFzHTHzXrjPr447XeAWituc4hSvmhjNDRmwvra+bRk/IprMNCjl39MlGRUZlB/zO8sLnU97tGXYkCgkbr0CNA3/NvseQBpAAAAAGgUD1OxlAPiewC0bvpa6fN+eYONaapG99MGXpyqJgVFJTho0gASiCnipo4ragZV1H3cuLtcBwBJhWpbHsbiAKCgNhQIDUIjUMBIUCEJfSO4maLG/Xq/Yrn92tTa9YCELk6uDSfK8p4nvFFbhLCpHaK1C54lmQyQWmOeonvtKgTk4lJe0uuuy18fI5nPDI+wnEoS5NBy7o7VrBB6opLFZ+D/5efRqcSpiQBgxLVJZpbUQzlqSZEaa1JoT4s6SgPnUyigeUrmb7RVXtvsPwPQ15eSnAjv/ggv57SJDwSpQLFPNMFF403cdn1/GqwkiRsPtV9SSzgnCUtRBivCU3SjAX2k/GeaWI7ynnLAkhCdxJluUdlB+Vui8D7Pp0gcAEkFakMVD0IiqMiiEhiRp3KuW3eiANMKewGBAFYuhWrIcHI29WZKGXGmCvpu8CWl2JYOertQ6iDpeg61OimdfxpqJ67vWpRjhl5OS8+qxKASESGVvuXyF2/PAj2w7jrS4iL0vV8tykYyrOGY5ft8Md+KXjmnMKEKgb2H7+wu5rRrgyTizFiCn7L+wH8axfGsLM52PEDVtXBFe2rO6TruWxxALQ5Lbg9ATA0o26S7Rb4nJb8v0orfZYBwAEuFaGoZhoNRkhBCV98FszPaslkQGUvUSDBYWVH7D/mX0q7PTo82d3NWYibQEYYDFEziCpE8Ex+wn1vj1UMOld0aIH+oVRHCcpcu/boqQLCW4hEFX9reFUjdxJVy7DOE5urrHwlohuYKIr9e+pa7VpZNIkjtA8v6UZxJKPDI+YkgIKSrecWlHaEABbq+fpiAE9QFAurpj5K2JiQIoN9uq8T8HL3c2yQ2dN3n5IxoE5Qjb/G2LtcDgEiFakwdiuFCMFyEcStYY8hcINrDDhIMABZesZvIVfY6EUdU2SOF7mgsle5+PA8FNmHOCVazV5ARotYHV1OTmxwaAtJR56BAtkgy1yIAsWHycBgL1sJ6hJAuYtLeeKNq3bZbxcSRn1KJuyVKUE51l3GWQuL0CoJ3QQQwrGxc5KpnSCyzUhik1JCmH0QAAVyXzgSXzjsZPzmiWHuGkXV6VuHEUxg27m2+W+KugBlxTTlaOteNDX4cKCoHAEmFalssiuJBmQhCUNM6FDhAwRz0m+FndcAdqoDt4W+0LTgbgsM10GhTPtO5ULlzZjJKVstz2S3w0drBFg7+dSjMU0m4WBSyqgRNwZGNaP9I7oYlvr6vy84io0ujs6/n2eMpwxNj/6w1VZMmc5avw8QGMmGERXw/R6wyCS2jjy/9f3YR8A/qEZcPbuSOAff+YpCULgAKdp7oLMsQsWgSYaVTWQFAACUTPPCOABwASoVoYyFKglCQxQAhE4xpCTR0u+QBkZpqpjkuVe02j/yTJWLRmVW21OYVOm5TeKkMc2GJfmmOhfeYRVKqHmqCCZkrcWFOvuznEUlQWZzRBbv37I3OkL1M1znFKzDKhc4kJOmCVDWVqvJVzMRjAJj69qPVlUdrPo6Pza5bLDCTrPjxol5iYKWQAASnjAAxIkBQqGCWPGAWAOAAR4VoYzCGpBMBjzj4qLkYl46hyBYsALTUZmgamhGbYVjaA/Qnh523lFwRrz3dsT85a51DSSz3ZQgZ9zCRNKAmQRCZqqhp8SUA6ma9u+SfJhzXsXo6GBkRrmExRwb9m3CSrucThhgjrm6buNFxcDTUdSFXW2lDogNbjpgUA3DMcG3V22bWnOtGYkmgu4QzcdJtnptHRsY21wBHBWp7JRInAbU1qKqXASCMTLzSJJnIFKPzHZe+PEJyhTl3nWFv8DbbntluUY/qlgaYTI8b0Gfb2J5r2uQr/A5o0WjVnX1L+DR+VMRlytS7mYm0FFdFz2qsNYdlQsJRuJK7LMRafHxNVeuvkf89emEb4dxZznb804AFuPXu4ReSfB6/MYqJaUPP/hLVqz7cIT4ibinHYlpL9HNqkQoXEVe65H7yR+cuHCtqRLLUbZPwrgYfN375+H3/DTtuWUzpHSb78uAASAVrFSWKhSMKAQ/DmqjVL8igaCjQLlVltIfgkLtsUCRb5v7iKoVsF5lwXKe9FNYLhmw+p8T/eelrtW7h59Pg7IPXu2Yo6C2b6yiicaSO++RZh78nnchsmYZ1TwFu+Dzz87uhszQSh8Leua0/XRB8DB7/TDLfFKDCMcsW+NR5GNhskYRKZwBGhWhiLEQCEKCEQLQm1fQ6vQ0HN1pyXKy9vT+AAEPbnpdDv+Bt+Bp/FctEvkDVZzos+ou7CTSmxr23ICQ/HQaMjdCQlJZevEcmB73bvPd8w/HNnyMYMzZsjAGcDE+Xsk1jvdCSuzu3UkAXA4BHhWirHUZCEgGPOPiouQtLsxFJuBAAtNRmaBqaEZthWNoD9CeHnbeUXBGvPd2wXgIRLAq0hIn06ss7qGSUaGGVaOiSkVt1ZdQgwB1ptIUHOx2a9u+SfJhzXsXo8UhZbXf2f2DnVHVCW5UWsonKM5TLc0CQZgsKU/y03WBLcm9UKcouGmo+SFXn4tTVn0cMKrW9dMCgQ2XsF3ow410YDfJRf01jqmgu4QzcdJtnptHRsY21wEcFanslEicBtTWoqpcBIIxMvNIkmcgUo/Mdl748QnKFOXedYW/wNtue2W5Rj+qWBphMjxvQZ9vYnmva5Cv8DmjRaNWdfUv4NH5UxGXK1LuZibQUV0XPaqw1h2VCwlG4krssxFp8fE1V66+R/z16YRvh3FnOdvzTgAW49e7hF5J8Hr8xiolpQ8/+EtWrPtwhPiJuKcdiWkv0c2qRChcRV7rkfvJH5y4cK2pEstRtk/CuBh83fvn4ff8NO25ZTOkdJvvy4ABIBWsVJYqFIwoBD8OaqNUvyKBoKNAuVWW0h+CQu2xQJFvm/uIqhWwXmXBcp70U1guGbD6nxP956Wu1buHn0+Dsg9e7ZijoLZvrKKJxpI775FmHvyedyGyZhnVPAW74PPPzu6GzNBKHwt65rT9dEHwMHv9MMt8UoMIxyxb41HkY2GyRhEpnAEWFamIcMDaaXHD2dYLlNe4KHrDcrze7hY2jNJNTGVS1eYZpEpqUraM7Zz9esLvevSy/IwMSEhK7LzvwAEIFaGB8DhEWVpcqYXAu8Q8kjKl0G5l+LOqaUnBTYjxZzKUKBcSNNpcAAADPGhvb3YAAABsbXZoZAAAAADnFy5s5xcubQAArEQAAMwAAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAKgdHJhawAAAFx0a2hkAAAAAecXLmznFy5tAAAAAQAAAAAAAMwAAAAAAAAAAAAAAAAAAQAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAACPG1kaWEAAAAgbWRoZAAAAADnFy5s5xcubQAArEQAAMwAVcQAAAAAADFoZGxyAAAAAAAAAABzb3VuAAAAAAAAAAAAAAAAQ29yZSBNZWRpYSBBdWRpbwAAAAHjbWluZgAAABBzbWhkAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAGnc3RibAAAAGdzdHNkAAAAAAAAAAEAAABXbXA0YQAAAAAAAAABAAAAAAAAAAAAAgAQAAAAAKxEAAAAAAAzZXNkcwAAAAADgICAIgAAAASAgIAUQBQAGAAAAPoAAAD6AAWAgIACEggGgICAAQIAAAAYc3R0cwAAAAAAAAABAAAAMwAABAAAAAAoc3RzYwAAAAAAAAACAAAAAQAAACsAAAABAAAAAgAAAAgAAAABAAAA4HN0c3oAAAAAAAAAAAAAADMAAAAEAAAApAAAAV0AAAC1AAAAqAAAALMAAACpAAAAsQAAALUAAACtAAAAtQAAAPkAAACyAAAArwAAALwAAADQAAAAwwAAAMAAAADCAAAAuAAAALEAAACxAAAAtAAAALYAAAC1AAAAqAAAALYAAACzAAABVgAAAJgAAACKAAAAkwAAAL4AAACIAAAAhQAAAJcAAADmAAAAugAAALcAAAC6AAAArQAAAJkAAACYAAAAxAAAAIYAAABsAAAAswAAAMQAAACGAAAAPAAAACkAAAAYc3RjbwAAAAAAAAACAAAALAAAHoMAAAAobXZleAAAACB0cmV4AAAAAAAAAAEAAAABAAAEAAAAAAQAAAAAAAAEDm1vb3YAAABsbXZoZAAAAADnFy5s5xcubQAArEQAAMwAAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAKgdHJhawAAAFx0a2hkAAAAAecXLmznFy5tAAAAAQAAAAAAAMwAAAAAAAAAAAAAAAAAAQAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAACPG1kaWEAAAAgbWRoZAAAAADnFy5s5xcubQAArEQAAMwAVcQAAAAAADFoZGxyAAAAAAAAAABzb3VuAAAAAAAAAAAAAAAAQ29yZSBNZWRpYSBBdWRpbwAAAAHjbWluZgAAABBzbWhkAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAGnc3RibAAAAGdzdHNkAAAAAAAAAAEAAABXbXA0YQAAAAAAAAABAAAAAAAAAAAAAgAQAAAAAKxEAAAAAAAzZXNkcwAAAAADgICAIgAAAASAgIAUQBQAGAAAAPoAAAD6AAWAgIACEggGgICAAQIAAAAYc3R0cwAAAAAAAAABAAAAMwAABAAAAAAoc3RzYwAAAAAAAAACAAAAAQAAACsAAAABAAAAAgAAAAgAAAABAAAA4HN0c3oAAAAAAAAAAAAAADMAAAAEAAAApAAAAV0AAAC1AAAAqAAAALMAAACpAAAAsQAAALUAAACtAAAAtQAAAPkAAACyAAAArwAAALwAAADQAAAAwwAAAMAAAADCAAAAuAAAALEAAACxAAAAtAAAALYAAAC1AAAAqAAAALYAAACzAAABVgAAAJgAAACKAAAAkwAAAL4AAACIAAAAhQAAAJcAAADmAAAAugAAALcAAAC6AAAArQAAAJkAAACYAAAAxAAAAIYAAABsAAAAswAAAMQAAACGAAAAPAAAACkAAAAYc3RjbwAAAAAAAAACAAAALAAAHoMAAAD6dWR0YQAAAPJtZXRhAAAAAAAAACJoZGxyAAAAAAAAAABtZGlyAAAAAAAAAAAAAAAAAAAAAADEaWxzdAAAALwtLS0tAAAAHG1lYW4AAAAAY29tLmFwcGxlLmlUdW5lcwAAABRuYW1lAAAAAGlUdW5TTVBCAAAAhGRhdGEAAAABAAAAACAwMDAwMDAwMCAwMDAwMDg0MCAwMDAwMDNDMCAwMDAwMDAwMDAwMDBDMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAw",a2:"data:audio/mp4;base64,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"};
+
+const ALARM_CLIP_B64={a1:"data:audio/mp4;base64,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"};
 const alarmClipBuffers={a1:null,a2:null};let alarmClipLoading=false,alarmClipSource=null;
 function loadAlarmClips(){
  if(!audioCtx||alarmClipLoading||(alarmClipBuffers.a1&&alarmClipBuffers.a2))return;
@@ -1255,7 +1170,6 @@ function loadAlarmClips(){
  });
 }
 function stopAlarmClip(){if(alarmClipSource){try{alarmClipSource.stop()}catch(e){}alarmClipSource=null}}
-// Joue le fichier A1 (level 1) ou A2 (level 2). Retourne false si pas encore décodé (repli sur les bips de synthèse).
 function playAlarmClip(level){
  loadAlarmClips();
  const b=alarmClipBuffers[level===2?'a2':'a1'];
@@ -1281,7 +1195,6 @@ function beepGasAlarm(){
  }
  lastBeep=Date.now();
 }
-// Mono gaz CO : même sons A1 / A2 selon le seuil dépassé
 let coLastBeep=0,coLastLevel=0;
 function beepCoAlarm(){
  if(currentModule!=='co'||!audioEnabled||!audioCtx)return;
@@ -1304,6 +1217,27 @@ document.querySelectorAll('.trainer-tab-btn').forEach(btn => {
   document.querySelectorAll('.trainer-tab-content').forEach(c => c.classList.add('hidden'));
   btn.classList.add('active');
   const targetId = btn.dataset.trainerTab;
+  if($(targetId)) $(targetId).classList.remove('hidden');
+ });
+});
+
+// Script pour les sous-onglets Formateur (4 Gaz et Mono-gaz)
+document.querySelectorAll('.sub-gas-tab-btn').forEach(btn => {
+ btn.addEventListener('click', () => {
+  document.querySelectorAll('.sub-gas-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#gasControlPanel .sub-trainer-content').forEach(c => c.classList.add('hidden'));
+  btn.classList.add('active');
+  const targetId = btn.dataset.subTab;
+  if($(targetId)) $(targetId).classList.remove('hidden');
+ });
+});
+
+document.querySelectorAll('.sub-co-tab-btn').forEach(btn => {
+ btn.addEventListener('click', () => {
+  document.querySelectorAll('.sub-co-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#coControlPanel .sub-trainer-content').forEach(c => c.classList.add('hidden'));
+  btn.classList.add('active');
+  const targetId = btn.dataset.subCoTab;
   if($(targetId)) $(targetId).classList.remove('hidden');
  });
 });
@@ -1433,23 +1367,22 @@ function updateGasFromControls(){
  g.lowO2=Number($('gasO2Low').value);g.highO2=Number($('gasO2High').value);g.lieA1=Number($('gasLIEA1').value);g.lieA2=Number($('gasLIEA2').value);g.coA1=Number($('gasCOA1').value);g.coA2=Number($('gasCOA2').value);g.h2sA1=Number($('gasH2SA1').value);g.h2sA2=Number($('gasH2SA2').value);
  state.gas=g;renderGas();publish();
 }
-[['O2','o2'],['LIE','lie'],['CO','co'],['H2S','h2s']].forEach(([id])=>{const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');n.oninput=()=>r.value=n.value;r.oninput=()=>n.value=r.value});
-$('applyGasValues').onclick=()=>{updateGasFromControls();log('Valeurs du détecteur 4 gaz appliquées')};
-$('resetGasValues').onclick=()=>{stopGasEvolution();state.gas={...gasDefaults};renderGas();renderGasEvolution();publish();log('Détecteur 4 gaz réinitialisé')};
-['gasO2Low','gasO2High','gasLIEA1','gasLIEA2','gasCOA1','gasCOA2','gasH2SA1','gasH2SA2'].forEach(id=>$(id).onchange=()=>updateGasFromControls());
+[['O2','o2'],['LIE','lie'],['CO','co'],['H2S','h2s']].forEach(([id])=>{const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');if(n&&r){n.oninput=()=>r.value=n.value;r.oninput=()=>n.value=r.value}});
+if($('applyGasValues'))$('applyGasValues').onclick=()=>{updateGasFromControls();log('Valeurs du détecteur 4 gaz appliquées')};
+if($('resetGasValues'))$('resetGasValues').onclick=()=>{stopGasEvolution();state.gas={...gasDefaults};renderGas();renderGasEvolution();publish();log('Détecteur 4 gaz réinitialisé')};
+['gasO2Low','gasO2High','gasLIEA1','gasLIEA2','gasCOA1','gasCOA2','gasH2SA1','gasH2SA2'].forEach(id=>{if($(id))$(id).onchange=()=>updateGasFromControls()});
 
 function updateRole(){
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo','lowHbco','lowTemp','highTemp'].forEach(id=>{if($(id))$(id).value=state[id]});
  let control=role==='control';
- // Le look LCD façon détecteur portatif et les libellés courts sont réservés au stagiaire.
  document.body.classList.toggle('trainee-gas-ui',!control);
  const gasLabels=control?{O2:'O₂ — OXYGÈNE',LIE:'LIE — EXPLOSIMÉTRIE',CO:'CO — MONOXYDE DE CARBONE',H2S:'H₂S — HYDROGÈNE SULFURÉ'}:{O2:'O₂',LIE:'CH₄',CO:'CO',H2S:'H₂S'};
  Object.entries(gasLabels).forEach(([id,label])=>{const el=$('gasCard'+id)?.querySelector('.gas-name');if(el)el.textContent=label});
  state.alarms=true;audioEnabled=state.soundEnabled!==false;if($('soundToggle'))$('soundToggle').checked=audioEnabled;
  $('controlPanel').classList.toggle('hidden',!control);
-  $('gasControlPanel').classList.toggle('hidden',!control||currentModule!=='gas');
-  if($('coControlPanel')) $('coControlPanel').classList.toggle('hidden',!control||currentModule!=='co');
-  $('controlPanel').querySelectorAll(':scope > .panel:not(#gasControlPanel):not(#coControlPanel)').forEach(el=>el.classList.toggle('hidden',currentModule!=='scope'));
+ $('gasControlPanel').classList.toggle('hidden',!control||currentModule!=='gas');
+ if($('coControlPanel')) $('coControlPanel').classList.toggle('hidden',!control||currentModule!=='co');
+ $('controlPanel').querySelectorAll(':scope > .panel:not(#gasControlPanel):not(#coControlPanel)').forEach(el=>el.classList.toggle('hidden',currentModule!=='scope'));
 
  $('tabSettings').classList.remove('hidden');$('tabEvents').classList.toggle('hidden',!control);
  $('menuBtn').classList.add('hidden');
@@ -1459,23 +1392,22 @@ function updateRole(){
  document.title=control?'Pilotage Scope SUAP':'Scope SUAP — Moniteur';
 }
 function config(){return {url:localStorage.sbUrl||'',key:localStorage.sbKey||''}}
-function initSupabase(){let c=config();if(!c.url||!c.key||!window.supabase){$('status').textContent='Mode local — configure Supabase pour la liaison distante';return}try{sb=window.supabase.createClient(c.url,c.key);$('status').textContent='Supabase prêt — code de session requis'}catch(e){$('status').textContent='Configuration Supabase invalide'}}
-function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room,state:state,updated_at:new Date().toISOString()},{onConflict:'code'}).then(({error})=>{if(error)$('status').textContent='Erreur de synchronisation : '+error.message})}
-async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}loadTaHistory();if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,pendingSys:Number(data.state.pendingSys??data.state.sys??120),pendingDia:Number(data.state.pendingDia??data.state.dia??80),alarms:true};audioEnabled=state.soundEnabled!==false;loadTaHistory();render();}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
+function initSupabase(){let c=config();if(!c.url||!c.key||!window.supabase){$('status').textContent='Mode local';return}try{sb=window.supabase.createClient(c.url,c.key);$('status').textContent='Supabase prêt'}catch(e){}}
+function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room,state:state,updated_at:new Date().toISOString()},{onConflict:'code'}).then(({error})=>{})}
+async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}loadTaHistory();if(!sb){initSupabase()}if(!sb){alert('Configure Supabase.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,pendingSys:Number(data.state.pendingSys??data.state.sys??120),pendingDia:Number(data.state.pendingDia??data.state.dia??80),alarms:true};audioEnabled=state.soundEnabled!==false;loadTaHistory();render();}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
  if(!payload.new?.state)return;
  const incoming=payload.new.state;
  if(role==='display'){state={...defaults,...incoming,scopeAlarmRevision:Number(incoming.scopeAlarmRevision)||0,pendingSys:Number(incoming.pendingSys??incoming.sys??120),pendingDia:Number(incoming.pendingDia??incoming.dia??80),glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};audioEnabled=state.soundEnabled!==false;render();}
  else if(role==='control'){state={...state,...incoming,gas:{...gasDefaults,...(incoming.gas||state.gas||{})}};render();}
-}).subscribe();$('status').textContent=`Connecté · session ${room} · ${role==='control'?'formateur':'stagiaire'}`;log('Connexion à la session '+room)}
+}).subscribe();$('status').textContent=`Connecté · session ${room}`;log('Connexion session '+room)}
 $('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value=String(Math.floor(100000+Math.random()*900000))};
-// Toute action réelle du formateur dans le panneau de pilotage réarme les alarmes côté stagiaire.
 ['click','change'].forEach(eventName=>$('controlPanel').addEventListener(eventName,e=>{
  if(role!=='control')return;
- if(e.target.closest('#gasControlPanel'))return;
+ if(e.target.closest('#gasControlPanel')||e.target.closest('#coControlPanel'))return;
  state.scopeAlarmRevision=(Number(state.scopeAlarmRevision)||0)+1;
  publish();
 }));
-$('saveConfig').onclick=()=>{localStorage.sbUrl=$('sbUrl').value.trim();localStorage.sbKey=$('sbKey').value.trim();initSupabase();alert('Configuration enregistrée sur cet appareil.')};
+$('saveConfig').onclick=()=>{localStorage.sbUrl=$('sbUrl').value.trim();localStorage.sbKey=$('sbKey').value.trim();initSupabase();alert('Configuration enregistrée.')};
 $('sbUrl').value=localStorage.sbUrl||'';$('sbKey').value=localStorage.sbKey||'';
 
 if ($('coSingleInput')) {
@@ -1536,6 +1468,6 @@ document.addEventListener('pointerdown',async()=>{
 requestAnimationFrame(animate);setInterval(()=>{if(role==='control'&&room)publish();},2500);
 setInterval(()=>{if(state.taCycleStartAt!==null&&!state.taMeasured){updateTACycle()}updatePITrend();},100);
 setInterval(()=>{if(role!=='control')return;const now=Date.now(),rnd=(a,b)=>a+Math.random()*(b-a);if(now-lastTargetAt>3200){if(state.variationFCEnabled)smoothTarget.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));else smoothTarget.fc=Number(state.fc);if(state.variationSpoEnabled)smoothTarget.spo=rnd(Math.min(state.spoMin,state.spoMax),Math.max(state.spoMin,state.spoMax));else smoothTarget.spo=Number(state.spo);lastTargetAt=now;}let changed=false;if(state.variationFCEnabled){state.fc+=(smoothTarget.fc-state.fc)*.025;changed=true}if(state.variationSpoEnabled){state.spo+=(smoothTarget.spo-state.spo)*.025;changed=true}if(changed&&now-lastSmoothRender>200){lastSmoothRender=now;updateLiveReadouts();}},50);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(err=>console.warn('Service worker non enregistré',err)));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(err=>console.warn('Service worker',err)));}
 </script>
 </body></html>
