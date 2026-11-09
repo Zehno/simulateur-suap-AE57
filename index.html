@@ -758,7 +758,7 @@ $('piTrendFrom').onchange=applyPITrend;$('piTrendTo').onchange=applyPITrend;
 $('soundToggle').onchange=e=>{audioEnabled=e.target.checked;state.soundEnabled=audioEnabled;if(!audioEnabled)stopFlatlineTone();publish()};
 $('menuBtn').onclick=()=>setPage('settings');
 $('patient').onchange=e=>{state.patient=e.target.value;if(state.condition!=='normal')applyAlarmThresholds();log(`Mode patient : ${state.patient} — seuils d’alarme adaptés`);render();publish()};
-$('patientName').onchange=e=>{state.name=e.target.value||'PATIENT SIMULÉ';render();publish()};
+$('patientName').onchange=e=>{state.name=e.target.value||'VICTIME SIMULÉ';render();publish()};
 function setRhythm(id){state.rhythm=id;state.irregularFC=id==='fa';if(id==='brady'){state.fc=45;state.variationFCEnabled=false}else if(id==='tachy'){state.fc=145;state.variationFCEnabled=false}else if(id==='svt'){state.fc=170;state.variationFCEnabled=false}else if(id==='tv'){state.fc=180;state.variationFCEnabled=false}else if(id==='flutter'){state.fc=150;state.variationFCEnabled=false}else if(id==='fv'||id==='asystole'){state.fc=0;state.spo=0;state.variationFCEnabled=false;state.variationSpoEnabled=false}else if(id==='sinusal'){state.irregularFC=false;if(Number(state.fc)<=0)state.fc=72;if(Number(state.spo)<=0)state.spo=98}lastHeartBeat=0;log('Rythme sélectionné : '+id);render();publish()}
 $('variationFCToggle').onchange=e=>{state.variationFCEnabled=e.target.checked;log('Variation FC '+(e.target.checked?'activée':'désactivée'));render();publish()};
 $('variationSpoToggle').onchange=e=>{state.variationSpoEnabled=e.target.checked;log('Variation SpO₂ '+(e.target.checked?'activée':'désactivée'));render();publish()};
