@@ -432,6 +432,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <p class="muted" id="scenarioClockStatus">Compteur de mise en situation à l’arrêt.</p>
    <div id="sliders"></div>
    <div class="field"><label>Tension artérielle (mmHg)</label><div class="row"><label>TAS <input id="manualSys" type="number" min="0" max="300" value="120" aria-label="Tension artérielle systolique"></label><label>TAD <input id="manualDia" type="number" min="0" max="200" value="80" aria-label="Tension artérielle diastolique"></label><button class="primary" id="applyTA">Appliquer T.A.</button></div><div class="next-ta-box"> Tension prévu <strong id="nextTAValue">120/80 mmHg</strong><br><span class="muted"></span></div></div>
+   <div class="field"><label>Intensité du signal SIQ (1 à 5)</label><div class="row"><select id="siqSettingControl"><option value="1">Niveau 1 : Signal très faible</option><option value="2">Niveau 2 : Signal faible</option><option value="3">Niveau 3 : Signal moyen</option><option value="4">Niveau 4 : Signal fort</option><option value="5">Niveau 5 : Signal maximal</option></select></div></div>
    <div class="field"><label>Indice de perfusion (I.P.) — 0 à 5 %</label><div class="row"><label>Borne basse (%) <input id="piTrendFrom" type="number" min="0" max="5" step="0.1" value="3.5"></label><label>Borne haute (%) <input id="piTrendTo" type="number" min="0" max="5" step="0.1" value="5.00"></label><strong id="piControlValue">1,0 → 1,0 %</strong></div><small class="muted"></small></div>
    <div id="variationRanges"></div>
    <div class="field"><label>HbCO (0 à 100 %)</label><input id="hbcoControl" type="number" min="0" max="100" step="1" value="0"></div>
@@ -503,7 +504,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 const $=id=>document.getElementById(id);
 const GLYCEMIE_CODES={LO:{operator:'<',value:0.20,label:'LO'},HI:{operator:'>',value:5.00,label:'HI'}}; // Seuils internes uniquement : LO <0,20 g/L ; HI >5,00 g/L
 function glycemiaDisplay(value){const n=Number(value);if(!Number.isFinite(n))return null;if(n<GLYCEMIE_CODES.LO.value)return GLYCEMIE_CODES.LO.label;if(n>GLYCEMIE_CODES.HI.value)return GLYCEMIE_CODES.HI.label;return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});}
-const defaults={scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:1,piTrendFrom:1,piTrendTo:1,piTrendStartAt:null,piNextTarget:1,piNextAt:0,taCycleStartAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
+const defaults={siqSetting:3,scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:1,piTrendFrom:1,piTrendTo:1,piTrendStartAt:null,piNextTarget:1,piNextAt:0,taCycleStartAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -582,7 +583,7 @@ function updatePITrend(){
  if($('piMeterFill'))$('piMeterFill').style.height=(Math.max(0,Math.min(5,value))/5*100)+'%';
 }
 function updateSIQ(){
- // Jauge SIQ : se remplit à chaque battement puis redescend, cadence = 60/FC.
+ // Jauge SIQ : se remplit à chaque battement puis redescend, cadence = 60/FC. Intensité pilotée par formateur (1 à 5).
  const fill=$('siqMeterFill'),label=$('vSIQ');
  const active=state.fcMeasured===true&&Number(state.fc)>0&&state.rhythm!=='asystole'&&state.rhythm!=='fv';
  if(!active){siqLevel=Math.max(0,siqLevel-0.08);}
@@ -592,8 +593,10 @@ function updateSIQ(){
   if(now-siqLastBeatAt>=beatMs){siqLastBeatAt=now;siqLevel=1;}
   else siqLevel=Math.max(0,siqLevel-(1/Math.max(1,beatMs/50))*1.6);
  }
- if(fill)fill.style.height=(siqLevel*100).toFixed(1)+'%';
- if(label)label.textContent=active?fmt(state.fc):'0';
+ const setting=Math.max(1,Math.min(5,Number(state.siqSetting??3)));
+ const targetHeight=(siqLevel*(setting/5)*100);
+ if(fill)fill.style.height=targetHeight.toFixed(1)+'%';
+ if(label)label.textContent=active?setting:'0';
 }
 function render(){
  updatePITrend();
@@ -607,6 +610,7 @@ function render(){
  if($('nextTAValue'))$('nextTAValue').textContent=`${fmt(Number(state.pendingSys??state.sys))}/${fmt(Number(state.pendingDia??state.dia))} mmHg`;
  if($('piTrendFrom')&&document.activeElement!==$('piTrendFrom'))$('piTrendFrom').value=Number(state.piTrendFrom??state.pi??0).toFixed(1);
  if($('piTrendTo')&&document.activeElement!==$('piTrendTo'))$('piTrendTo').value=Number(state.piTrendTo??state.pi??0).toFixed(1);
+ if($('siqSettingControl')&&document.activeElement!==$('siqSettingControl'))$('siqSettingControl').value=String(state.siqSetting??3);
  if($('piControlValue'))$('piControlValue').textContent=Number(state.piTrendFrom??state.pi??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})+' → '+Number(state.piTrendTo??state.pi??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})+' %';
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo','lowTemp','highTemp'].forEach(id=>{if($(id)&&document.activeElement!==$(id))$(id).value=state[id]});
  if(document.activeElement!==$('controlNotes'))$('controlNotes').value=state.notes||'';
@@ -746,7 +750,7 @@ function setPage(p){['monitor','events','settings'].forEach(x=>$(x+'Page').class
 $('tabMonitor').onclick=()=>setPage('monitor');$('tabEvents').onclick=()=>setPage('events');$('tabSettings').onclick=()=>setPage('settings');
 $('closeModal').onclick=()=>$('modal').classList.add('hidden');
 function taHistoryKey(){return 'scopeSuapTaHistory:'+(room||$('roomCode').value.trim()||'local')}
-function loadTaHistory(){try{const parsed=JSON.parse(localStorage.getItem(taHistoryKey())||'[]');state.taHistory=Array.isArray(state.taHistory)&&state.taHistory.length?state.taHistory:(Array.isArray(parsed)?parsed.slice(0,30):[])}catch(e){state.taHistory=Array.isArray(state.taHistory)?state.taHistory:[]}renderTAHistory()}
+function loadTaHistory(){state.taHistory=Array.isArray(state.taHistory)?state.taHistory:[];renderTAHistory()}
 function saveTaHistory(){try{localStorage.setItem(taHistoryKey(),JSON.stringify((state.taHistory||[]).slice(0,30)))}catch(e){console.warn('Historique TA non enregistré localement',e)}}
 function recordTA(){state.taHistory=Array.isArray(state.taHistory)?state.taHistory:[];const entry={time:new Date().toLocaleTimeString('fr-FR'),sys:fmt(state.sys),dia:fmt(state.dia),pam:pam()};state.taHistory.unshift(entry);state.taHistory=state.taHistory.slice(0,30);saveTaHistory();renderTAHistory()}
 function renderTAHistory(){const el=$('taHistoryList');if(!el)return;const rows=state.taHistory||[];el.innerHTML=rows.length?rows.map(m=>`<div class="ta-history-row"><span>${escapeHtml(m.time||'--:--:--')}</span><strong>${m.sys}/${m.dia}</strong><span class="pam">PAM ${m.pam??'—'}</span></div>`).join(''):'<div class="ta-empty">En attente de la pose du brassard par le stagiaire</div>'}
@@ -754,6 +758,7 @@ function taHistoryMarkup(){return (state.taHistory||[]).length?'<div>'+(state.ta
 function showTAHistory(){openModal('Historique T.A / P.N.I.',taHistoryMarkup())}
 $('applyTA').onclick=()=>{const sys=$('manualSys').value.trim(),dia=$('manualDia').value.trim();if(sys===''||dia===''||!Number.isFinite(Number(sys))||!Number.isFinite(Number(dia))){alert('Saisis une TAS et une TAD valides.');return}state.pendingSys=Math.max(0,Math.min(300,Number(sys)));state.pendingDia=Math.max(0,Math.min(200,Number(dia)));log(`Nouvelle tension préparée : ${state.pendingSys}/${state.pendingDia} mmHg — elle sera affichée à la prochaine mesure du stagiaire`);render();publish()};
 function applyPITrend(){const fromRaw=$('piTrendFrom').value.trim(),toRaw=$('piTrendTo').value.trim();if(fromRaw===''||toRaw===''||!Number.isFinite(Number(fromRaw))||!Number.isFinite(Number(toRaw))){alert('Saisis deux valeurs d’I.P. valides entre 0 et 5 %.');render();return}state.piTrendFrom=Math.max(0,Math.min(5,Number(fromRaw)));state.piTrendTo=Math.max(0,Math.min(5,Number(toRaw)));state.piTrendStartAt=Date.now();state.piNextAt=0;state.pi=state.piTrendFrom;log(`Variation I.P. réglée : entre ${state.piTrendFrom.toFixed(1)} et ${state.piTrendTo.toFixed(1)} %`);render();publish()}
+$('siqSettingControl').onchange=e=>{state.siqSetting=Number(e.target.value);log('Intensité du signal SIQ réglée à le niveau '+state.siqSetting);render();publish()};
 $('piTrendFrom').onchange=applyPITrend;$('piTrendTo').onchange=applyPITrend;
 $('soundToggle').onchange=e=>{audioEnabled=e.target.checked;state.soundEnabled=audioEnabled;if(!audioEnabled)stopFlatlineTone();publish()};
 $('menuBtn').onclick=()=>setPage('settings');
