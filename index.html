@@ -528,6 +528,14 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   animation: gasAlarmBlink .55s steps(2,start) infinite;
 }
 
+
+/* Mono gaz CO — vue formateur : case rouge "CO" comme sur le détecteur 4 gaz */
+#coTrainerWrap{max-width:360px;margin:15px auto}
+#coTrainerWrap .gas-metric{min-height:150px;text-align:left}
+#coTrainerWrap .gas-name{font-size:18px}
+#coTrainerWrap .gas-value{font-size:clamp(48px,9vw,72px)}
+body:not(.trainee-gas-ui) #coScreen .draeger-pac-body{display:none}
+body.trainee-gas-ui #coTrainerWrap{display:none}
 </style>
 </head>
 <body>
@@ -575,6 +583,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
  
  <main id="coPage" class="hidden">
   <section class="co-screen" id="coScreen">
+   <div id="coTrainerWrap"><article class="gas-metric co" id="coTrainerCard"><div class="gas-name">CO</div><div class="gas-value" id="coTrainerValue">0</div><div class="gas-unit">ppm</div><div class="gas-gauge-wrap"><div class="gas-gauge-fill" id="coTrainerGauge" style="width:0%"></div></div><div class="gas-threshold" id="coTrainerThreshold">A1 : 20 · A2 : 50 ppm</div></article></div>
    <div class="draeger-pac-body">
     <div class="pac-top-branding">
      <span class="pac-logo">Dräger</span>
@@ -1325,6 +1334,15 @@ function renderCoSingle() {
   
   const lcd = $('coPacLcd');
   const level = getCoSingleAlarmLevel();
+  const tCard = $('coTrainerCard');
+  if (tCard) {
+    $('coTrainerValue').textContent = Math.round(v).toLocaleString('fr-FR');
+    $('coTrainerGauge').style.width = (Math.min(2000, Math.max(0, v)) / 2000 * 100) + '%';
+    $('coTrainerThreshold').textContent = `A1 : ${a1.toLocaleString('fr-FR')} · A2 : ${a2.toLocaleString('fr-FR')} ppm`;
+    tCard.classList.remove('gas-alarm-a1', 'gas-alarm-a2');
+    if (level === 1) tCard.classList.add('gas-alarm-a1');
+    if (level === 2) tCard.classList.add('gas-alarm-a2');
+  }
   if (lcd) {
     lcd.classList.remove('co-alarm-a1', 'co-alarm-a2');
     if (level === 1) lcd.classList.add('co-alarm-a1');
