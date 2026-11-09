@@ -573,27 +573,39 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   </section>
  
  <main id="coPage" class="hidden">
-  <section class="gas-screen" id="coScreen">
-   <div class="gas-head"><span>DÉTECTEUR MONO-GAZ CO</span><span class="gas-live">● SIMULATION</span></div>
-   <div class="gas-grid" style="grid-template-columns:1fr;">
-    <article class="gas-metric co" id="coCardMetric" style="min-height:140px;">
-     <div class="gas-name">CO — MONOXYDE DE CARBONE</div>
-     <div class="gas-value" id="coSingleValue">0</div>
-     <div class="gas-unit">ppm</div>
-     <div class="gas-gauge-wrap"><div class="gas-gauge-fill" id="coGauge" style="width:0%"></div></div>
-     <div class="gas-threshold" id="coThreshold">A1 : 20 · A2 : 50 ppm</div>
-    </article>
+  <section class="co-screen" id="coScreen">
+   <div class="draeger-pac-body">
+    <div class="pac-top-branding">
+     <span class="pac-logo">Dräger</span>
+     <span class="pac-model">Pac® 6500 CO</span>
+    </div>
+    <div class="pac-sensor-cap">
+     <div class="pac-sensor-grille"></div>
+     <span class="pac-gas-label">CO</span>
+    </div>
+    <div class="pac-lcd-screen" id="coPacLcd">
+     <div class="pac-lcd-top">
+      <span class="pac-icon-ok" id="coPacOkStatus">✔ OK</span>
+      <span class="pac-icon-batt">🔋 100%</span>
+     </div>
+     <div class="pac-lcd-main">
+      <span class="pac-co-value" id="coSingleValue">0</span>
+      <span class="pac-co-unit">ppm</span>
+     </div>
+     <div class="pac-lcd-bottom">
+      <span class="pac-alarm-state" id="coSingleAlarmState">PPM CO · NORMAL</span>
+     </div>
+    </div>
+    <div class="pac-buttons-row">
+     <button type="button" class="pac-btn-left" id="coAckBtn">OK / 🔇</button>
+     <button type="button" class="pac-btn-right" id="coInfoBtn">▲ / INFO</button>
+    </div>
    </div>
-   <div class="gas-status-row">
-    <span class="gas-status-pill">CAPTEUR : CO SIMULÉ</span>
-    <span class="gas-status-pill">BATTERIE : 100 %</span>
-    <span class="gas-status-pill" id="coAlarmStatus">ÉTAT : NORMAL</span>
-   </div>
-   <div class="gas-ack-wrap" id="coAlarmAckWrap">
+   <div class="gas-ack-wrap" style="text-align:center;margin-top:14px;justify-content:center;display:flex;flex-direction:column;align-items:center;gap:6px;">
     <button type="button" class="gas-ack-btn" id="coAlarmAckBtn" disabled>🔇 Acquitter l'alarme sonore CO</button>
-    <span class="muted" id="coAlarmAckStatus">Aucune alarme sonore CO active.</span>
+    <span class="muted" id="coAlarmAckStatus" style="font-size:11px;">Aucune alarme CO active.</span>
    </div>
-   <p class="gas-note">SIMULATEUR PÉDAGOGIQUE — Monoxyde de Carbone (CO) — Dräger Pac Series</p>
+   <p class="gas-note" style="text-align:center;margin-top:8px;">SIMULATEUR PÉDAGOGIQUE — Monoxyde de Carbone (CO) — Dräger Pac Series</p>
   </section>
  </main>
 
@@ -1414,32 +1426,43 @@ function renderCoSingle() {
   const a2 = Number(state.gas?.coA2 ?? coSingleState.a2 ?? 50);
   
   if ($('coSingleValue')) $('coSingleValue').textContent = Math.round(v);
-  if ($('coGauge')) $('coGauge').style.width = (Math.min(2000, Math.max(0, v)) / 2000 * 100) + '%';
-  if ($('coThreshold')) $('coThreshold').textContent = `A1 : ${a1} · A2 : ${a2} ppm`;
-  
-  const card = $('coCardMetric');
-  const level = getCoSingleAlarmLevel();
-  if (card) {
-    card.classList.remove('gas-alarm-a1', 'gas-alarm-a2');
-    if (level === 1) card.classList.add('gas-alarm-a1');
-    if (level === 2) card.classList.add('gas-alarm-a2');
-  }
-
   if ($('coSingleInput') && document.activeElement !== $('coSingleInput')) $('coSingleInput').value = Math.round(v);
   if ($('coSingleRange') && document.activeElement !== $('coSingleRange')) $('coSingleRange').value = Math.round(v);
   if ($('coSingleA1') && document.activeElement !== $('coSingleA1')) $('coSingleA1').value = a1;
   if ($('coSingleA2') && document.activeElement !== $('coSingleA2')) $('coSingleA2').value = a2;
   
-  if ($('coAlarmStatus')) $('coAlarmStatus').textContent = level > 0 ? 'ÉTAT : ALARME' : 'ÉTAT : NORMAL';
+  const lcd = $('coPacLcd');
+  const level = getCoSingleAlarmLevel();
+  if (lcd) {
+    lcd.classList.remove('co-alarm-a1', 'co-alarm-a2');
+    if (level === 1) lcd.classList.add('co-alarm-a1');
+    if (level === 2) lcd.classList.add('co-alarm-a2');
+  }
+  
+  const stateTxt = $('coSingleAlarmState');
+  if (stateTxt) {
+    stateTxt.textContent = level === 2 ? '⚠️ ALARME A2 (DANGER)' : level === 1 ? '⚠️ ALARME A1 (SEUIL)' : 'PPM CO · NORMAL';
+  }
+  
+  const okStatus = $('coPacOkStatus');
+  if (okStatus) {
+    okStatus.textContent = level > 0 ? (coSingleState.acked ? '✔ ACQ' : '⚠️ ALARM') : '✔ OK';
+  }
   
   const ackBtn = $('coAlarmAckBtn');
+  const ackBtnPac = $('coAckBtn');
   const ackStatus = $('coAlarmAckStatus');
+  
+  const disabledState = level === 0 || coSingleState.acked;
   if (ackBtn) {
-    ackBtn.disabled = level === 0 || coSingleState.acked;
-    ackBtn.textContent = coSingleState.acked ? '🔇 Alarme CO acquittée' : '🔇 Acquitter l\'alarme sonore CO';
+    ackBtn.disabled = disabledState;
+    ackBtn.textContent = coSingleState.acked ? '🔇 Alarme CO acquittée' : '🔇 Acquitter l'alarme sonore CO';
+  }
+  if (ackBtnPac) {
+    ackBtnPac.title = coSingleState.acked ? 'Alarme acquittée' : 'Acquitter l'alarme sonore';
   }
   if (ackStatus) {
-    ackStatus.textContent = level > 0 ? (coSingleState.acked ? 'Son coupé. L\'affichage clignote tant que le CO dépasse le seuil.' : 'Alarme sonore CO active.') : 'Aucune alarme sonore CO active.';
+    ackStatus.textContent = level > 0 ? (coSingleState.acked ? 'Son coupé. L'affichage clignote tant que le CO dépasse le seuil.' : 'Alarme sonore CO active.') : 'Aucune alarme sonore CO active.';
   }
   if ($('coSingleEvoCurrent')) $('coSingleEvoCurrent').textContent = `CO · ${Math.round(v)} ppm`;
 }
