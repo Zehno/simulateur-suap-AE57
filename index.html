@@ -436,16 +436,16 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <div id="variationRanges"></div>
    <div class="field"><label>HbCO (0 à 100 %)</label><input id="hbcoControl" type="number" min="0" max="100" step="1" value="0"></div>
    <div class="field"><label>Glycémie capillaire (g/L)</label><input id="glyControl" type="number" min="0" max="10" step="0.01" value="0.00"></div>
-   <div class="row"><button type="button" class="primary" id="validateGly">Valider la glycémie</button><button type="button" id="resetGly">Réinitialiser</button></div>
+   <div class="row"><button type="button" class="primary" id="validateGly">Valider</button><button type="button" id="resetGly">Réinitialiser</button></div>
    <div class="field"><label>Température corporelle (°C)</label><input id="tempControl" type="number" min="0" max="45" step="0.1" value="0.0"></div>
-   <div class="row"><button type="button" class="primary" id="validateTemp">Valider la température</button><button type="button" id="resetTemp">Réinitialiser</button></div>
-   <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> Activer / désactiver</label></div>
-   <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> Activer / désactiver</label></div>
+   <div class="row"><button type="button" class="primary" id="validateTemp">Valider</button><button type="button" id="resetTemp">Réinitialiser</button></div>
+   <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> ON / OFF</label></div>
+   <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> ON / OFF</label></div>
    <div class="field"><label>Évolution des constantes</label>
     <div class="row"><label>FC <select id="fcDirection"><option value="up">Augmentation</option><option value="down">Baisse</option><option value="none">Ne pas modifier</option></select></label>
-    <label>SpO₂ <select id="spoDirection"><option value="down">Baisse</option><option value="up">Augmentation</option><option value="none">Ne pas modifier</option></select></label></div>
+    <label>SpO₂ <select id="spoDirection"><option value="down"> ↘️ </option><option value="up"> ↗️ </option><option value="none">Ne pas modifier</option></select></label></div>
    </div>
-   <div class="row"><button id="worsenBtn">⚠ Déclenchement progressive</button><button class="warn" id="resetAllBtn">↺ Réinitialiser toutes les valeurs</button></div>
+   <div class="row"><button id="worsenBtn">Déclenchement progressive</button><button class="warn" id="resetAllBtn">↺ Réinitialiser</button></div>
    <div class="field"><label>Scénarios Cliniques</label><select id="condition"><option value="normal">MSP Personnalisé</option><option value="sepsis">Sepsis avec aggravation</option><option value="hemorrhage">Hémorragie / choc hypovolémique</option><option value="cardiogenic">Choc cardiogénique</option><option value="respiratory">Détresse respiratoire aiguë</option><option value="asthma">Crise d’asthme sévère</option><option value="copd">Exacerbation BPCO</option><option value="pneumonia">Pneumonie avec hypoxémie</option><option value="pe">Embolie pulmonaire</option><option value="anaphylaxis">Anaphylaxie</option><option value="acs">Syndrome coronarien aigu</option><option value="stroke">AVC avec aggravation neurologique</option><option value="decomp">Décompensation cardiaque</option><option value="heat_exhaustion">Épuisement lié à la chaleur</option><option value="heatstroke">Coup de chaleur / insolation</option><option value="hypothermia_moderate">Hypothermie modérée</option><option value="hypothermia_severe">Hypothermie grave / sévère</option><option value="alcohol">Intoxication alcoolique</option><option value="opioid">Intoxication morphinique</option><option value="drugs">Intoxication par autres drogues</option><option value="co">Intoxication au monoxyde de carbone (CO)</option><option value="hypoglycemia">Hypoglycémie grave</option><option value="ketoacidosis">Hyperglycémie avec acidocétose</option><optgroup label="Malaises et pertes de connaissance">
 <option value="syncope_vasovagal">Malaise vagal / syncope</option>
 <option value="syncope_cardiac">Malaise avec suspicion d’origine cardiaque</option>
