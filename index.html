@@ -55,6 +55,15 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .pi-meter-fill{position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(180deg,#9ce4ff,#25a9ff 55%,#0873d1);border-radius:0 0 5px 5px;transition:height .25s ease;}
 .pi-reading{min-width:43px;text-align:center;font-size:12px;font-weight:850;color:#e8f7ff;font-variant-numeric:tabular-nums;}
 .pi-reading small{display:block;font-size:9px;font-weight:700;opacity:.85;letter-spacing:.05em;}
+/* Jauge SIQ de la fréquence cardiaque : même format que l'indice de perfusion */
+.fc-layout{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:100%;}
+.fc-reading{min-width:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;}
+.fc-reading .value{margin-top:8px!important;}
+.siq-meter-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;align-self:stretch;padding:4px 3px 4px 8px;border-left:1px solid #ffffff55;}
+.siq-meter{position:relative;width:15px;height:86px;border:2px solid #d5ffe6;border-radius:9px;background:#063a22;overflow:hidden;box-shadow:inset 0 0 5px #00190e;}
+.siq-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#b8ffd2,#3ef08a 55%,#0f9d4f);border-radius:0 0 5px 5px;transition:height .08s linear;}
+.siq-reading{min-width:43px;text-align:center;font-size:12px;font-weight:850;color:#e9fff1;font-variant-numeric:tabular-nums;}
+.siq-reading small{display:block;font-size:9px;font-weight:700;opacity:.85;letter-spacing:.05em;}
 .ta-cycle{display:none;align-items:center;gap:9px;margin:7px 0 2px;padding:7px 9px;border:1px solid #83929c;border-radius:7px;background:#252d33;text-align:left;}
 .ta-cycle.active{display:flex;}
 .ta-cycle-gauge{position:relative;flex:1;height:9px;border-radius:8px;background:#11191f;overflow:hidden;border:1px solid #82909a;}
@@ -62,17 +71,14 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .ta-cycle-info{min-width:115px;font-size:10px;line-height:1.35;color:#eaf3f8;font-variant-numeric:tabular-nums;}
 .ta-cycle-info strong{font-size:11px;}
 .ta-cycle-result{font-size:10px;color:#d5e4ec;white-space:nowrap;}
-@media(max-width:430px){.pi-meter{height:72px}.pi-reading{font-size:11px;min-width:38px}.ta-cycle-info{min-width:95px}}
-
-
-
-
+.next-ta-box{margin:8px 0;padding:8px 10px;border:1px solid #3b6f8f;border-radius:8px;background:#0b1d29;font-size:13px;}
+.next-ta-box strong{font-size:16px;color:#7fd3ff;font-variant-numeric:tabular-nums;}
+@media(max-width:430px){.pi-meter,.siq-meter{height:72px}.pi-reading,.siq-reading{font-size:11px;min-width:38px}.ta-cycle-info{min-width:95px}}
 
 .breath-buttons button{flex:1;padding:9px 6px}
 
 .breath-source a{color:#8fcaff}
 @media(max-width:650px){.app{padding:7px}.numbers{gap:8px}.metric{min-height:120px;padding:10px}.metric .value{font-size:34px}.metric .name{font-size:11px}.ta-wide{min-height:120px;padding:8px}.ta-history-row{grid-template-columns:76px 1fr auto;font-size:13px}.ta-history-row strong{font-size:16px}}
-
 
 .module-switch{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
 .module-switch button{flex:1;min-width:145px;padding:13px 16px;font-weight:850;background:#1b2b38;border:1px solid #3b5668}
@@ -100,7 +106,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .gas-metric.gas-alarm-a1 .gas-name,.gas-metric.gas-alarm-a1 .gas-value,.gas-metric.gas-alarm-a1 .gas-unit,.gas-metric.gas-alarm-a2 .gas-name,.gas-metric.gas-alarm-a2 .gas-value,.gas-metric.gas-alarm-a2 .gas-unit{color:#fff!important}
 .gas-alarm-label{font-weight:900;margin-left:8px}
 @media(max-width:650px){.gas-screen{padding:8px}.gas-metric{padding:10px;min-height:112px}.gas-metric .gas-name{font-size:11px}.gas-metric .gas-value{font-size:34px}}
-
 
 /* Refonte visuelle du moniteur stagiaire — affichage sans tracés animés */
 .monitor-grid{display:block!important}
@@ -145,7 +150,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 @media(max-width:760px){.numbers{grid-template-columns:repeat(2,minmax(0,1fr))!important}.numbers>.ta-wide{grid-column:1/-1!important}.numbers>.metric{min-height:100px}.ta-wide{min-height:150px!important}}
 @media(max-width:430px){.numbers{grid-template-columns:1fr!important}.numbers>.ta-wide{grid-column:auto!important}.long-metric{min-height:65px!important}.ta-history-list{max-height:55px}}
 
-
 /* Ajustement de la grille : TA/PNI à gauche, HbCO à droite,
    puis Température et Glycémie sur la rangée inférieure. */
 @media(min-width:761px){
@@ -169,8 +173,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 @media(max-width:430px){
   .numbers>.ta-wide{grid-column:auto!important}
 }
-
-
 
 /* Interface LCD portable du détecteur 4 gaz — stagiaire uniquement */
 .trainee-gas-ui #gasScreen{
@@ -333,8 +335,6 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
   .trainee-gas-ui .gas-value{font-size:clamp(31px,9vw,46px)}
 }
 
-
-
 /* Disposition desktop : TA/PNI à gauche sur trois niveaux, HbCO / température / glycémie empilés à droite. */
 @media (min-width: 761px) {
   .numbers {
@@ -396,7 +396,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <div class="monitor-head"><span id="patientLabel">ADULTE · VICTIME</span><span>HEURE <b id="clock">--:--:--</b></span><span>MISE EN SITUATION <b id="scenarioElapsed">00:00:00</b></span><span id="alarmText" class="alarm off">ALARME</span></div>
    <div class="monitor-grid">
     <div class="numbers">
-     <button class="metric fc" data-metric="FC"><div class="name">FC</div><div class="thresholds" id="thFC">Bas 50 · Haut 130</div><div class="value" id="vFC">—</div><div class="unit" id="uFC">bpm · électrodes ECG non posées</div></button>
+     <button class="metric fc" data-metric="FC"><div class="fc-layout"><div class="fc-reading"><div class="name">FC</div><div class="thresholds" id="thFC">Bas 50 · Haut 130</div><div class="value" id="vFC">—</div><div class="unit" id="uFC">bpm · électrodes ECG non posées</div></div><div class="siq-meter-wrap" aria-label="Signal de battement cardiaque"><div class="siq-meter"><div class="siq-meter-fill" id="siqMeterFill"></div></div><div class="siq-reading"><span id="vSIQ">0</span><small>SIQ</small></div></div></div></button>
      <button class="metric spo" data-metric="SpO₂"><div class="spo-layout"><div class="spo-reading"><div class="name">SpO₂</div><div class="thresholds" id="thSpo">Bas 90 · Haut 100</div><div class="value" id="vSpO2">—</div><div class="unit" id="uSpO2">% · Pince à SAT non posée</div></div><div class="pi-meter-wrap" aria-label="Indice de perfusion"><div class="pi-meter"><div class="pi-meter-fill" id="piMeterFill"></div></div><div class="pi-reading"><span id="vPI">1,0</span><small>I.P. %</small></div></div></div></button>
      <button class="metric ta ta-wide" data-metric="TA"><div class="ta-main"><div><div class="name">T.A. / P.N.I.</div><div class="value" id="vTA">—/—</div><div class="subvalue" id="vPAM">Brassard non posé</div></div><div class="thresholds" id="thTA">TAS 90–180<br>TAD 50–110</div></div><div class="ta-cycle" id="taCycle"><div class="ta-cycle-info"><strong id="taCyclePhase">Gonflage du brassard</strong><br><span id="taCyclePressure">0 mmHg</span> · <span id="taCycleTime">20 s</span></div><div class="ta-cycle-gauge"><div class="ta-cycle-fill" id="taCycleFill"></div></div></div><div class="ta-history"><div class="ta-history-head">HISTORIQUE DES TENSIONS <span>HEURE · mmHg</span></div><div id="taHistoryList" class="ta-history-list"><div class="ta-empty">En attente de la pose du brassard par le stagiaire</div></div></div></button>
      <button class="metric co2" data-metric="HbCO"><div class="name">HbCO</div><div class="thresholds" id="thHbco">Seuil bas 10</div><div class="value" id="vHbCO">0</div><div class="unit">%</div></button>
@@ -431,21 +431,20 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
    <div class="row"><button type="button" class="primary" id="startScenarioClock">▶ Démarrer / reprendre le compteur</button><button type="button" id="resetScenarioClock">↺ Remise à zéro</button></div>
    <p class="muted" id="scenarioClockStatus">Compteur de mise en situation à l’arrêt.</p>
    <div id="sliders"></div>
-   <div class="field"><label>Tension artérielle (mmHg)</label><div class="row"><label>TAS <input id="manualSys" type="number" min="0" max="300" value="120" aria-label="Tension artérielle systolique"></label><label>TAD <input id="manualDia" type="number" min="0" max="200" value="80" aria-label="Tension artérielle diastolique"></label><button class="primary" id="applyTA">Appliquer T.A.</button></div></div>
-   <div class="field"><label>Indice de perfusion (I.P.) — 0 à 5 %</label><div class="row"><label>Départ (%) <input id="piTrendFrom" type="number" min="0" max="5" step="0.1" value="1"></label><label>Arrivée (%) <input id="piTrendTo" type="number" min="0" max="5" step="0.1" value="1"></label><strong id="piControlValue">1,0 → 1,0 %</strong></div><small class="muted"></small></div>
+   <div class="field"><label>Tension artérielle (mmHg)</label><div class="row"><label>TAS <input id="manualSys" type="number" min="0" max="300" value="120" aria-label="Tension artérielle systolique"></label><label>TAD <input id="manualDia" type="number" min="0" max="200" value="80" aria-label="Tension artérielle diastolique"></label><button class="primary" id="applyTA">Appliquer T.A.</button></div><div class="next-ta-box">Prochaine prise prévue pour le stagiaire : <strong id="nextTAValue">120/80 mmHg</strong><br><span class="muted">Valeur visible uniquement côté formateur ; le stagiaire ne voit que le résultat à la fin du cycle.</span></div></div>
+   <div class="field"><label>Indice de perfusion (I.P.) — 0 à 5 %</label><div class="row"><label>Borne basse (%) <input id="piTrendFrom" type="number" min="0" max="5" step="0.1" value="1"></label><label>Borne haute (%) <input id="piTrendTo" type="number" min="0" max="5" step="0.1" value="1"></label><strong id="piControlValue">1,0 → 1,0 %</strong></div><small class="muted"></small></div>
    <div id="variationRanges"></div>
    <div class="field"><label>HbCO (0 à 100 %)</label><input id="hbcoControl" type="number" min="0" max="100" step="1" value="0"></div>
-   <div class="field"><label>Glycémie capillaire (g/L)</label><input id="glyControl" type="number" min="0" max="10" step="0.01" value="0.00"></div>
-   <div class="row"><button type="button" class="primary" id="validateGly">Valider</button><button type="button" id="resetGly">Réinitialiser</button></div>
+   <div class="field"><label>Glycémie capillaire (g/L)</label><input id="glyControl" type="number" min="0" max="10" step="0.01" value="0.00"></div> <div class="row"><button type="button" class="primary" id="validateGly">Valider</button><button type="button" id="resetGly">Réinitialiser</button></div>
    <div class="field"><label>Température corporelle (°C)</label><input id="tempControl" type="number" min="0" max="45" step="0.1" value="0.0"></div>
    <div class="row"><button type="button" class="primary" id="validateTemp">Valider</button><button type="button" id="resetTemp">Réinitialiser</button></div>
-   <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> ON / OFF</label></div>
-   <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> ON / OFF</label></div>
+   <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> Activer / désactiver</label></div>
+   <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> Activer / désactiver</label></div>
    <div class="field"><label>Évolution des constantes</label>
     <div class="row"><label>FC <select id="fcDirection"><option value="up">Augmentation</option><option value="down">Baisse</option><option value="none">Ne pas modifier</option></select></label>
-    <label>SpO₂ <select id="spoDirection"><option value="down"> ↘️ </option><option value="up"> ↗️ </option><option value="none">Ne pas modifier</option></select></label></div>
+    <label>SpO₂ <select id="spoDirection"><option value="down">Baisse</option><option value="up">Augmentation</option><option value="none">Ne pas modifier</option></select></label></div>
    </div>
-   <div class="row"><button id="worsenBtn">Déclenchement progressive</button><button class="warn" id="resetAllBtn">↺ Réinitialiser</button></div>
+   <div class="row"><button id="worsenBtn">⚠ Déclenchement progressive</button><button class="warn" id="resetAllBtn">↺ Réinitialiser toutes les valeurs</button></div>
    <div class="field"><label>Scénarios Cliniques</label><select id="condition"><option value="normal">MSP Personnalisé</option><option value="sepsis">Sepsis avec aggravation</option><option value="hemorrhage">Hémorragie / choc hypovolémique</option><option value="cardiogenic">Choc cardiogénique</option><option value="respiratory">Détresse respiratoire aiguë</option><option value="asthma">Crise d’asthme sévère</option><option value="copd">Exacerbation BPCO</option><option value="pneumonia">Pneumonie avec hypoxémie</option><option value="pe">Embolie pulmonaire</option><option value="anaphylaxis">Anaphylaxie</option><option value="acs">Syndrome coronarien aigu</option><option value="stroke">AVC avec aggravation neurologique</option><option value="decomp">Décompensation cardiaque</option><option value="heat_exhaustion">Épuisement lié à la chaleur</option><option value="heatstroke">Coup de chaleur / insolation</option><option value="hypothermia_moderate">Hypothermie modérée</option><option value="hypothermia_severe">Hypothermie grave / sévère</option><option value="alcohol">Intoxication alcoolique</option><option value="opioid">Intoxication morphinique</option><option value="drugs">Intoxication par autres drogues</option><option value="co">Intoxication au monoxyde de carbone (CO)</option><option value="hypoglycemia">Hypoglycémie grave</option><option value="ketoacidosis">Hyperglycémie avec acidocétose</option><optgroup label="Malaises et pertes de connaissance">
 <option value="syncope_vasovagal">Malaise vagal / syncope</option>
 <option value="syncope_cardiac">Malaise avec suspicion d’origine cardiaque</option>
@@ -504,7 +503,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 const $=id=>document.getElementById(id);
 const GLYCEMIE_CODES={LO:{operator:'<',value:0.20,label:'LO'},HI:{operator:'>',value:5.00,label:'HI'}}; // Seuils internes uniquement : LO <0,20 g/L ; HI >5,00 g/L
 function glycemiaDisplay(value){const n=Number(value);if(!Number.isFinite(n))return null;if(n<GLYCEMIE_CODES.LO.value)return GLYCEMIE_CODES.LO.label;if(n>GLYCEMIE_CODES.HI.value)return GLYCEMIE_CODES.HI.label;return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});}
-const defaults={scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:1,piTrendFrom:1,piTrendTo:1,piTrendStartAt:null,taCycleStartAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
+const defaults={scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:1,piTrendFrom:1,piTrendTo:1,piTrendStartAt:null,piNextTarget:1,piNextAt:0,taCycleStartAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -514,6 +513,7 @@ $('chooseTrainee').onclick=()=>{sessionStorage.setItem('scopeRoleChosen','1');lo
 let sb=null,channel=null,room='',timer=null,history=[];
 let smoothTarget={fc:72,spo:98},lastTargetAt=0,lastSmoothRender=0,worseningTimer=null;
 let phase=0,audioEnabled=true,audioCtx=null,lastBeep=0,lastHeartBeat=0,flatOsc=null,flatGain=null,taHistory=[];
+let siqLevel=0,siqLastBeatAt=0;
 let gasAlarmLastSignature="0000",gasAlarmAcked=false;
 let activeTASnapshot=null;
 let scopeAlarmAcked=false,scopeAlarmLastRevision=0,scopeAlarmLastUnackedSignature="";
@@ -560,27 +560,51 @@ function updateTACycle(){
   render();publish();
  }
 }
+// I.P. : la valeur cible est tirée aléatoirement entre les bornes imposées par le formateur,
+// puis la jauge rejoint progressivement chaque nouvelle cible (montée et descente irrégulières).
 function updatePITrend(){
- const from=Math.max(0,Math.min(5,Number(state.piTrendFrom??state.pi??0)));
- const to=Math.max(0,Math.min(5,Number(state.piTrendTo??from)));
+ const lo=Math.max(0,Math.min(5,Number(state.piTrendFrom??state.pi??0)));
+ const hi=Math.max(0,Math.min(5,Number(state.piTrendTo??lo)));
+ const min=Math.min(lo,hi),max=Math.max(lo,hi);
+ const now=Date.now();
  if(state.piTrendStartAt!==null&&Number.isFinite(Number(state.piTrendStartAt))){
-  const phase=((Date.now()-Number(state.piTrendStartAt))%20000+20000)%20000/20000;
-  const wave=phase<0.5?phase*2:(1-phase)*2;
-  state.pi=from+(to-from)*wave;
- }else state.pi=from;
+  if(!Number.isFinite(Number(state.piNextAt))||now>=Number(state.piNextAt)){
+   state.piNextTarget=min+Math.random()*(max-min);
+   state.piNextAt=now+2000+Math.random()*2000;
+  }
+  const target=Number.isFinite(Number(state.piNextTarget))?Number(state.piNextTarget):lo;
+  const current=Number(state.pi??lo);
+  state.pi=current+(target-current)*0.04;
+  state.pi=Math.max(min,Math.min(max,state.pi));
+ }else state.pi=lo;
  const value=Number(state.pi??0);
  if($('vPI'))$('vPI').textContent=value.toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1});
  if($('piMeterFill'))$('piMeterFill').style.height=(Math.max(0,Math.min(5,value))/5*100)+'%';
 }
+function updateSIQ(){
+ // Jauge SIQ : se remplit à chaque battement puis redescend, cadence = 60/FC.
+ const fill=$('siqMeterFill'),label=$('vSIQ');
+ const active=state.fcMeasured===true&&Number(state.fc)>0&&state.rhythm!=='asystole'&&state.rhythm!=='fv';
+ if(!active){siqLevel=Math.max(0,siqLevel-0.08);}
+ else{
+  const beatMs=60000/Math.max(1,Number(state.fc));
+  const now=Date.now();
+  if(now-siqLastBeatAt>=beatMs){siqLastBeatAt=now;siqLevel=1;}
+  else siqLevel=Math.max(0,siqLevel-(1/Math.max(1,beatMs/50))*1.6);
+ }
+ if(fill)fill.style.height=(siqLevel*100).toFixed(1)+'%';
+ if(label)label.textContent=active?fmt(state.fc):'0';
+}
 function render(){
  updatePITrend();
- $('vFC').textContent=state.fcMeasured===true?fmt(state.fc):'—';$('uFC').textContent=state.fcMeasured===true?'Pince à SAT connectée':'Pince à SAT non posée';$('uSpO2').textContent=state.spoMeasured===true?'Pince à SAT connectée':'Pince à SAT non posée';$('vGly').textContent=state.glyMeasured!==true?'—':glycemiaDisplay(state.gly);$('glyStatus').textContent=state.glyMeasured!==true?'Non mesurée':Number(state.gly)<GLYCEMIE_CODES.LO.value?'LO · valeur inférieure au seuil':Number(state.gly)>GLYCEMIE_CODES.HI.value?'HI · valeur supérieure au seuil':'Mesurée';$('vTemp').textContent=state.tempMeasured===true?Number(state.temp??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1}):'—';$('tempStatus').textContent=state.tempMeasured===true?'Mesurée':'Non mesurée';if($('tempControl')&&document.activeElement!==$('tempControl'))$('tempControl').value=Number(state.temp??0).toFixed(1);$('vTA').textContent=state.taMeasured===true?`${fmt(state.sys)}/${fmt(state.dia)}`:'—/—';$('vPAM').textContent=state.taMeasured===true?`PAM ${pam()} mmHg`:'Brassard non posé';$('vSpO2').textContent=state.spoMeasured===true?fmt(state.spo):'—';updatePITrend();$('vHbCO').textContent=fmt(state.hbco??0);$('thFC').textContent=state.fcMeasured===true?`Bas ${state.lowFC} · Haut ${state.highFC}`:'Électrodes ECG à poser';$('thTA').innerHTML=state.taMeasured===true?`TAS ${state.lowSys}–${state.highSys}<br>TAD ${state.lowDia}–${state.highDia}`:'Mesure non réalisée';$('thSpo').textContent=state.spoMeasured===true?`Bas ${state.lowSpo} · Haut ${state.highSpo}`:'Pince à SAT à poser';$('thHbco').textContent=`Bas ${state.lowHbco??0}`;if($('hbcoControl')&&document.activeElement!==$('hbcoControl'))$('hbcoControl').value=fmt(state.hbco??0);if($('glyControl')&&document.activeElement!==$('glyControl'))$('glyControl').value=Number(state.gly??0).toFixed(2);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;renderScenarioClock();renderTAHistory();updateTACycle();
+ $('vFC').textContent=state.fcMeasured===true?fmt(state.fc):'—';$('uFC').textContent=state.fcMeasured===true?'Pince à SAT connectée':'Pince à SAT non posée';$('uSpO2').textContent=state.spoMeasured===true?'Pince à SAT connectée':'Pince à SAT non posée';$('vGly').textContent=state.glyMeasured!==true?'—':glycemiaDisplay(state.gly);$('glyStatus').textContent=state.glyMeasured!==true?'Non mesurée':Number(state.gly)<GLYCEMIE_CODES.LO.value?'LO · valeur inférieure au seuil':Number(state.gly)>GLYCEMIE_CODES.HI.value?'HI · valeur supérieure au seuil':'Mesurée';$('vTemp').textContent=state.tempMeasured===true?Number(state.temp??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1}):'—';$('tempStatus').textContent=state.tempMeasured===true?'Mesurée':'Non mesurée';if($('tempControl')&&document.activeElement!==$('tempControl'))$('tempControl').value=Number(state.temp??0).toFixed(1);$('vTA').textContent=state.taMeasured===true?`${fmt(state.sys)}/${fmt(state.dia)}`:'—/—';$('vPAM').textContent=state.taMeasured===true?`PAM ${pam()} mmHg`:'Brassard non posé';$('vSpO2').textContent=state.spoMeasured===true?fmt(state.spo):'—';updatePITrend();updateSIQ();$('vHbCO').textContent=fmt(state.hbco??0);$('thFC').textContent=state.fcMeasured===true?`Bas ${state.lowFC} · Haut ${state.highFC}`:'Électrodes ECG à poser';$('thTA').innerHTML=state.taMeasured===true?`TAS ${state.lowSys}–${state.highSys}<br>TAD ${state.lowDia}–${state.highDia}`:'Mesure non réalisée';$('thSpo').textContent=state.spoMeasured===true?`Bas ${state.lowSpo} · Haut ${state.highSpo}`:'Pince à SAT à poser';$('thHbco').textContent=`Bas ${state.lowHbco??0}`;if($('hbcoControl')&&document.activeElement!==$('hbcoControl'))$('hbcoControl').value=fmt(state.hbco??0);if($('glyControl')&&document.activeElement!==$('glyControl'))$('glyControl').value=Number(state.gly??0).toFixed(2);$('patientLabel').textContent=`${state.patient.toUpperCase()} · ${state.name}`;renderScenarioClock();renderTAHistory();updateTACycle();
  refreshScopeAlarms();
  if($('irregularFCToggle'))$('irregularFCToggle').checked=!!state.irregularFC;
  if($('variationFCToggle'))$('variationFCToggle').checked=!!state.variationFCEnabled;
  if($('variationSpoToggle'))$('variationSpoToggle').checked=!!state.variationSpoEnabled;
  if($('manualSys')&&document.activeElement!==$('manualSys'))$('manualSys').value=Number(state.pendingSys??state.sys);
  if($('manualDia')&&document.activeElement!==$('manualDia'))$('manualDia').value=Number(state.pendingDia??state.dia);
+ if($('nextTAValue'))$('nextTAValue').textContent=`${fmt(Number(state.pendingSys??state.sys))}/${fmt(Number(state.pendingDia??state.dia))} mmHg`;
  if($('piTrendFrom')&&document.activeElement!==$('piTrendFrom'))$('piTrendFrom').value=Number(state.piTrendFrom??state.pi??0).toFixed(1);
  if($('piTrendTo')&&document.activeElement!==$('piTrendTo'))$('piTrendTo').value=Number(state.piTrendTo??state.pi??0).toFixed(1);
  if($('piControlValue'))$('piControlValue').textContent=Number(state.piTrendFrom??state.pi??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})+' → '+Number(state.piTrendTo??state.pi??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})+' %';
@@ -729,7 +753,7 @@ function renderTAHistory(){const el=$('taHistoryList');if(!el)return;const rows=
 function taHistoryMarkup(){return (state.taHistory||[]).length?'<div>'+(state.taHistory||[]).map((m,i)=>`<div class="event"><b>${escapeHtml(m.time)}</b> — ${m.sys}/${m.dia} mmHg <span class="muted">· PAM ${m.pam} mmHg${i===0?' · dernière mesure':''}</span></div>`).join('')+'</div>':'<p class="muted">Aucune mesure enregistrée.</p>'}
 function showTAHistory(){openModal('Historique T.A / P.N.I.',taHistoryMarkup())}
 $('applyTA').onclick=()=>{const sys=$('manualSys').value.trim(),dia=$('manualDia').value.trim();if(sys===''||dia===''||!Number.isFinite(Number(sys))||!Number.isFinite(Number(dia))){alert('Saisis une TAS et une TAD valides.');return}state.pendingSys=Math.max(0,Math.min(300,Number(sys)));state.pendingDia=Math.max(0,Math.min(200,Number(dia)));log(`Nouvelle tension préparée : ${state.pendingSys}/${state.pendingDia} mmHg — elle sera affichée à la prochaine mesure du stagiaire`);render();publish()};
-function applyPITrend(){const fromRaw=$('piTrendFrom').value.trim(),toRaw=$('piTrendTo').value.trim();if(fromRaw===''||toRaw===''||!Number.isFinite(Number(fromRaw))||!Number.isFinite(Number(toRaw))){alert('Saisis deux valeurs d’I.P. valides entre 0 et 5 %.');render();return}state.piTrendFrom=Math.max(0,Math.min(5,Number(fromRaw)));state.piTrendTo=Math.max(0,Math.min(5,Number(toRaw)));state.piTrendStartAt=Date.now();state.pi=state.piTrendFrom;log(`Tendance I.P. réglée : ${state.piTrendFrom.toFixed(1)} à ${state.piTrendTo.toFixed(1)} %`);render();publish()}
+function applyPITrend(){const fromRaw=$('piTrendFrom').value.trim(),toRaw=$('piTrendTo').value.trim();if(fromRaw===''||toRaw===''||!Number.isFinite(Number(fromRaw))||!Number.isFinite(Number(toRaw))){alert('Saisis deux valeurs d’I.P. valides entre 0 et 5 %.');render();return}state.piTrendFrom=Math.max(0,Math.min(5,Number(fromRaw)));state.piTrendTo=Math.max(0,Math.min(5,Number(toRaw)));state.piTrendStartAt=Date.now();state.piNextAt=0;state.pi=state.piTrendFrom;log(`Variation I.P. réglée : entre ${state.piTrendFrom.toFixed(1)} et ${state.piTrendTo.toFixed(1)} %`);render();publish()}
 $('piTrendFrom').onchange=applyPITrend;$('piTrendTo').onchange=applyPITrend;
 $('soundToggle').onchange=e=>{audioEnabled=e.target.checked;state.soundEnabled=audioEnabled;if(!audioEnabled)stopFlatlineTone();publish()};
 $('menuBtn').onclick=()=>setPage('settings');
@@ -785,7 +809,7 @@ const conditions={
  diabetic_decomp:{label:'Décompensation diabétique',fc:[110,155],spo:[93,99],base:[132,96],sys:[90,130],dia:[50,85],taBase:[110,68],desc:'Hyperglycémie importante, déshydratation et tachycardie ; tableau compatible avec une décompensation, à préciser biologiquement.'}
 };
 function applyAlarmThresholds(){if(state.condition==='normal')return;const pediatric=state.patient==='pediatrie';state.lowFC=pediatric?70:60;state.highFC=pediatric?140:100;state.lowSys=90;state.highSys=140;state.lowDia=70;state.highDia=90;state.lowSpo=94;state.highSpo=100;}
-function applyCondition(id){if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}const c=conditions[id]||conditions.normal;state.condition=id;$('worsenBtn').textContent='⚠ Déclencher une aggravation progressive';state.fcMin=c.fc[0];state.fcMax=c.fc[1];state.spoMin=c.spo[0];state.spoMax=c.spo[1];state.fc=c.base[0];state.spo=c.base[1];state.rhythm=id==='arrhythmia_fa'?'fa':'sinusal';state.irregularFC=id==='arrhythmia_fa';state.hbco=c.hbco??0;state.gly=0;state.glyMeasured=false;state.temp=0;state.tempMeasured=false;state.fcMeasured=false;state.spoMeasured=false;state.taMeasured=false;state.taCycleStartAt=null;state.taHistory=[];if(id!=='normal'&&c.sys&&c.dia){const ta=c.taBase||[Math.round((c.sys[0]+c.sys[1])/2),Math.round((c.dia[0]+c.dia[1])/2)];state.sys=ta[0];state.dia=ta[1];state.pendingSys=ta[0];state.pendingDia=ta[1];$('manualSys').value=state.pendingSys;$('manualDia').value=state.pendingDia;}if(id==='normal'){state.sys=defaults.sys;state.dia=defaults.dia;state.pendingSys=defaults.sys;state.pendingDia=defaults.dia;state.lowFC=defaults.lowFC;state.highFC=defaults.highFC;state.lowSys=defaults.lowSys;state.highSys=defaults.highSys;state.lowDia=defaults.lowDia;state.highDia=defaults.highDia;state.lowSpo=defaults.lowSpo;state.highSpo=defaults.highSpo}else{applyAlarmThresholds()}state.variationFCEnabled=false;state.variationSpoEnabled=false;smoothTarget={fc:state.fc,spo:state.spo};lastTargetAt=0;$('clinicalInfo').textContent=c.desc;log('Affection sélectionnée : '+c.label+' — seuils d’alarme '+(id==='normal'?'conservés':'standards adaptés au mode patient')+', variations désactivées pour laisser jouer le scénario prévu');render();publish()}
+function applyCondition(id){if(worseningTimer){clearInterval(worseningTimer);worseningTimer=null}const c=conditions[id]||conditions.normal;state.condition=id;$('worsenBtn').textContent='⚠ Déclencher une aggravation / amélioration';state.fcMin=c.fc[0];state.fcMax=c.fc[1];state.spoMin=c.spo[0];state.spoMax=c.spo[1];state.fc=c.base[0];state.spo=c.base[1];state.rhythm=id==='arrhythmia_fa'?'fa':'sinusal';state.irregularFC=id==='arrhythmia_fa';state.hbco=c.hbco??0;state.gly=0;state.glyMeasured=false;state.temp=0;state.tempMeasured=false;state.fcMeasured=false;state.spoMeasured=false;state.taMeasured=false;state.taCycleStartAt=null;state.taHistory=[];if(id!=='normal'&&c.sys&&c.dia){const ta=c.taBase||[Math.round((c.sys[0]+c.sys[1])/2),Math.round((c.dia[0]+c.dia[1])/2)];state.sys=ta[0];state.dia=ta[1];state.pendingSys=ta[0];state.pendingDia=ta[1];$('manualSys').value=state.pendingSys;$('manualDia').value=state.pendingDia;}if(id==='normal'){state.sys=defaults.sys;state.dia=defaults.dia;state.pendingSys=defaults.sys;state.pendingDia=defaults.dia;state.lowFC=defaults.lowFC;state.highFC=defaults.highFC;state.lowSys=defaults.lowSys;state.highSys=defaults.highSys;state.lowDia=defaults.lowDia;state.highDia=defaults.highDia;state.lowSpo=defaults.lowSpo;state.highSpo=defaults.highSpo}else{applyAlarmThresholds()}state.variationFCEnabled=false;state.variationSpoEnabled=false;smoothTarget={fc:state.fc,spo:state.spo};lastTargetAt=0;$('clinicalInfo').textContent=c.desc;log('Affection sélectionnée : '+c.label+' — seuils d’alarme '+(id==='normal'?'conservés':'standards adaptés au mode patient')+', variations désactivées pour laisser jouer le scénario prévu');render();publish()}
 $('condition').onchange=e=>applyCondition(e.target.value);
 $('hbcoControl').onchange=e=>{state.hbco=Math.max(0,Math.min(100,Math.round(Number(e.target.value)||0)));e.target.value=state.hbco;log('HbCO réglée à '+state.hbco+' %');render();publish()};
 $('glyControl').onchange=e=>{const raw=e.target.value.trim();if(raw==='')return;state.gly=Math.max(0,Math.min(10,Number(raw)));e.target.value=state.gly.toFixed(2);log('Valeur de glycémie saisie : '+state.gly.toFixed(2)+' g/L — en attente de validation');render();publish()};
@@ -908,7 +932,7 @@ function stopFlatlineTone(){if(flatOsc){try{flatOsc.stop()}catch(e){}flatOsc=nul
 function syncFlatlineTone(){if(!audioEnabled||!audioCtx||scopeAlarmAcked||!state.fcMeasured||!['asystole','fv'].includes(state.rhythm)){stopFlatlineTone();return}if(!flatOsc){try{flatOsc=audioCtx.createOscillator();flatGain=audioCtx.createGain();flatOsc.type='sine';flatOsc.frequency.value=440;flatGain.gain.value=.035;flatOsc.connect(flatGain);flatGain.connect(audioCtx.destination);flatOsc.start()}catch(e){stopFlatlineTone()}}}
 function beepHeart(){if(!audioEnabled||!audioCtx||!state.fcMeasured||state.rhythm==='asystole'||state.rhythm==='fv'||Number(state.fc)<=0)return;let now=Date.now(),base=60000/Math.max(1,Number(state.fc)),interval=base;if(state.irregularFC||state.rhythm==='fa')interval=base*(.72+Math.random()*.56);if(now-lastHeartBeat>=interval){lastHeartBeat=now;shortTone(720,.075,.045)}}
 $('scopeAlarmAckBtn').onclick=()=>{if(role!=='display')return;const pending=scopeAlarmUnacknowledgedConditions();if(!pending.length)return;pending.forEach(condition=>{const metricKey=scopeAlarmMetricKey(condition),info=metricKey?scopeAlarmMetricInfo(metricKey):null;if(metricKey&&info&&Number.isFinite(info.value)&&!Object.prototype.hasOwnProperty.call(scopeAlarmAckSnapshots,metricKey))scopeAlarmAckSnapshots[metricKey]=info.value});scopeAlarmAcked=true;stopScopeAlarmAudio();refreshScopeAlarms()};
-function animate(){if(currentModule==='scope'){syncFlatlineTone();beepHeart();beepAlarm();}else{stopFlatlineTone();}beepGasAlarm();renderScenarioClock();requestAnimationFrame(animate)}
+function animate(){if(currentModule==='scope'){syncFlatlineTone();beepHeart();beepAlarm();updateSIQ();}else{stopFlatlineTone();}beepGasAlarm();renderScenarioClock();requestAnimationFrame(animate)}
 
 // Module 4 gaz : le CO atmosphérique est indépendant de la HbCO du Scope.
 let currentModule='scope';
