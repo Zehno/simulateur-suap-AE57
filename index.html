@@ -679,10 +679,8 @@ body.trainee-gas-ui #coTrainerWrap{display:none}
 #monitorPage .numbers > .long-metric .name{font-size:clamp(10px,1.3vw,15px)!important;line-height:1.15;padding:0!important}
 #monitorPage .numbers > .metric.co2 .value,
 #monitorPage .numbers > .long-metric .value{font-size:clamp(25px,3vw,40px)!important;line-height:1.05!important}
-#traineeTopToggle{display:none;width:100%;margin:0 0 7px;padding:7px 10px;text-align:left;font-size:12px;font-weight:800;background:#14232d;border-color:#405461}
+/* Le menu stagiaire disparaît complètement dès le démarrage du compteur. */
 body.trainee-header-collapsed #traineeTopGroup{display:none!important}
-body.trainee-header-collapsed #traineeTopToggle{display:block}
-body:not(.trainee-header-collapsed) #traineeTopToggle{display:none}
 @media screen and (max-width:760px){
  #monitorPage .numbers{gap:6px!important}
  #monitorPage .numbers>.metric.fc,#monitorPage .numbers>.metric.spo{min-height:96px!important}
@@ -699,7 +697,6 @@ body:not(.trainee-header-collapsed) #traineeTopToggle{display:none}
  #monitorPage .numbers>.metric.co2,#monitorPage .numbers>.temp-long,#monitorPage .numbers>.gly-long{min-height:65px!important;padding:5px!important}
  #monitorPage .numbers>.ta-wide .ta-history{display:none!important}
  #monitorPage .numbers>.metric.co2 .value,#monitorPage .numbers>.long-metric .value{font-size:clamp(18px,3.2vw,25px)!important}
- #traineeTopToggle{padding:4px 8px;margin-bottom:4px;font-size:10px}
 }
 
 /* Correction paysage smartphone : ordre strict des six constantes.
@@ -736,7 +733,6 @@ body:not(.trainee-header-collapsed) #traineeTopToggle{display:none}
   <header class="top"><div><div class="brand">SIMULATEUR SP<span class="tag">SIMULATION PÉDAGOGIQUE</span></div><div class="muted" id="status">Mode démonstration local</div></div><div class="tabs"><button id="tabMonitor" class="active">Moniteur</button><button id="tabEvents">Événements</button><button id="tabSettings">Réglages</button></div></header>
   <nav class="module-switch" aria-label="Choix du simulateur"><button id="scopeModeBtn" class="active" type="button">▣ MONITORING</button><button id="gasModeBtn" type="button">◉ DÉTECTEUR 4 GAZ DRAEGER</button><button id="coModeBtn" type="button">◉ DÉTECTEUR MONO-GAZ CO DRAEGER</button></nav>
  </div>
- <button id="traineeTopToggle" type="button" aria-expanded="true">⌃ MASQUER LE MENU</button>
  <main id="monitorPage">
   <section class="screen">
    <div class="monitor-head"><span id="patientLabel">ADULTE · VICTIME</span><span>HEURE <b id="clock">--:--:--</b></span><span>MISE EN SITUATION <b id="scenarioElapsed">00:00:00</b></span><span id="alarmText" class="alarm off">ALARME</span></div>
@@ -1030,12 +1026,10 @@ function formatElapsed(total){
  return [h,m,sec].map(v=>String(v).padStart(2,'0')).join(':');
 }
 function setTraineeHeaderCollapsed(collapsed){
+ // Côté stagiaire, le menu complet disparaît : aucun onglet de réouverture.
  if(role!=='display')return;
  document.body.classList.toggle('trainee-header-collapsed',!!collapsed);
- const btn=$('traineeTopToggle');
- if(btn){btn.setAttribute('aria-expanded',collapsed?'false':'true');btn.textContent=collapsed?'⌄ AFFICHER LE MENU':'⌃ MASQUER LE MENU';}
 }
-$('traineeTopToggle').onclick=()=>setTraineeHeaderCollapsed(!document.body.classList.contains('trainee-header-collapsed'));
 function renderScenarioClock(){
  const now=new Date();$('clock').textContent=now.toLocaleTimeString('fr-FR',{hour12:false});
  const running=state.scenarioElapsedEpoch!==null&&Number.isFinite(Number(state.scenarioElapsedEpoch));
@@ -1705,7 +1699,7 @@ function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room
 async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}loadTaHistory();if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,pendingSys:Number(data.state.pendingSys??data.state.sys??120),pendingDia:Number(data.state.pendingDia??data.state.dia??80),alarms:true};audioEnabled=state.soundEnabled!==false;loadTaHistory();render();if(state.scenarioElapsedEpoch!==null)setTraineeHeaderCollapsed(true);}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
  if(!payload.new?.state)return;
  const incoming=payload.new.state;
- if(role==='display'){const wasRunning=state.scenarioElapsedEpoch!==null&&Number.isFinite(Number(state.scenarioElapsedEpoch));const isRunning=incoming.scenarioElapsedEpoch!==null&&Number.isFinite(Number(incoming.scenarioElapsedEpoch));state={...defaults,...incoming,scopeAlarmRevision:Number(incoming.scopeAlarmRevision)||0,pendingSys:Number(incoming.pendingSys??incoming.sys??120),pendingDia:Number(incoming.pendingDia??incoming.dia??80),glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};audioEnabled=state.soundEnabled!==false;render();if(isRunning&&!wasRunning)setTraineeHeaderCollapsed(true);if(!isRunning&&Number(state.scenarioElapsedAccumulated||0)===0)setTraineeHeaderCollapsed(false);}
+ if(role==='display'){const isRunning=incoming.scenarioElapsedEpoch!==null&&Number.isFinite(Number(incoming.scenarioElapsedEpoch));state={...defaults,...incoming,scopeAlarmRevision:Number(incoming.scopeAlarmRevision)||0,pendingSys:Number(incoming.pendingSys??incoming.sys??120),pendingDia:Number(incoming.pendingDia??incoming.dia??80),glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};audioEnabled=state.soundEnabled!==false;render();if(isRunning)setTraineeHeaderCollapsed(true);}
  else if(role==='control'){state={...state,...incoming,gas:{...gasDefaults,...(incoming.gas||state.gas||{})}};render();}
 }).subscribe();$('status').textContent=`Connecté · session ${room} · ${role==='control'?'formateur':'stagiaire'}`;log('Connexion à la session '+room)}
 $('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value=String(Math.floor(100000+Math.random()*900000))};
