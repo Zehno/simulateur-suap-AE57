@@ -536,6 +536,118 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 #coTrainerWrap .gas-value{font-size:clamp(48px,9vw,72px)}
 body:not(.trainee-gas-ui) #coScreen .draeger-pac-body{display:none}
 body.trainee-gas-ui #coTrainerWrap{display:none}
+
+/* =========================================================
+   AFFICHAGE MOBILE DU MONITEUR STAGIAIRE
+   Portrait : 2 colonnes / 3 rangées
+   Paysage : 3 colonnes / 2 rangées
+   Les règles ordinateur (>= 761 px) restent inchangées.
+========================================================= */
+@media screen and (max-width:760px){
+  #monitorPage .screen{padding:6px;border-radius:10px}
+  #monitorPage .monitor-head{gap:4px;padding:1px 2px 6px;font-size:clamp(8px,2.2vw,11px);line-height:1.2;flex-wrap:wrap}
+  #monitorPage .numbers{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-flow:row;gap:6px!important;align-items:stretch}
+  #monitorPage .numbers>.metric,
+  #monitorPage .numbers>.ta-wide,
+  #monitorPage .numbers>.long-metric{grid-column:auto!important;grid-row:auto!important;min-width:0;min-height:clamp(76px,12vh,96px)!important;height:auto;padding:7px 8px!important;border-radius:8px!important}
+  #monitorPage .numbers>.metric .name,
+  #monitorPage .numbers>.long-metric .name{font-size:clamp(10px,2.8vw,13px)!important;line-height:1.15;padding:0!important;letter-spacing:.02em!important}
+  #monitorPage .numbers>.metric .value{font-size:clamp(27px,8vw,39px)!important;line-height:1!important;margin:5px 0 1px!important;text-align:left!important}
+  #monitorPage .numbers>.metric .unit{font-size:clamp(9px,2.4vw,11px)!important;text-align:left!important;line-height:1.15}
+  #monitorPage .numbers>.metric .thresholds{display:none!important}
+  #monitorPage .numbers>.metric .fc-layout,
+  #monitorPage .numbers>.metric .spo-layout{gap:5px;align-items:center}
+  #monitorPage .numbers>.metric .siq-meter-wrap,
+  #monitorPage .numbers>.metric .pi-meter-wrap{gap:3px;padding:2px 1px 2px 5px}
+  #monitorPage .numbers>.metric .siq-meter,
+  #monitorPage .numbers>.metric .pi-meter{height:48px;width:9px;border-width:1px}
+  #monitorPage .numbers>.metric .siq-reading,
+  #monitorPage .numbers>.metric .pi-reading{min-width:29px;font-size:9px}
+  #monitorPage .numbers>.metric .siq-reading small,
+  #monitorPage .numbers>.metric .pi-reading small{font-size:7px}
+  #monitorPage .numbers>.ta-wide{display:flex!important;flex-direction:column;justify-content:center;cursor:pointer}
+  #monitorPage .numbers>.ta-wide .ta-main{align-items:center;gap:3px}
+  #monitorPage .numbers>.ta-wide .ta-main .value{font-size:clamp(23px,6.5vw,34px)!important;line-height:1!important;margin:5px 0 2px!important;white-space:nowrap}
+  #monitorPage .numbers>.ta-wide .ta-main .subvalue{font-size:9px;line-height:1.1}
+  #monitorPage .numbers>.ta-wide .ta-history{display:none!important}
+  #monitorPage .numbers>.ta-wide .ta-cycle{margin:4px 0 0;padding:4px 5px;gap:4px}
+  #monitorPage .numbers>.ta-wide .ta-cycle-info{min-width:0;font-size:8px}
+  #monitorPage .numbers>.ta-wide .ta-cycle-info strong{font-size:8px}
+  #monitorPage .numbers>.long-metric .long-main{gap:4px;align-items:center}
+  #monitorPage .numbers>.long-metric .subvalue{font-size:8px!important;line-height:1.1;margin-top:3px}
+  #monitorPage .numbers>.long-metric .long-reading{gap:3px;align-items:baseline;white-space:nowrap}
+  #monitorPage .numbers>.long-metric .value{font-size:clamp(23px,6vw,34px)!important;line-height:1!important}
+  #monitorPage .numbers>.long-metric .unit{font-size:10px!important}
+  #monitorPage .bottom{margin-top:6px;gap:5px}
+  #monitorPage .bottom button{padding:7px 9px;font-size:11px}
+}
+@media screen and (max-width:760px) and (orientation:landscape){
+  #monitorPage .numbers{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+  #monitorPage .numbers>.metric,
+  #monitorPage .numbers>.ta-wide,
+  #monitorPage .numbers>.long-metric{min-height:clamp(68px,21vh,88px)!important;padding:5px 7px!important}
+  #monitorPage .numbers>.metric .value{font-size:clamp(25px,5vw,34px)!important;margin-top:3px!important}
+  #monitorPage .numbers>.ta-wide .ta-main .value{font-size:clamp(22px,4.8vw,30px)!important}
+  #monitorPage .numbers>.long-metric .value{font-size:clamp(22px,4.8vw,30px)!important}
+  #monitorPage .monitor-head{font-size:9px;padding-bottom:4px}
+  #monitorPage .bottom{margin-top:4px}
+}
+@media screen and (max-width:380px) and (orientation:portrait){
+  #monitorPage .numbers{gap:5px!important}
+  #monitorPage .numbers>.metric,
+  #monitorPage .numbers>.ta-wide,
+  #monitorPage .numbers>.long-metric{padding:6px!important;min-height:74px!important}
+  #monitorPage .numbers>.metric .value{font-size:26px!important}
+  #monitorPage .numbers>.long-metric .value{font-size:22px!important}
+}
+
+
+
+/* Orientation réelle du smartphone : paysage même si sa largeur dépasse 760 px.
+   Ciblage tactile + faible hauteur pour ne jamais modifier l'affichage ordinateur. */
+@media screen and (orientation:landscape) and (max-height:500px) and (pointer:coarse){
+  .app{padding:3px 5px!important}
+  .top{gap:4px!important;margin-bottom:4px!important;flex-wrap:nowrap!important}
+  .top .brand{font-size:12px!important}
+  .top .muted{display:none!important}
+  .tabs{gap:3px!important}
+  .tabs button{padding:5px 7px!important;font-size:10px!important}
+  .module-switch{gap:4px!important;margin:0 0 5px!important;flex-wrap:nowrap!important}
+  .module-switch button{min-width:0!important;padding:5px 6px!important;font-size:9px!important;line-height:1.15!important}
+  #monitorPage .screen{padding:5px!important;border-radius:8px!important}
+  #monitorPage .monitor-head{padding:0 2px 4px!important;gap:5px!important;font-size:9px!important;line-height:1.1!important;flex-wrap:nowrap!important}
+  #monitorPage .numbers{grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;grid-auto-flow:row!important;gap:5px!important}
+  #monitorPage .numbers>.metric,
+  #monitorPage .numbers>.ta-wide,
+  #monitorPage .numbers>.long-metric{grid-column:auto!important;grid-row:auto!important;min-width:0!important;min-height:0!important;height:clamp(58px,17vh,78px)!important;padding:5px 7px!important;border-radius:7px!important}
+  #monitorPage .numbers>.metric .name,
+  #monitorPage .numbers>.long-metric .name{font-size:clamp(9px,1.7vw,12px)!important;line-height:1.1!important;padding:0!important}
+  #monitorPage .numbers>.metric .value{font-size:clamp(23px,4.2vw,32px)!important;line-height:1!important;margin:3px 0 0!important}
+  #monitorPage .numbers>.metric .unit{font-size:9px!important;line-height:1.05!important}
+  #monitorPage .numbers>.metric .thresholds{display:none!important}
+  #monitorPage .numbers>.metric .siq-meter,
+  #monitorPage .numbers>.metric .pi-meter{height:39px!important;width:8px!important}
+  #monitorPage .numbers>.metric .siq-reading,
+  #monitorPage .numbers>.metric .pi-reading{min-width:24px!important;font-size:8px!important}
+  #monitorPage .numbers>.metric .siq-reading small,
+  #monitorPage .numbers>.metric .pi-reading small{font-size:6px!important}
+  #monitorPage .numbers>.ta-wide{display:flex!important;flex-direction:column!important;justify-content:center!important}
+  #monitorPage .numbers>.ta-wide .ta-main{align-items:center!important;gap:2px!important}
+  #monitorPage .numbers>.ta-wide .ta-main .value{font-size:clamp(21px,3.8vw,29px)!important;line-height:1!important;margin:3px 0 0!important}
+  #monitorPage .numbers>.ta-wide .ta-main .subvalue{font-size:8px!important;line-height:1.05!important}
+  #monitorPage .numbers>.ta-wide .ta-history{display:none!important}
+  #monitorPage .numbers>.ta-wide .ta-cycle{margin:3px 0 0!important;padding:3px!important;gap:3px!important}
+  #monitorPage .numbers>.ta-wide .ta-cycle-info{min-width:0!important;font-size:7px!important}
+  #monitorPage .numbers>.ta-wide .ta-cycle-info strong{font-size:7px!important}
+  #monitorPage .numbers>.long-metric .long-main{gap:3px!important;align-items:center!important}
+  #monitorPage .numbers>.long-metric .subvalue{font-size:7px!important;line-height:1!important;margin-top:2px!important}
+  #monitorPage .numbers>.long-metric .long-reading{gap:3px!important;white-space:nowrap!important}
+  #monitorPage .numbers>.long-metric .value{font-size:clamp(21px,3.8vw,29px)!important;line-height:1!important}
+  #monitorPage .numbers>.long-metric .unit{font-size:9px!important}
+  #monitorPage .bottom{margin-top:4px!important;gap:4px!important}
+  #monitorPage .bottom button{padding:5px 7px!important;font-size:9px!important}
+}
+
 </style>
 </head>
 <body>
@@ -633,7 +745,54 @@ body.trainee-gas-ui #coTrainerWrap{display:none}
     .trainer-tabs button.active{background:#12683c;border-color:#218c56;color:#fff;box-shadow:0 0 10px #12683c66}
     .trainer-tab-content{display:block}
     .trainer-tab-content.hidden{display:none!important}
-   </style>
+   
+
+/* Orientation réelle du smartphone : paysage même si sa largeur dépasse 760 px.
+   Ciblage tactile + faible hauteur pour ne jamais modifier l'affichage ordinateur. */
+@media screen and (orientation:landscape) and (max-height:500px) and (pointer:coarse){
+  .app{padding:3px 5px!important}
+  .top{gap:4px!important;margin-bottom:4px!important;flex-wrap:nowrap!important}
+  .top .brand{font-size:12px!important}
+  .top .muted{display:none!important}
+  .tabs{gap:3px!important}
+  .tabs button{padding:5px 7px!important;font-size:10px!important}
+  .module-switch{gap:4px!important;margin:0 0 5px!important;flex-wrap:nowrap!important}
+  .module-switch button{min-width:0!important;padding:5px 6px!important;font-size:9px!important;line-height:1.15!important}
+  #monitorPage .screen{padding:5px!important;border-radius:8px!important}
+  #monitorPage .monitor-head{padding:0 2px 4px!important;gap:5px!important;font-size:9px!important;line-height:1.1!important;flex-wrap:nowrap!important}
+  #monitorPage .numbers{grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;grid-auto-flow:row!important;gap:5px!important}
+  #monitorPage .numbers>.metric,
+  #monitorPage .numbers>.ta-wide,
+  #monitorPage .numbers>.long-metric{grid-column:auto!important;grid-row:auto!important;min-width:0!important;min-height:0!important;height:clamp(58px,17vh,78px)!important;padding:5px 7px!important;border-radius:7px!important}
+  #monitorPage .numbers>.metric .name,
+  #monitorPage .numbers>.long-metric .name{font-size:clamp(9px,1.7vw,12px)!important;line-height:1.1!important;padding:0!important}
+  #monitorPage .numbers>.metric .value{font-size:clamp(23px,4.2vw,32px)!important;line-height:1!important;margin:3px 0 0!important}
+  #monitorPage .numbers>.metric .unit{font-size:9px!important;line-height:1.05!important}
+  #monitorPage .numbers>.metric .thresholds{display:none!important}
+  #monitorPage .numbers>.metric .siq-meter,
+  #monitorPage .numbers>.metric .pi-meter{height:39px!important;width:8px!important}
+  #monitorPage .numbers>.metric .siq-reading,
+  #monitorPage .numbers>.metric .pi-reading{min-width:24px!important;font-size:8px!important}
+  #monitorPage .numbers>.metric .siq-reading small,
+  #monitorPage .numbers>.metric .pi-reading small{font-size:6px!important}
+  #monitorPage .numbers>.ta-wide{display:flex!important;flex-direction:column!important;justify-content:center!important}
+  #monitorPage .numbers>.ta-wide .ta-main{align-items:center!important;gap:2px!important}
+  #monitorPage .numbers>.ta-wide .ta-main .value{font-size:clamp(21px,3.8vw,29px)!important;line-height:1!important;margin:3px 0 0!important}
+  #monitorPage .numbers>.ta-wide .ta-main .subvalue{font-size:8px!important;line-height:1.05!important}
+  #monitorPage .numbers>.ta-wide .ta-history{display:none!important}
+  #monitorPage .numbers>.ta-wide .ta-cycle{margin:3px 0 0!important;padding:3px!important;gap:3px!important}
+  #monitorPage .numbers>.ta-wide .ta-cycle-info{min-width:0!important;font-size:7px!important}
+  #monitorPage .numbers>.ta-wide .ta-cycle-info strong{font-size:7px!important}
+  #monitorPage .numbers>.long-metric .long-main{gap:3px!important;align-items:center!important}
+  #monitorPage .numbers>.long-metric .subvalue{font-size:7px!important;line-height:1!important;margin-top:2px!important}
+  #monitorPage .numbers>.long-metric .long-reading{gap:3px!important;white-space:nowrap!important}
+  #monitorPage .numbers>.long-metric .value{font-size:clamp(21px,3.8vw,29px)!important;line-height:1!important}
+  #monitorPage .numbers>.long-metric .unit{font-size:9px!important}
+  #monitorPage .bottom{margin-top:4px!important;gap:4px!important}
+  #monitorPage .bottom button{padding:5px 7px!important;font-size:9px!important}
+}
+
+</style>
    <div class="trainer-tabs" role="tablist" aria-label="Onglets formateur">
     <button type="button" class="trainer-tab-btn active" data-trainer-tab="tTabConst">1. Constantes</button>
     <button type="button" class="trainer-tab-btn" data-trainer-tab="tTabVar">2. Variation constantes</button>
