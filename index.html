@@ -1779,4 +1779,54 @@ setInterval(()=>{if(state.taCycleStartAt!==null&&!state.taMeasured){updateTACycl
 setInterval(()=>{if(role!=='control')return;const now=Date.now(),rnd=(a,b)=>a+Math.random()*(b-a);if(now-lastTargetAt>3200){if(state.variationFCEnabled)smoothTarget.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));else smoothTarget.fc=Number(state.fc);if(state.variationSpoEnabled)smoothTarget.spo=rnd(Math.min(state.spoMin,state.spoMax),Math.max(state.spoMin,state.spoMax));else smoothTarget.spo=Number(state.spo);lastTargetAt=now;}let changed=false;if(state.variationFCEnabled){state.fc+=(smoothTarget.fc-state.fc)*.025;changed=true}if(state.variationSpoEnabled){state.spo+=(smoothTarget.spo-state.spo)*.025;changed=true}if(changed&&now-lastSmoothRender>200){lastSmoothRender=now;updateLiveReadouts();}},50);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(err=>console.warn('Service worker non enregistré',err)));}
 </script>
+
+<style id="trainee-monitoring-layout-fixes">
+/* Ajustements stagiaire : cartes de largeur identique et libellés/valeurs plus lisibles. */
+#monitorPage .numbers{width:100%!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;}
+#monitorPage .numbers > .metric.fc,
+#monitorPage .numbers > .metric.spo{grid-column:span 3!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+#monitorPage .numbers > .ta-wide{grid-column:1/-1!important;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;}
+#monitorPage .numbers > .metric.co2,
+#monitorPage .numbers > .temp-long,
+#monitorPage .numbers > .gly-long{grid-column:span 2!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;}
+#monitorPage .numbers > .ta-wide .ta-history{display:block!important;width:100%!important;max-height:78px!important;overflow-y:auto!important;margin-top:5px!important;}
+#monitorPage .numbers > .ta-wide .ta-history-list{display:block!important;max-height:52px!important;overflow-y:auto!important;}
+#monitorPage .numbers > .ta-wide{min-height:172px!important;height:auto!important;}
+body.trainee-header-collapsed .footer,
+body.trainee-header-collapsed .gas-note{display:none!important;}
+body.trainee-header-collapsed #monitorPage .numbers .metric .name,
+body.trainee-header-collapsed #monitorPage .numbers .long-metric .name{font-size:clamp(13px,2vw,19px)!important;line-height:1.15!important;font-weight:800!important;}
+body.trainee-header-collapsed #monitorPage .numbers .metric .value,
+body.trainee-header-collapsed #monitorPage .numbers .long-metric .value{font-size:clamp(30px,5vw,46px)!important;line-height:1.05!important;font-weight:800!important;}
+body.trainee-header-collapsed #monitorPage .numbers .metric .unit,
+body.trainee-header-collapsed #monitorPage .numbers .long-metric .unit{font-size:12px!important;}
+body.trainee-header-collapsed #monitorPage .numbers > .metric.fc,
+body.trainee-header-collapsed #monitorPage .numbers > .metric.spo{min-height:100px!important;height:auto!important;}
+body.trainee-header-collapsed #monitorPage .numbers > .metric.co2,
+body.trainee-header-collapsed #monitorPage .numbers > .temp-long,
+body.trainee-header-collapsed #monitorPage .numbers > .gly-long{min-height:100px!important;height:auto!important;padding:10px!important;}
+body.trainee-header-collapsed #monitorPage .numbers > .ta-wide{min-height:172px!important;height:auto!important;}
+@media screen and (max-width:760px){
+ #monitorPage .numbers > .ta-wide .ta-history{display:block!important;max-height:78px!important;}
+ #monitorPage .numbers > .ta-wide .ta-history-list{max-height:52px!important;}
+}
+@media screen and (orientation:landscape) and (max-height:500px) and (pointer:coarse){
+ #monitorPage .numbers{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;grid-auto-flow:row!important;grid-template-rows:none!important;gap:5px!important;}
+ #monitorPage .numbers > .metric.fc{grid-column:1/span 3!important;grid-row:auto!important;}
+ #monitorPage .numbers > .metric.spo{grid-column:4/span 3!important;grid-row:auto!important;}
+ #monitorPage .numbers > .ta-wide{grid-column:1/-1!important;grid-row:auto!important;min-height:145px!important;height:auto!important;padding:7px!important;}
+ #monitorPage .numbers > .metric.co2{grid-column:1/span 2!important;grid-row:auto!important;}
+ #monitorPage .numbers > .temp-long{grid-column:3/span 2!important;grid-row:auto!important;}
+ #monitorPage .numbers > .gly-long{grid-column:5/span 2!important;grid-row:auto!important;}
+ #monitorPage .numbers > .metric.fc,#monitorPage .numbers > .metric.spo{min-height:82px!important;height:auto!important;padding:7px!important;}
+ #monitorPage .numbers > .metric.co2,#monitorPage .numbers > .temp-long,#monitorPage .numbers > .gly-long{min-height:78px!important;height:auto!important;padding:7px!important;}
+ #monitorPage .numbers > .ta-wide .ta-history{display:block!important;max-height:58px!important;}
+ #monitorPage .numbers > .ta-wide .ta-history-list{max-height:36px!important;}
+ body.trainee-header-collapsed #monitorPage .numbers .metric .name,
+ body.trainee-header-collapsed #monitorPage .numbers .long-metric .name{font-size:clamp(12px,2vw,17px)!important;}
+ body.trainee-header-collapsed #monitorPage .numbers .metric .value,
+ body.trainee-header-collapsed #monitorPage .numbers .long-metric .value{font-size:clamp(25px,4vw,37px)!important;}
+}
+</style>
+
 </body></html>
