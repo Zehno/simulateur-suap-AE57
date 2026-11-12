@@ -997,7 +997,7 @@ body.trainee-header-collapsed #traineeTopGroup{display:none!important}
 const $=id=>document.getElementById(id);
 const GLYCEMIE_CODES={LO:{operator:'<',value:0.20,label:'LO'},HI:{operator:'>',value:5.00,label:'HI'}}; // Seuils internes uniquement : LO <0,20 g/L ; HI >5,00 g/L
 function glycemiaDisplay(value){const n=Number(value);if(!Number.isFinite(n))return null;if(n<GLYCEMIE_CODES.LO.value)return GLYCEMIE_CODES.LO.label;if(n>GLYCEMIE_CODES.HI.value)return GLYCEMIE_CODES.HI.label;return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});}
-const defaults={siqSetting:3,scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:1,piTrendFrom:1,piTrendTo:1,piTrendStartAt:null,piNextTarget:1,piNextAt:0,taCycleStartAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
+const defaults={siqSetting:3,scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:1,piTrendFrom:1,piTrendTo:1,piTrendStartAt:null,piNextTarget:1,piNextAt:0,taCycleStartAt:null,taCycleAuto:false,taSurveillanceActive:false,taSurveillanceIntervalMin:5,taSurveillanceNextAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -1053,9 +1053,17 @@ function updateTACycle(){
  $('taCyclePressure').textContent=Math.max(0,pressure)+' mmHg';
  $('taCycleTime').textContent=remaining+' s';
  if(elapsed>=duration&&role==='display'){
-  const result=activeTASnapshot||{sys:Number(state.pendingSys??state.sys),dia:Number(state.pendingDia??state.dia)};
-  state.sys=result.sys;state.dia=result.dia;state.taMeasured=true;state.taCycleStartAt=null;activeTASnapshot=null;
-  recordTA();log(`Mesure PNI terminée : ${state.sys}/${state.dia} mmHg`);
+  // Les valeurs du formateur sont lues à la FIN du cycle : elles restent modifiables
+  // pendant toute la mesure, sans être figées au démarrage.
+  const completedCycleStartAt=Number(state.taCycleStartAt)||Date.now();
+  state.sys=Math.max(0,Math.min(300,Number(state.pendingSys??state.sys)));
+  state.dia=Math.max(0,Math.min(200,Number(state.pendingDia??state.dia)));
+  state.taMeasured=true;state.taCycleStartAt=null;activeTASnapshot=null;
+  recordTA();
+  const surveillanceLabel=state.taSurveillanceActive?' · surveillance automatique':'';
+  log(`Mesure PNI terminée : ${state.sys}/${state.dia} mmHg${surveillanceLabel}`);
+  if(state.taSurveillanceActive){state.taSurveillanceNextAt=completedCycleStartAt+Math.max(1,Number(state.taSurveillanceIntervalMin)||5)*60000;}
+  state.taCycleAuto=false;
   render();publish();
  }
 }
@@ -1241,19 +1249,54 @@ function openModal(title,body){$('modalTitle').textContent=title;$('modalBody').
 function showMetric(k){
  if(k==='FC'){openModal('Fréquence cardiaque — ECG',`<p>Valeur patient pilotée par le formateur : ${fmt(state.fc)} bpm.</p><p class="muted">${state.fcMeasured?'Électrodes ECG actuellement connectées.':'Aucune donnée affichée : les électrodes ECG ne sont pas encore posées.'}</p><button type="button" class="primary" id="toggleFCProbe">${state.fcMeasured?'Retirer les électrodes':'Poser les électrodes ECG'}</button>`);$('toggleFCProbe').onclick=()=>{state.fcMeasured=!state.fcMeasured;log(state.fcMeasured?'Électrodes ECG posées par le stagiaire':'Électrodes ECG retirées');$('modal').classList.add('hidden');render();publish()};return}
  if(k==='SpO₂'){openModal('Saturation — oxymétrie de pouls',`<p>Valeur patient pilotée par le formateur : ${fmt(state.spo)} %.</p><p class="muted">${state.spoMeasured?'Pince à SAT actuellement connectée.':'Aucune donnée affichée : la pince à SAT n’est pas encore posée.'}</p><button type="button" class="primary" id="toggleSpoProbe">${state.spoMeasured?'Retirer la pince à SAT':'Poser la pince à SAT'}</button>`);$('toggleSpoProbe').onclick=()=>{state.spoMeasured=!state.spoMeasured;log(state.spoMeasured?'Pince à SAT posée par le stagiaire':'Pince à SAT retirée');$('modal').classList.add('hidden');render();publish()};return}
- if(k==='TA'){openModal('Tension artérielle — P.N.I.',`<p>Mesure programmée par le formateur : résultat masqué jusqu’à la fin du cycle.</p><p class="muted">Le stagiaire déclenche le gonflage, puis la décompression et la recherche de la TAS/TAD pendant 20 secondes.</p><button type="button" class="primary" id="measureTAButton" ${state.taCycleStartAt!==null?'disabled':''}>${state.taCycleStartAt!==null?'Mesure en cours…':'Poser le brassard et mesurer'}</button>${taHistoryMarkup()}`);$('measureTAButton').onclick=()=>{if(state.taCycleStartAt!==null)return;activeTASnapshot={sys:Number(state.pendingSys??state.sys),dia:Number(state.pendingDia??state.dia)};state.taMeasured=false;state.taCycleStartAt=Date.now();log('Brassard posé — démarrage de la mesure PNI (20 secondes)');$('modal').classList.add('hidden');render();publish()};return}
+ if(k==='TA'){
+  const surveillanceText=state.taSurveillanceActive
+   ? `<p class="next-ta-box">SURVEILLANCE ACTIVE · toutes les <strong>${Number(state.taSurveillanceIntervalMin)||5} min</strong><br><span class="muted">Prochaine mesure : ${state.taSurveillanceNextAt?new Date(Number(state.taSurveillanceNextAt)).toLocaleTimeString('fr-FR'):'programmation en cours'}</span></p>`
+   : '';
+  openModal('Tension artérielle — P.N.I.',`<p>Le résultat apparaît à la fin du cycle de mesure de 20 secondes.</p><p class="muted">Le stagiaire déclenche le gonflage, puis la décompression et la recherche de la TAS/TAD.</p><button type="button" class="primary" id="measureTAButton" ${state.taCycleStartAt!==null?'disabled':''}>${state.taCycleStartAt!==null?'Mesure en cours…':'Poser le brassard et mesurer'}</button><button type="button" id="surveillanceTAButton" style="display:block;width:100%;margin:8px 0 0">${state.taSurveillanceActive?'⚙ Modifier / arrêter la surveillance':'SURVEILLANCE'}</button>${surveillanceText}${taHistoryMarkup()}`);
+  $('measureTAButton').onclick=()=>{if(state.taCycleStartAt!==null)return;startTAMeasurement(false);$('modal').classList.add('hidden')};
+  $('surveillanceTAButton').onclick=()=>showTASurveillanceChoices();
+  return;
+ }
  let detail={FC:`Fréquence cardiaque : ${fmt(state.fc)} bpm.`,SpO2:`Saturation simulée : ${fmt(state.spo)} %.`,HbCO:`Carboxyhémoglobine simulée : ${fmt(state.hbco??0)} %.`,Glycémie:`Glycémie capillaire simulée : ${Number(state.gly??0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} g/L.`,Température:`Température corporelle simulée : ${Number(state.temp??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})} °C.`};openModal(k,`<p>${detail[k]||'Valeur simulée.'}</p><p class="muted">Valeur pilotée par le formateur.</p>`)}
 document.querySelectorAll('[data-metric]').forEach(b=>b.addEventListener('click',()=>showMetric(b.dataset.metric)));
 function setPage(p){['monitor','events','settings'].forEach(x=>$(x+'Page').classList.toggle('hidden',x!==p));['Monitor','Events','Settings'].forEach(x=>$('tab'+x).classList.toggle('active',x.toLowerCase()===p))}
 $('tabMonitor').onclick=()=>setPage('monitor');$('tabEvents').onclick=()=>setPage('events');$('tabSettings').onclick=()=>setPage('settings');
 $('closeModal').onclick=()=>$('modal').classList.add('hidden');
+function startTAMeasurement(automatic=false){
+ if(role!=='display'||state.taCycleStartAt!==null)return;
+ state.taMeasured=false;state.taCycleStartAt=Date.now();state.taCycleAuto=!!automatic;
+ log(automatic?'Surveillance PNI : démarrage automatique du cycle de mesure':'Brassard posé — démarrage de la mesure PNI (20 secondes)');
+ render();publish();
+}
+function showTASurveillanceChoices(){
+ const active=state.taSurveillanceActive;
+ openModal('Surveillance automatique de la tension',`${active?'<p class="muted">Une surveillance est actuellement active. Vous pouvez modifier l’intervalle ou l’arrêter.</p>':'<p>Choisissez la fréquence de mesure automatique. Chaque mesure dure 20 secondes et sera ajoutée à l’historique.</p>'}<div class="row" style="justify-content:center;margin:14px 0"><button type="button" class="primary" data-ta-interval="5">5 min</button><button type="button" class="primary" data-ta-interval="10">10 min</button><button type="button" class="primary" data-ta-interval="15">15 min</button></div><button type="button" class="warn" id="stopTASurveillance" style="width:100%" ${active?'':'disabled'}>Arrêter la surveillance</button>`);
+ document.querySelectorAll('[data-ta-interval]').forEach(btn=>btn.onclick=()=>{
+  const minutes=Number(btn.dataset.taInterval);state.taSurveillanceIntervalMin=minutes;state.taSurveillanceActive=true;
+  state.taSurveillanceNextAt=Date.now();
+  log(`Surveillance PNI activée : première mesure automatique immédiate, puis toutes les ${minutes} minutes`);
+  $('modal').classList.add('hidden');startTAMeasurement(true);
+ });
+ $('stopTASurveillance').onclick=()=>{state.taSurveillanceActive=false;state.taSurveillanceNextAt=null;log('Surveillance automatique PNI arrêtée');$('modal').classList.add('hidden');render();publish()};
+}
+function updateTASurveillance(){
+ if(role!=='display'||!state.taSurveillanceActive||state.taCycleStartAt!==null)return;
+ const due=Number(state.taSurveillanceNextAt);
+ if(Number.isFinite(due)&&due>0&&Date.now()>=due)startTAMeasurement(true);
+}
 function taHistoryKey(){return 'scopeSuapTaHistory:'+(room||$('roomCode').value.trim()||'local')}
 function loadTaHistory(){state.taHistory=Array.isArray(state.taHistory)?state.taHistory:[];renderTAHistory()}
 function saveTaHistory(){try{localStorage.setItem(taHistoryKey(),JSON.stringify((state.taHistory||[]).slice(0,30)))}catch(e){console.warn('Historique TA non enregistré localement',e)}}
-function recordTA(){state.taHistory=Array.isArray(state.taHistory)?state.taHistory:[];const entry={time:new Date().toLocaleTimeString('fr-FR'),sys:fmt(state.sys),dia:fmt(state.dia),pam:pam()};state.taHistory.unshift(entry);state.taHistory=state.taHistory.slice(0,30);saveTaHistory();renderTAHistory()}
-function renderTAHistory(){const el=$('taHistoryList');if(!el)return;const rows=state.taHistory||[];el.innerHTML=rows.length?rows.map(m=>`<div class="ta-history-row"><span>${escapeHtml(m.time||'--:--:--')}</span><strong>${m.sys}/${m.dia}</strong><span class="pam">PAM ${m.pam??'—'}</span></div>`).join(''):'<div class="ta-empty">En attente de la pose du brassard par le stagiaire</div>'}
-function taHistoryMarkup(){return (state.taHistory||[]).length?'<div>'+(state.taHistory||[]).map((m,i)=>`<div class="event"><b>${escapeHtml(m.time)}</b> — ${m.sys}/${m.dia} mmHg <span class="muted">· PAM ${m.pam} mmHg${i===0?' · dernière mesure':''}</span></div>`).join('')+'</div>':'<p class="muted">Aucune mesure enregistrée.</p>'}
+function recordTA(){state.taHistory=Array.isArray(state.taHistory)?state.taHistory:[];const entry={time:new Date().toLocaleTimeString('fr-FR'),sys:fmt(state.sys),dia:fmt(state.dia),pam:pam(),fc:fmt(state.fc),spo:fmt(state.spo)};state.taHistory.unshift(entry);state.taHistory=state.taHistory.slice(0,30);saveTaHistory();renderTAHistory()}
+function renderTAHistory(){const el=$('taHistoryList');if(!el)return;const rows=state.taHistory||[];el.innerHTML=rows.length?rows.map(m=>`<div class="ta-history-row"><span>${escapeHtml(m.time||'--:--:--')}</span><strong>${m.sys}/${m.dia}</strong><span class="pam">PAM ${m.pam??'—'} · FC ${m.fc??'—'} · SpO₂ ${m.spo??'—'}%</span></div>`).join(''):'<div class="ta-empty">En attente de la pose du brassard par le stagiaire</div>'}
+function taHistoryMarkup(){return (state.taHistory||[]).length?'<div>'+(state.taHistory||[]).map((m,i)=>`<div class="event"><b>${escapeHtml(m.time)}</b> — ${m.sys}/${m.dia} mmHg <span class="muted">· PAM ${m.pam} mmHg · FC ${m.fc??'—'} bpm · SpO₂ ${m.spo??'—'} %${i===0?' · dernière mesure':''}</span></div>`).join('')+'</div>':'<p class="muted">Aucune mesure enregistrée.</p>'}
 function showTAHistory(){openModal('Historique T.A / P.N.I.',taHistoryMarkup())}
+// Sauvegarder chaque frappe immédiatement dans l'état : un rendu ou une mise à jour
+// de synchronisation ne peut plus réinjecter l'ancienne tension dans les champs.
+$('manualSys').addEventListener('input',e=>{const v=e.target.value.trim();if(v!==''&&Number.isFinite(Number(v)))state.pendingSys=Math.max(0,Math.min(300,Number(v)));});
+$('manualDia').addEventListener('input',e=>{const v=e.target.value.trim();if(v!==''&&Number.isFinite(Number(v)))state.pendingDia=Math.max(0,Math.min(200,Number(v)));});
+$('manualSys').addEventListener('change',()=>publish());$('manualDia').addEventListener('change',()=>publish());
 $('applyTA').onclick=()=>{const sys=$('manualSys').value.trim(),dia=$('manualDia').value.trim();if(sys===''||dia===''||!Number.isFinite(Number(sys))||!Number.isFinite(Number(dia))){alert('Saisis une TAS et une TAD valides.');return}state.pendingSys=Math.max(0,Math.min(300,Number(sys)));state.pendingDia=Math.max(0,Math.min(200,Number(dia)));log(`Nouvelle tension préparée : ${state.pendingSys}/${state.pendingDia} mmHg — elle sera affichée à la prochaine mesure du stagiaire`);render();publish()};
 function applyPITrend(){const fromRaw=$('piTrendFrom').value.trim(),toRaw=$('piTrendTo').value.trim();if(fromRaw===''||toRaw===''||!Number.isFinite(Number(fromRaw))||!Number.isFinite(Number(toRaw))){alert('Saisis deux valeurs d’I.P. valides entre 0 et 5 %.');render();return}state.piTrendFrom=Math.max(0,Math.min(5,Number(fromRaw)));state.piTrendTo=Math.max(0,Math.min(5,Number(toRaw)));state.piTrendStartAt=Date.now();state.piNextAt=0;state.pi=state.piTrendFrom;log(`Variation I.P. réglée : entre ${state.piTrendFrom.toFixed(1)} et ${state.piTrendTo.toFixed(1)} %`);render();publish()}
 $('siqSettingControl').onchange=e=>{state.siqSetting=Number(e.target.value);log('Intensité du signal SIQ réglée à le niveau '+state.siqSetting);render();publish()};
@@ -1769,7 +1812,7 @@ document.addEventListener('pointerdown',async()=>{
  catch(e){audioEnabled=false;render()}
 },{once:true});
 requestAnimationFrame(animate);setInterval(()=>{if(role==='control'&&room)publish();},2500);
-setInterval(()=>{if(state.taCycleStartAt!==null&&!state.taMeasured){updateTACycle()}updatePITrend();},100);
+setInterval(()=>{if(state.taCycleStartAt!==null&&!state.taMeasured){updateTACycle()}updateTASurveillance();updatePITrend();},100);
 setInterval(()=>{if(role!=='control')return;const now=Date.now(),rnd=(a,b)=>a+Math.random()*(b-a);if(now-lastTargetAt>3200){if(state.variationFCEnabled)smoothTarget.fc=rnd(Math.min(state.fcMin,state.fcMax),Math.max(state.fcMin,state.fcMax));else smoothTarget.fc=Number(state.fc);if(state.variationSpoEnabled)smoothTarget.spo=rnd(Math.min(state.spoMin,state.spoMax),Math.max(state.spoMin,state.spoMax));else smoothTarget.spo=Number(state.spo);lastTargetAt=now;}let changed=false;if(state.variationFCEnabled){state.fc+=(smoothTarget.fc-state.fc)*.025;changed=true}if(state.variationSpoEnabled){state.spo+=(smoothTarget.spo-state.spo)*.025;changed=true}if(changed&&now-lastSmoothRender>200){lastSmoothRender=now;updateLiveReadouts();}},50);
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(err=>console.warn('Service worker non enregistré',err)));}
 </script>
