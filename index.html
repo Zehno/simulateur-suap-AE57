@@ -1511,7 +1511,7 @@ function renderGas(){
    card.classList.remove('gas-alarm','gas-alarm-a1','gas-alarm-a2');
    if(level===1)card.classList.add('gas-alarm-a1');
    if(level===2)card.classList.add('gas-alarm-a2');
-   const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');if(n&&document.activeElement!==n)n.value=g[k];if(r)r.value=g[k];
+   const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');if(n&&document.activeElement!==n)n.value=g[k];if(r&&document.activeElement!==r)r.value=g[k];
  });
  const alarmSig=refreshGasAlarmAcknowledgement(); const alarmOn=alarmSig!=='0000'; $('gasAlarmStatus').textContent=alarmOn?'ÉTAT : ALARME':'ÉTAT : NORMAL'; const ackBtn=$('gasAlarmAck'),ackStatus=$('gasAlarmAckStatus'); if(ackBtn){ackBtn.disabled=!alarmOn||gasAlarmAcked; ackBtn.textContent=gasAlarmAcked?'🔇 Alarme sonore acquittée':'🔇 Acquitter l\'alarme sonore';} if(ackStatus)ackStatus.textContent=alarmOn?(gasAlarmAcked?'Le visuel reste actif tant que les valeurs sont hors plage.':'Alarme sonore active — acquitte le son si nécessaire.'):'Aucune alarme sonore active.';
  [['gasO2Low','lowO2'],['gasO2High','highO2'],['gasLIEA1','lieA1'],['gasLIEA2','lieA2'],['gasCOA1','coA1'],['gasCOA2','coA2'],['gasH2SA1','h2sA1'],['gasH2SA2','h2sA2']].forEach(([id,k])=>{if($(id)&&document.activeElement!==$(id))$(id).value=g[k]});
@@ -1711,7 +1711,22 @@ function updateGasFromControls(){
  g.lowO2=Number($('gasO2Low').value);g.highO2=Number($('gasO2High').value);g.lieA1=Number($('gasLIEA1').value);g.lieA2=Number($('gasLIEA2').value);g.coA1=Number($('gasCOA1').value);g.coA2=Number($('gasCOA2').value);g.h2sA1=Number($('gasH2SA1').value);g.h2sA2=Number($('gasH2SA2').value);
  state.gas=g;renderGas();publish();
 }
-[['O2','o2'],['LIE','lie'],['CO','co'],['H2S','h2s']].forEach(([id])=>{const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');n.oninput=()=>r.value=n.value;r.oninput=()=>n.value=r.value});
+[['O2','o2',0,100,1],['LIE','lie',0,100,0],['CO','co',0,2000,0],['H2S','h2s',0,500,1]].forEach(([id,k,min,max,dec])=>{
+ const n=$('gas'+id+'Input'),r=$('gas'+id+'Range');
+ const sync=(raw)=>{
+  if(raw===''||!Number.isFinite(Number(raw)))return;
+  const clamped=Math.max(min,Math.min(max,Number(raw)));
+  state.gas={...gasDefaults,...(state.gas||{})};
+  state.gas[k]=Number(clamped.toFixed(dec));
+  if(n&&document.activeElement!==n)n.value=state.gas[k];
+  if(r&&document.activeElement!==r)r.value=state.gas[k];
+  renderGas();
+  renderGasEvolution();
+  publish();
+ };
+ if(n){n.oninput=e=>sync(e.target.value);n.onchange=e=>sync(e.target.value);}
+ if(r){r.oninput=e=>sync(e.target.value);r.onchange=e=>sync(e.target.value);}
+});
 $('applyGasValues').onclick=()=>{updateGasFromControls();log('Valeurs du détecteur 4 gaz appliquées')};
 $('resetGasValues').onclick=()=>{stopGasEvolution();state.gas={...gasDefaults};renderGas();renderGasEvolution();publish();log('Détecteur 4 gaz réinitialisé')};
 ['gasO2Low','gasO2High','gasLIEA1','gasLIEA2','gasCOA1','gasCOA2','gasH2SA1','gasH2SA2'].forEach(id=>$(id).onchange=()=>updateGasFromControls());
@@ -1743,7 +1758,14 @@ async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room)
  if(!payload.new?.state)return;
  const incoming=payload.new.state;
  if(role==='display'){const isRunning=incoming.scenarioElapsedEpoch!==null&&Number.isFinite(Number(incoming.scenarioElapsedEpoch));state={...defaults,...incoming,scopeAlarmRevision:Number(incoming.scopeAlarmRevision)||0,pendingSys:Number(incoming.pendingSys??incoming.sys??120),pendingDia:Number(incoming.pendingDia??incoming.dia??80),glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};audioEnabled=state.soundEnabled!==false;render();if(isRunning)setTraineeHeaderCollapsed(true);}
- else if(role==='control'){state={...state,...incoming,gas:{...gasDefaults,...(incoming.gas||state.gas||{})}};render();}
+ else if(role==='control'){
+ const activeId=document.activeElement?.id||'';
+ const editingGas=/^gas(O2|LIE|CO|H2S)(Input|Range)$/.test(activeId)||/^coSingle(Input|Range)$/.test(activeId);
+ const preservedGas=editingGas?{...(state.gas||{})}:null;
+ state={...state,...incoming,gas:{...gasDefaults,...(incoming.gas||state.gas||{}),...(preservedGas||{})}};
+ render();
+ if(currentModule==='co')renderCoSingle();
+}
 }).subscribe();$('status').textContent=`Connecté · session ${room} · ${role==='control'?'formateur':'stagiaire'}`;log('Connexion à la session '+room)}
 $('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value=String(Math.floor(100000+Math.random()*900000))};
 // Toute action réelle du formateur dans le panneau de pilotage réarme les alarmes côté stagiaire.
