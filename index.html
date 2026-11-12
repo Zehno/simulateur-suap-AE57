@@ -1691,8 +1691,8 @@ function setModule(mode){
  $('controlPanel').querySelectorAll(':scope > .panel:not(#gasControlPanel):not(#coControlPanel)').forEach(el=>el.classList.toggle('hidden',mode!=='scope'));
  
  $('monitorPage').style.display=mode==='scope'?'':'none';
- $('gasPage').style.display=mode==='gas'?'':'none';
- if($('coPage')) $('coPage').style.display=mode==='co'?'':'none';
+ $('gasPage').style.display=(mode==='gas'&&role!=='control')?'':'none';
+ if($('coPage')) $('coPage').style.display=(mode==='co'&&role!=='control')?'':'none';
  
  $('eventsPage').classList.add('hidden');$('settingsPage').classList.add('hidden');
  $('tabMonitor').classList.add('active');$('tabEvents').classList.remove('active');$('tabSettings').classList.remove('active');
@@ -1747,7 +1747,8 @@ function updateRole(){
  $('tabSettings').classList.remove('hidden');$('tabEvents').classList.toggle('hidden',!control);
  $('menuBtn').classList.add('hidden');
  $('monitorPage').style.display=currentModule==='scope'?'':'none';
- $('gasPage').style.display=currentModule==='gas'?'':'none';
+ $('gasPage').style.display=(currentModule==='gas'&&!control)?'':'none';
+ if($('coPage')) $('coPage').style.display=(currentModule==='co'&&!control)?'':'none';
  $('status').textContent=control?'INTERFACE FORMATEUR':'INTERFACE STAGIAIRE';
  document.title=control?'Pilotage Scope SUAP':'Scope SUAP — Moniteur';
 }
