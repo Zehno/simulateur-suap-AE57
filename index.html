@@ -701,6 +701,25 @@ body:not(.trainee-header-collapsed) #traineeTopToggle{display:none}
  #monitorPage .numbers>.metric.co2 .value,#monitorPage .numbers>.long-metric .value{font-size:clamp(18px,3.2vw,25px)!important}
  #traineeTopToggle{padding:4px 8px;margin-bottom:4px;font-size:10px}
 }
+
+/* Correction paysage smartphone : ordre strict des six constantes.
+   Ligne 1 : FC + SpO2 ; ligne 2 : TA pleine largeur ; ligne 3 : HbCO + Température + Glycémie. */
+@media screen and (orientation:landscape) and (max-height:500px) and (pointer:coarse){
+  #monitorPage .numbers{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    grid-template-rows:none!important;
+    grid-auto-flow:row!important;
+    grid-auto-rows:auto!important;
+  }
+  #monitorPage .numbers > .metric.fc{grid-column:1 / span 3!important;grid-row:auto!important;}
+  #monitorPage .numbers > .metric.spo{grid-column:4 / span 3!important;grid-row:auto!important;}
+  #monitorPage .numbers > .ta-wide{grid-column:1 / -1!important;grid-row:auto!important;}
+  #monitorPage .numbers > .metric.co2{grid-column:1 / span 2!important;grid-row:auto!important;}
+  #monitorPage .numbers > .temp-long{grid-column:3 / span 2!important;grid-row:auto!important;}
+  #monitorPage .numbers > .gly-long{grid-column:5 / span 2!important;grid-row:auto!important;}
+}
+
 </style>
 </head>
 <body>
