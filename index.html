@@ -718,18 +718,18 @@ body.trainee-header-collapsed #traineeTopGroup{display:none!important}
 }
 
 
-/* Acquittement alarme : cloche jaune en haut à droite, stagiaire uniquement. */
-body.trainee-gas-ui #monitorPage .monitor-head{position:relative;padding-right:48px;}
+/* Cloche d'acquittement : visible en permanence en haut à droite côté stagiaire uniquement. */
+body.trainee-gas-ui #monitorPage .monitor-head{position:relative;padding-right:52px;min-height:40px;}
 body.trainee-gas-ui #scopeAlarmAckBtn{
   display:inline-flex;align-items:center;justify-content:center;
   position:absolute;top:1px;right:2px;width:38px;height:38px;min-width:38px;
   padding:0;border:2px solid #f2c400;border-radius:5px;
-  background:#ffd600;color:#171717;font-size:21px;line-height:1;
-  box-shadow:0 2px 0 #8d7100;font-weight:900;
+  background:#ffd600;color:#171717;font-size:22px;line-height:1;
+  box-shadow:0 2px 0 #8d7100;font-weight:900;opacity:1;
 }
 body.trainee-gas-ui #scopeAlarmAckBtn.hidden{display:none!important;}
-body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#a98713;border-color:#80670e;color:#302707;box-shadow:none;cursor:default;}
-@media(max-width:760px){body.trainee-gas-ui #monitorPage .monitor-head{padding-right:42px;}body.trainee-gas-ui #scopeAlarmAckBtn{width:34px;height:34px;min-width:34px;font-size:19px;}}
+body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;border-color:#f2c400;color:#171717;box-shadow:0 2px 0 #8d7100;cursor:default;}
+@media(max-width:760px){body.trainee-gas-ui #monitorPage .monitor-head{padding-right:44px;}body.trainee-gas-ui #scopeAlarmAckBtn{width:34px;height:34px;min-width:34px;font-size:20px;}}
 
 </style>
 </head>
@@ -1233,9 +1233,14 @@ function refreshScopeAlarms(){
   card.classList.toggle('metric-alarm-ack',status.acknowledged);
  });
  if(ackBtn){
-  const trainee=role==='display';ackBtn.classList.toggle('hidden',!trainee||(!active&&!held));
+  // La cloche reste visible en permanence côté stagiaire ; elle est active uniquement
+  // lorsqu'une alarme sonore non acquittée est présente.
+  const trainee=role==='display';
+  ackBtn.classList.toggle('hidden',!trainee);
   ackBtn.disabled=!blinking;
-  ackBtn.textContent=scopeAlarmAcked?'✓ ALARME ACQUITTÉE':'🔇 ACQUITTER L’ALARME';
+  ackBtn.textContent='🔔';
+  ackBtn.setAttribute('aria-label',blinking?'Acquitter l’alarme sonore':'Aucune alarme sonore à acquitter');
+  ackBtn.title=blinking?'Acquitter l’alarme sonore':'Aucune alarme sonore active';
  }
 }
 function alarmActive(){return scopeAlarmConditions().length>0;}
