@@ -717,6 +717,20 @@ body.trainee-header-collapsed #traineeTopGroup{display:none!important}
   #monitorPage .numbers > .gly-long{grid-column:5 / span 2!important;grid-row:auto!important;}
 }
 
+
+/* Acquittement alarme : cloche jaune en haut à droite, stagiaire uniquement. */
+body.trainee-gas-ui #monitorPage .monitor-head{position:relative;padding-right:48px;}
+body.trainee-gas-ui #scopeAlarmAckBtn{
+  display:inline-flex;align-items:center;justify-content:center;
+  position:absolute;top:1px;right:2px;width:38px;height:38px;min-width:38px;
+  padding:0;border:2px solid #f2c400;border-radius:5px;
+  background:#ffd600;color:#171717;font-size:21px;line-height:1;
+  box-shadow:0 2px 0 #8d7100;font-weight:900;
+}
+body.trainee-gas-ui #scopeAlarmAckBtn.hidden{display:none!important;}
+body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#a98713;border-color:#80670e;color:#302707;box-shadow:none;cursor:default;}
+@media(max-width:760px){body.trainee-gas-ui #monitorPage .monitor-head{padding-right:42px;}body.trainee-gas-ui #scopeAlarmAckBtn{width:34px;height:34px;min-width:34px;font-size:19px;}}
+
 </style>
 </head>
 <body>
@@ -735,7 +749,7 @@ body.trainee-header-collapsed #traineeTopGroup{display:none!important}
  </div>
  <main id="monitorPage">
   <section class="screen">
-   <div class="monitor-head"><span id="patientLabel">ADULTE · VICTIME</span><span>HEURE <b id="clock">--:--:--</b></span><span>MISE EN SITUATION <b id="scenarioElapsed">00:00:00</b></span><span id="alarmText" class="alarm off">ALARME</span></div>
+   <div class="monitor-head"><span id="patientLabel">ADULTE · VICTIME</span><span>HEURE <b id="clock">--:--:--</b></span><span>MISE EN SITUATION <b id="scenarioElapsed">00:00:00</b></span><span id="alarmText" class="alarm off">ALARME</span><button id="scopeAlarmAckBtn" type="button" class="hidden" aria-label="Acquitter l’alarme" title="Acquitter l’alarme">🔔</button></div>
    <div class="monitor-grid">
     <div class="numbers">
      <button class="metric fc" data-metric="FC"><div class="fc-layout"><div class="fc-reading"><div class="name">FC</div><div class="thresholds" id="thFC">Bas 50 · Haut 130</div><div class="value" id="vFC">—</div><div class="unit" id="uFC">bpm · électrodes ECG non posées</div></div><div class="siq-meter-wrap" aria-label="Signal de battement cardiaque"><div class="siq-meter"><div class="siq-meter-fill" id="siqMeterFill"></div></div><div class="siq-reading"><span id="vSIQ">0</span><small>SIQ</small></div></div></div></button>
@@ -746,7 +760,7 @@ body.trainee-header-collapsed #traineeTopGroup{display:none!important}
      <button class="metric long-metric gly-long" data-metric="Glycémie" id="glyCard"><div class="long-main"><div><div class="name">GLYCÉMIE CAPILLAIRE</div><div class="subvalue" id="glyStatus">Non mesurée</div></div><div class="long-reading"><span class="value" id="vGly">—</span><span class="unit">g/L</span></div></div></button>
     </div>
    </div>
-   <div class="bottom"><button id="scopeAlarmAckBtn" type="button" class="hidden">🔇 ACQUITTER L’ALARME</button><button id="menuBtn">Réglages</button></div>
+   <div class="bottom"><button id="menuBtn">Réglages</button></div>
   </section>
  </main>
  
