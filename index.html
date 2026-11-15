@@ -52,7 +52,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .spo-reading .value{margin-top:8px!important;}
 .pi-meter-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;align-self:stretch;padding:4px 3px 4px 8px;border-left:1px solid #ffffff55;}
 .pi-meter{position:relative;width:15px;height:86px;border:2px solid #d5edff;border-radius:9px;background:#06345c;overflow:hidden;box-shadow:inset 0 0 5px #001a33;}
-.pi-meter-fill{position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(180deg,#9ce4ff,#25a9ff 55%,#0873d1);border-radius:0 0 5px 5px;transition:height .25s ease;}
+.pi-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#9ce4ff,#25a9ff 55%,#0873d1);border-radius:0 0 5px 5px;transition:height .25s ease;}
 .pi-reading{min-width:43px;text-align:center;font-size:12px;font-weight:850;color:#e8f7ff;font-variant-numeric:tabular-nums;}
 .pi-reading small{display:block;font-size:9px;font-weight:700;opacity:.85;letter-spacing:.05em;}
 /* Jauge SIQ de la fréquence cardiaque : même format que l'indice de perfusion */
@@ -1106,13 +1106,18 @@ function updatePITrend(){
  const value=normalizePI(state.pi);
  state.pi=value;
  if($('vPI'))$('vPI').textContent=fmtPI(value);
- const height=(value/5*100)+'%';
+ // Sans pince à SAT, la jauge I.P. reste strictement à zéro.
+ // Dès que la pince est posée, elle monte selon l'I.P. (échelle 0–5).
+ const probeActive=state.spoMeasured===true&&state.fcMeasured===true;
+ const height=(probeActive?(value/5*100):0)+'%';
  if($('piMeterFill'))$('piMeterFill').style.height=height;
 }
 function updateSIQ(){
  const fill=$('siqMeterFill'),label=$('vSIQ');
  const active=state.fcMeasured===true&&state.spoMeasured===true&&Number(state.fc)>0&&state.rhythm!=='asystole'&&state.rhythm!=='fv';
  const value=normalizePI(state.pi??3);
+ // La jauge FC/SIQ partage exactement le maximum I.P. ; son animation
+ // pulse à chaque battement, à la fréquence indiquée par la FC.
  if(fill){
   fill.style.height=(active?(value/5*100):0)+'%';
   fill.classList.toggle('siq-pulse',active);
