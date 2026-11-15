@@ -782,6 +782,20 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
 #ecgExitBtn{background:#333f46;color:#fff;border:1px solid #66737a}
 .ecg-calibration-note{font:11px ui-monospace,monospace;color:#4a555a;text-align:center;margin:8px 0 0}
 .ecg-live-dot{color:#14864d;font-weight:900}
+
+.ecg-artifact-panel{margin-top:18px;padding:14px;border:1px solid #476071;border-radius:12px;background:#0d1b25}
+.ecg-artifact-panel h3{margin:0 0 8px;color:#fff}
+.ecg-artifact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:end}
+.ecg-artifact-grid label{display:flex;flex-direction:column;gap:6px;color:#dce6eb;font-size:13px;font-weight:700}
+.ecg-artifact-grid select,.ecg-artifact-grid input{width:100%;min-height:38px}
+.ecg-artifact-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.ecg-artifact-actions button{padding:10px 16px;font-weight:900;border-radius:8px}
+#ecgArtifactApply{background:#b96b20;color:white}
+#ecgArtifactStop{background:#35434b;color:white}
+#ecgArtifactStatus{margin:9px 0 0;color:#b9c9d2;font-size:13px}
+.ecg-record-actions button:last-child{background:#333f46;color:#fff;border:1px solid #66737a}
+@media(max-width:700px){.ecg-artifact-grid{grid-template-columns:1fr 1fr}}
+
 @media(max-width:650px){#ecgRecordPage{padding:5px}.ecg-record-card{padding:7px}.ecg-record-head{font-size:11px}}
 
 </style>
@@ -850,9 +864,9 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
   </div>
   <div id="ecgTraceView" class="ecg-record-card hidden">
    <div class="ecg-record-head"><span>ECG 12 DÉRIVATIONS · FC : <strong id="ecgTraceHR">—</strong> bpm</span><span id="ecgTraceStatus" class="ecg-live-dot">● ENREGISTREMENT EN COURS</span></div>
-   <div class="ecg-paper-wrap"><canvas id="ecg12Canvas" width="1200" height="760" aria-label="Tracé ECG simulé à 12 dérivations"></canvas></div>
+   <div class="ecg-paper-wrap"><canvas id="ecg12Canvas" width="1400" height="860" aria-label="Tracé ECG simulé à 12 dérivations"></canvas></div>
    <p class="ecg-calibration-note">Vitesse papier : 25 mm/s · Gain : 10 mm/mV · Grille : 1 mm / 5 mm · Tracé pédagogique simulé, non destiné au diagnostic</p>
-   <div class="ecg-record-actions"><button type="button" id="ecgFreezeBtn">⏸ ARRÊT SUR IMAGE</button><button type="button" id="ecgExitBtn">FERMER L’E.C.G.</button></div>
+   <div class="ecg-record-actions"><button type="button" id="ecgFreezeBtn">⏸ ARRÊT SUR IMAGE</button><button type="button" id="ecgReviewBtn" class="hidden">REVOIR LE DERNIER ECG</button><button type="button" id="ecgExitBtn">RETOUR</button></div>
   </div>
  </section>
  <section id="ecgControlPanel" class="panel hidden">
@@ -878,6 +892,37 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
     <label class="ecg-lead-control"><span class="ecg-dot v6"></span><strong>V6 — Violet</strong><input type="checkbox" data-ecg-v-lead="V6"><span>Validée</span></label>
    </div>
    <p id="ecgTrainerVStatus" class="ecg-wait">0 / 6 électrodes précordiales validées</p>
+  </div>
+  <div id="ecgArtifactPanel" class="ecg-artifact-panel">
+   <h3>Simulation d’artefacts ECG</h3>
+   <p class="muted">Les artefacts perturbent uniquement le signal affiché. Ils ne modifient pas la fréquence cardiaque imposée.</p>
+   <div class="ecg-artifact-grid">
+    <label>Type d’artefact
+     <select id="ecgArtifactType">
+      <option value="movement">Mouvement du patient</option>
+      <option value="tremor">Tremblements musculaires</option>
+      <option value="contact">Mauvais contact électrode</option>
+      <option value="displacement">Déplacement d’électrode</option>
+      <option value="intermittent">Artefacts intermittents</option>
+     </select>
+    </label>
+    <label>Intensité
+     <input id="ecgArtifactIntensity" type="range" min="10" max="100" value="55" step="5">
+    </label>
+    <label>Durée
+     <select id="ecgArtifactDuration">
+      <option value="5">5 secondes</option>
+      <option value="10" selected>10 secondes</option>
+      <option value="20">20 secondes</option>
+      <option value="0">Jusqu’à arrêt manuel</option>
+     </select>
+    </label>
+   </div>
+   <div class="ecg-artifact-actions">
+    <button type="button" id="ecgArtifactApply">ACTIVER L’ARTEFACT</button>
+    <button type="button" id="ecgArtifactStop">ARRÊTER L’ARTEFACT</button>
+   </div>
+   <p id="ecgArtifactStatus">Aucun artefact actif.</p>
   </div>
  </section>
  
@@ -1128,7 +1173,7 @@ const $=id=>document.getElementById(id);
 const GLYCEMIE_CODES={LO:{operator:'<',value:0.20,label:'LO'},HI:{operator:'>',value:5.00,label:'HI'}}; // Seuils internes uniquement : LO <0,20 g/L ; HI >5,00 g/L
 function glycemiaDisplay(value){const n=Number(value);if(!Number.isFinite(n))return null;if(n<GLYCEMIE_CODES.LO.value)return GLYCEMIE_CODES.LO.label;if(n>GLYCEMIE_CODES.HI.value)return GLYCEMIE_CODES.HI.label;return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 const initialPI=Number((3+Math.floor(Math.random()*5)*0.5).toFixed(1));
-const defaults={ecgLeads:{R:false,L:false,N:false,F:false},ecgVLeads:{V1:false,V2:false,V3:false,V4:false,V5:false,V6:false},ecgStep:1,scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:initialPI,piTrendFrom:3,piTrendTo:5,piTrendStartAt:null,piNextTarget:initialPI,piNextAt:0,taCycleStartAt:null,taCycleAuto:false,taSurveillanceActive:false,taSurveillanceIntervalMin:5,taSurveillanceNextAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
+const defaults={ecgLeads:{R:false,L:false,N:false,F:false},ecgVLeads:{V1:false,V2:false,V3:false,V4:false,V5:false,V6:false},ecgStep:1,ecgAcquisitionEpoch:0,ecgArtifacts:{active:false,type:'movement',intensity:0.55,startedAt:0,until:0},scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:initialPI,piTrendFrom:3,piTrendTo:5,piTrendStartAt:null,piNextTarget:initialPI,piNextAt:0,taCycleStartAt:null,taCycleAuto:false,taSurveillanceActive:false,taSurveillanceIntervalMin:5,taSurveillanceNextAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -1862,6 +1907,7 @@ function setECGView(view){
  $('gasControlPanel').classList.add('hidden');
  $('coControlPanel').classList.add('hidden');
  $('ecgControlPanel').classList.toggle('hidden',role!=='control'||(!isECG&&!isNext));
+  if($('ecgArtifactPanel'))$('ecgArtifactPanel').classList.toggle('hidden',role!=='control'||(!isECG&&!isNext));
  $('eventsPage').classList.add('hidden');
  $('settingsPage').classList.add('hidden');
  if(isECG){
@@ -1907,53 +1953,183 @@ function renderECGV(){
  $('ecgVWaitText').classList.toggle('hidden',role!=='display'||all);
  $('ecgTrainerVStatus').textContent=count+' / 6 électrodes précordiales validées'+(all?' — bouton ECG disponible côté stagiaire':'');
 }
+
 let ecgLoadingTimer=null,ecgTraceTimer=null,ecgTraceStart=0,ecgFrozen=false,ecgFrozenAt=0,ecgCapturedHR=72;
-function stopECGAcquisition(){if(ecgLoadingTimer){clearInterval(ecgLoadingTimer);ecgLoadingTimer=null;}if(ecgTraceTimer){clearInterval(ecgTraceTimer);ecgTraceTimer=null;}}
+let ecgLastSnapshot=null,ecgArtifactTimeout=null,ecgGridCache=null;
+function stopECGAcquisition(){
+ if(ecgLoadingTimer){clearInterval(ecgLoadingTimer);ecgLoadingTimer=null;}
+ if(ecgTraceTimer){clearInterval(ecgTraceTimer);ecgTraceTimer=null;}
+}
+function renderECGArtifactStatus(){
+ const a=state.ecgArtifacts||{},active=!!a.active&&(!a.until||Date.now()<Number(a.until));
+ const names={movement:'Mouvement du patient',tremor:'Tremblements musculaires',contact:'Mauvais contact électrode',displacement:'Déplacement électrode',intermittent:'Artefacts intermittents'};
+ const el=$('ecgArtifactStatus');
+ if(el)el.textContent=active?'Actif : '+(names[a.type]||'Artefact')+' · intensité '+Math.round((Number(a.intensity)||.55)*100)+' %'+(a.until?' · arrêt automatique':' · arrêt manuel'):'Aucun artefact actif.';
+}
+function setECGArtifact(active){
+ if(role!=='control')return;
+ if(ecgArtifactTimeout){clearTimeout(ecgArtifactTimeout);ecgArtifactTimeout=null;}
+ if(!active){
+  state.ecgArtifacts={...(state.ecgArtifacts||{}),active:false,until:0};
+  publish();renderECGArtifactStatus();return;
+ }
+ const duration=Number($('ecgArtifactDuration').value)||0,now=Date.now();
+ state.ecgArtifacts={active:true,type:$('ecgArtifactType').value,intensity:Number($('ecgArtifactIntensity').value)/100,startedAt:now,until:duration?now+duration*1000:0};
+ publish();renderECGArtifactStatus();
+ if(duration)ecgArtifactTimeout=setTimeout(()=>{
+  state.ecgArtifacts={...(state.ecgArtifacts||{}),active:false,until:0};publish();renderECGArtifactStatus();ecgArtifactTimeout=null;
+ },duration*1000);
+}
+function currentECGArtifact(){
+ const a=state.ecgArtifacts||{};
+ return a.active&&(!a.until||Date.now()<Number(a.until))?a:null;
+}
 function openECGAcquisition(){
  const vLeads={V1:false,V2:false,V3:false,V4:false,V5:false,V6:false,...(state.ecgVLeads||{})};
  if(!Object.values(vLeads).every(Boolean)||role!=='display')return;
- stopECGAcquisition();$('monitorPage').classList.add('hidden');$('gasPage').classList.add('hidden');if($('coPage'))$('coPage').classList.add('hidden');
+ stopECGAcquisition();
+ $('monitorPage').classList.add('hidden');$('gasPage').classList.add('hidden');if($('coPage'))$('coPage').classList.add('hidden');
  $('ecgPage').classList.add('hidden');$('ecgNextPage').classList.add('hidden');$('ecgRecordPage').classList.remove('hidden');$('ecgControlPanel').classList.add('hidden');
  currentModule='ecg-record';document.title='E.C.G. — Acquisition 12 dérivations';
  $('ecgLoadingView').classList.remove('hidden');$('ecgTraceView').classList.add('hidden');$('ecgLoadingBar').style.width='0%';$('ecgLoadingPercent').textContent='0 %';
  ecgCapturedHR=Math.max(0,Number(state.fc)||0);ecgFrozen=false;ecgTraceStart=0;
- const start=Date.now();ecgLoadingTimer=setInterval(()=>{const elapsed=Date.now()-start,p=Math.min(100,elapsed/20000*100);$('ecgLoadingBar').style.width=p+'%';$('ecgLoadingPercent').textContent=Math.floor(p)+' %';if(p>=100){clearInterval(ecgLoadingTimer);ecgLoadingTimer=null;showECGTrace();}},100);
+ // Signal de synchronisation : le formateur revient automatiquement à l'écran des 4 brins.
+ state.ecgAcquisitionEpoch=Date.now();publish();
+ const start=Date.now();
+ ecgLoadingTimer=setInterval(()=>{
+  const p=Math.min(100,(Date.now()-start)/20000*100);
+  $('ecgLoadingBar').style.width=p+'%';$('ecgLoadingPercent').textContent=Math.floor(p)+' %';
+  if(p>=100){clearInterval(ecgLoadingTimer);ecgLoadingTimer=null;showECGTrace();}
+ },100);
 }
 function showECGTrace(){
- $('ecgLoadingView').classList.add('hidden');$('ecgTraceView').classList.remove('hidden');$('ecgTraceHR').textContent=ecgCapturedHR||'0';
- ecgTraceStart=performance.now();drawECG12(0);ecgTraceTimer=setInterval(()=>{if(!ecgFrozen)drawECG12((performance.now()-ecgTraceStart)/1000);},100);
+ $('ecgLoadingView').classList.add('hidden');$('ecgTraceView').classList.remove('hidden');
+ ecgCapturedHR=Math.max(0,Number(state.fc)||0);$('ecgTraceHR').textContent=ecgCapturedHR;
+ ecgTraceStart=performance.now();ecgFrozen=false;
+ $('ecgTraceStatus').textContent='● ENREGISTREMENT EN COURS';$('ecgTraceStatus').style.color='#14864d';
+ $('ecgFreezeBtn').textContent='⏸ ARRÊT SUR IMAGE';
+ drawECG12(0);
+ if(ecgTraceTimer)clearInterval(ecgTraceTimer);
+ ecgTraceTimer=setInterval(()=>{
+  if(!ecgFrozen){
+   ecgCapturedHR=Math.max(0,Number(state.fc)||0);
+   $('ecgTraceHR').textContent=ecgCapturedHR;
+   drawECG12((performance.now()-ecgTraceStart)/1000);
+  }
+ },40);
 }
-function ecgWave(t,hr,leadIndex){
+function ecgWave(t,hr,leadIndex,artifact,artifactAge){
  if(hr<=0)return 0;
- const rr=60/hr,phase=((t%rr)+rr)%rr,scale=[1,.85,.9,.75,.8,.8,.9,.8,.75,.85,1,.9][leadIndex];
+ const rr=60/hr,phase=((t%rr)+rr)%rr;
  const g=(x,m,w,a)=>a*Math.exp(-.5*((x-m)/w)**2);
- let y=g(phase,.16,.035,.12)+g(phase,.31,.012,-.16)+g(phase,.34,.010,1.05)+g(phase,.37,.014,-.28)+g(phase,.58,.075,.30);
- if(leadIndex===1||leadIndex===4||leadIndex===7)y*=-.75;
- if(leadIndex===2||leadIndex===5||leadIndex===8)y*=.55;
- if(leadIndex===3||leadIndex===6||leadIndex===9)y*=1.12;
- if(leadIndex===10)y*=.9;
- return y*scale;
+ // Onde P-QRS-T, même horloge pour toutes les dérivations : le R suit exactement le RR = 60 / FC.
+ let y=g(phase,.16,.035,.12)+g(phase,.30,.012,-.16)+g(phase,.32,.009,1.05)+g(phase,.35,.013,-.28)+g(phase,.58,.075,.30);
+ const gains=[.78,1,.62,-.72,.48,.78,-.42,-.22,.48,1.02,1.08,.88,1];
+ y*=gains[leadIndex]||.8;
+ if(artifact){
+  const k=Math.max(.1,Math.min(1,Number(artifact.intensity)||.55)),age=Math.max(0,artifactAge||0);
+  if(artifact.type==='movement')y+=k*(.34*Math.sin(age*2.1+leadIndex*.55)+.18*Math.sin(age*.57+leadIndex)+.10*Math.sin(t*17+leadIndex));
+  else if(artifact.type==='tremor')y+=k*(.12*Math.sin(t*2*Math.PI*22+leadIndex)+.07*Math.sin(t*2*Math.PI*31+leadIndex*.7));
+  else if(artifact.type==='contact'){const burst=Math.max(0,Math.sin(age*5.2+leadIndex*.8));y+=k*(.22*Math.sin(age*3.1+leadIndex)+burst*.30*Math.sin(t*2*Math.PI*13+leadIndex));}
+  else if(artifact.type==='displacement')y+=k*(age>1.1?.42:.04)*(leadIndex<6?1:.55);
+  else if(artifact.type==='intermittent'){const burst=Math.max(0,Math.sin(age*1.7+leadIndex*.9));y+=k*burst*(.30*Math.sin(t*2*Math.PI*18+leadIndex)+.20*Math.sin(age*8));}
+ }
+ return y;
 }
 function drawECG12(elapsed){
- const c=$('ecg12Canvas'),ctx=c.getContext('2d'),W=c.width,H=c.height,pxPerSec=100,mm=4,hr=ecgCapturedHR;
- ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
- // Papier ECG : petits carreaux 1 mm, grands carreaux 5 mm.
- for(let x=0;x<=W;x+=mm){ctx.beginPath();ctx.strokeStyle=(x%(mm*5)===0)?'#e9a4a8':'#f6dadd';ctx.lineWidth=(x%(mm*5)===0)?1.05:.45;ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
- for(let y=0;y<=H;y+=mm){ctx.beginPath();ctx.strokeStyle=(y%(mm*5)===0)?'#e9a4a8':'#f6dadd';ctx.lineWidth=(y%(mm*5)===0)?1.05:.45;ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
- const names=['I','aVR','V1','V4','II','aVL','V2','V5','III','aVF','V3','V6'];
- const rowY=[115,295,475],left=45,cellW=280,segmentDuration=2.5;
- ctx.font='bold 17px ui-monospace,monospace';ctx.fillStyle='#222';
- names.forEach((name,i)=>{const row=Math.floor(i/4),col=i%4,x0=left+col*cellW,y0=rowY[row];ctx.fillText(name,x0,y0-52);ctx.beginPath();ctx.strokeStyle='#202020';ctx.lineWidth=1.7;for(let x=0;x<=cellW;x+=2){const t=col*segmentDuration+x/pxPerSec+(elapsed%12);const y=y0-ecgWave(t,hr,i)*40; if(x===0)ctx.moveTo(x0+x,y);else ctx.lineTo(x0+x,y);}ctx.stroke();});
- // Dérivation II longue sur 10 secondes, comme sur un ECG standard.
- const y0=665,x0=left,w=1000;ctx.fillStyle='#222';ctx.fillText('II',x0,y0-48);ctx.beginPath();ctx.strokeStyle='#111';ctx.lineWidth=1.8;for(let x=0;x<=w;x+=2){const t=x/pxPerSec+(elapsed%12);const y=y0-ecgWave(t,hr,4)*40;if(x===0)ctx.moveTo(x0+x,y);else ctx.lineTo(x0+x,y);}ctx.stroke();
- // Impulsion de calibration 1 mV / 200 ms.
- ctx.beginPath();ctx.strokeStyle='#111';ctx.lineWidth=2;ctx.moveTo(8,690);ctx.lineTo(8,650);ctx.lineTo(28,650);ctx.lineTo(28,690);ctx.lineTo(42,690);ctx.stroke();
- // Curseur discret de balayage, correspondant à 25 mm/s.
- const cursor=(elapsed*pxPerSec)%w;ctx.beginPath();ctx.strokeStyle='#248b70';ctx.lineWidth=1;ctx.moveTo(left+cursor,28);ctx.lineTo(left+cursor,H-18);ctx.stroke();
+ const c=$('ecg12Canvas'),ctx=c.getContext('2d'),W=c.width,H=c.height;
+ const pxPerSec=100,mm=4,hr=Math.max(0,Number(state.fc)||0);
+ if(!ecgGridCache||ecgGridCache.width!==W||ecgGridCache.height!==H){
+  ecgGridCache=document.createElement('canvas');ecgGridCache.width=W;ecgGridCache.height=H;
+  const gctx=ecgGridCache.getContext('2d');gctx.fillStyle='#fff';gctx.fillRect(0,0,W,H);
+  for(let x=0;x<=W;x+=mm){gctx.beginPath();gctx.strokeStyle=x%(mm*5)===0?'#e9a4a8':'#f6dadd';gctx.lineWidth=x%(mm*5)===0?1.05:.45;gctx.moveTo(x,0);gctx.lineTo(x,H);gctx.stroke();}
+  for(let y=0;y<=H;y+=mm){gctx.beginPath();gctx.strokeStyle=y%(mm*5)===0?'#e9a4a8':'#f6dadd';gctx.lineWidth=y%(mm*5)===0?1.05:.45;gctx.moveTo(0,y);gctx.lineTo(W,y);gctx.stroke();}
+ }
+ ctx.clearRect(0,0,W,H);ctx.drawImage(ecgGridCache,0,0);
+ // Présentation standard en deux colonnes : I / V1, II / V2, III / V3,
+ // aVR / V4, aVL / V5, aVF / V6, puis DII longue en bas.
+ const leftNames=['I','II','III','aVR','aVL','aVF'],rightNames=['V1','V2','V3','V4','V5','V6'];
+ const leftX=54,rightX=738,traceW=600,rowBase=76,rowGap=91;
+ const artifact=currentECGArtifact(),artifactAge=artifact?(Date.now()-Number(artifact.startedAt||Date.now()))/1000:0;
+ function drawLead(name,x0,y0,index,offset){
+  ctx.font='bold 18px Arial,sans-serif';ctx.fillStyle='#202020';ctx.fillText(name,x0-34,y0-26);
+  ctx.beginPath();ctx.strokeStyle='#151515';ctx.lineWidth=1.8;
+  for(let x=0;x<=traceW;x+=2){
+   const t=elapsed+x/pxPerSec+offset;
+   const y=y0-ecgWave(t,hr,index,artifact,artifactAge)*38;
+   if(x===0)ctx.moveTo(x0+x,y);else ctx.lineTo(x0+x,y);
+  }
+  ctx.stroke();
+ }
+ for(let r=0;r<6;r++){
+  const y=rowBase+r*rowGap;
+  drawLead(leftNames[r],leftX,y,r,0);
+  drawLead(rightNames[r],rightX,y,r+6,0);
+ }
+ const rhythmX=54,rhythmY=755,rhythmW=1280;
+ ctx.font='bold 18px Arial,sans-serif';ctx.fillStyle='#202020';ctx.fillText('II',rhythmX-34,rhythmY-26);
+ ctx.beginPath();ctx.strokeStyle='#151515';ctx.lineWidth=1.9;
+ for(let x=0;x<=rhythmW;x+=2){
+  const t=elapsed+x/pxPerSec;
+  const y=rhythmY-ecgWave(t,hr,1,artifact,artifactAge)*38;
+  if(x===0)ctx.moveTo(rhythmX,y);else ctx.lineTo(rhythmX+x,y);
+ }
+ ctx.stroke();
+ // Jauge verte toujours visible, qui balaie la feuille à 25 mm/s (100 px/s).
+ const sweep=(elapsed*pxPerSec)%(traceW);
+ ctx.save();ctx.strokeStyle='#12a05c';ctx.lineWidth=2.5;ctx.globalAlpha=.95;
+ [leftX,rightX].forEach(x0=>{ctx.beginPath();ctx.moveTo(x0+sweep,26);ctx.lineTo(x0+sweep,625);ctx.stroke();});
+ const rhythmSweep=(elapsed*pxPerSec)%rhythmW;
+ ctx.beginPath();ctx.moveTo(rhythmX+rhythmSweep,665);ctx.lineTo(rhythmX+rhythmSweep,810);ctx.stroke();
+ ctx.restore();
+ // Calibration 1 mV / 200 ms.
+ ctx.beginPath();ctx.strokeStyle='#111';ctx.lineWidth=2;
+ ctx.moveTo(8,825);ctx.lineTo(8,785);ctx.lineTo(28,785);ctx.lineTo(28,825);ctx.lineTo(42,825);ctx.stroke();
+}
+function saveFrozenECG(){
+ if(!$('ecgTraceView').classList.contains('hidden')){
+  const elapsed=ecgFrozen?ecgFrozenAt:(performance.now()-ecgTraceStart)/1000;
+  if(!ecgFrozen)drawECG12(elapsed);
+  ecgFrozen=true;ecgFrozenAt=elapsed;
+  ecgLastSnapshot=$('ecg12Canvas').toDataURL('image/png');
+  try{localStorage.setItem('scopeLastFrozenECG',ecgLastSnapshot);localStorage.setItem('scopeLastFrozenECG_HR',String(ecgCapturedHR));}catch(e){}
+  $('ecgTraceStatus').textContent='Ⅱ ECG FIGÉ';$('ecgTraceStatus').style.color='#b66a16';
+  $('ecgFreezeBtn').textContent='▶ REPRENDRE LE TRACÉ';
+  $('ecgReviewBtn').classList.remove('hidden');
+ }
+}
+function reviewLastECG(){
+ let snap=ecgLastSnapshot;
+ if(!snap){try{snap=localStorage.getItem('scopeLastFrozenECG');}catch(e){}}
+ if(!snap)return;
+ stopECGAcquisition();$('ecgLoadingView').classList.add('hidden');$('ecgTraceView').classList.remove('hidden');
+ const img=new Image();img.onload=()=>{const c=$('ecg12Canvas'),ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);};
+ img.src=snap;ecgFrozen=true;ecgLastSnapshot=snap;
+ try{ecgCapturedHR=Number(localStorage.getItem('scopeLastFrozenECG_HR'))||ecgCapturedHR;}catch(e){}
+ $('ecgTraceHR').textContent=ecgCapturedHR||'—';$('ecgTraceStatus').textContent='Ⅱ DERNIER ECG FIGÉ';$('ecgTraceStatus').style.color='#b66a16';
+ $('ecgFreezeBtn').textContent='▶ REPRENDRE LE TRACÉ';$('ecgReviewBtn').classList.add('hidden');
+}
+function leaveECGToMonitor(){
+ saveFrozenECG();stopECGAcquisition();$('ecgRecordPage').classList.add('hidden');setModule('scope');
 }
 $('ecgRunBtn').onclick=openECGAcquisition;
-$('ecgFreezeBtn').onclick=()=>{if(!ecgTraceTimer)return;ecgFrozen=!ecgFrozen;if(ecgFrozen){ecgFrozenAt=(performance.now()-ecgTraceStart)/1000;$('ecgFreezeBtn').textContent='▶ REPRENDRE LE TRACÉ';$('ecgTraceStatus').textContent='Ⅱ IMAGE FIGÉE';$('ecgTraceStatus').style.color='#b66a16';drawECG12(ecgFrozenAt);}else{ecgTraceStart=performance.now()-ecgFrozenAt*1000;$('ecgFreezeBtn').textContent='⏸ ARRÊT SUR IMAGE';$('ecgTraceStatus').textContent='● ENREGISTREMENT EN COURS';$('ecgTraceStatus').style.color='#14864d';}};
-$('ecgExitBtn').onclick=()=>{stopECGAcquisition();$('ecgRecordPage').classList.add('hidden');setModule('scope');};
+$('ecgFreezeBtn').onclick=()=>{
+ if(!ecgTraceTimer&&!ecgFrozen)return;
+ if(!ecgFrozen){
+  ecgFrozenAt=(performance.now()-ecgTraceStart)/1000;drawECG12(ecgFrozenAt);ecgFrozen=true;
+  ecgLastSnapshot=$('ecg12Canvas').toDataURL('image/png');
+  try{localStorage.setItem('scopeLastFrozenECG',ecgLastSnapshot);localStorage.setItem('scopeLastFrozenECG_HR',String(ecgCapturedHR));}catch(e){}
+  $('ecgFreezeBtn').textContent='▶ REPRENDRE LE TRACÉ';$('ecgTraceStatus').textContent='Ⅱ IMAGE FIGÉE';$('ecgTraceStatus').style.color='#b66a16';$('ecgReviewBtn').classList.remove('hidden');
+ }else{
+  ecgFrozen=false;ecgTraceStart=performance.now()-ecgFrozenAt*1000;
+  $('ecgFreezeBtn').textContent='⏸ ARRÊT SUR IMAGE';$('ecgTraceStatus').textContent='● ENREGISTREMENT EN COURS';$('ecgTraceStatus').style.color='#14864d';
+ }
+};
+$('ecgReviewBtn').onclick=reviewLastECG;
+$('ecgExitBtn').onclick=leaveECGToMonitor;
+$('ecgArtifactApply').onclick=()=>setECGArtifact(true);
+$('ecgArtifactStop').onclick=()=>setECGArtifact(false);
+renderECGArtifactStatus();
 document.querySelectorAll('[data-ecg-lead]').forEach(input=>input.addEventListener('change',()=>{
  if(role!=='control')return;
  const leads={R:false,L:false,N:false,F:false,...(state.ecgLeads||{})};
@@ -2026,13 +2202,16 @@ function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room
 async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}loadTaHistory();if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,pendingSys:Number(data.state.pendingSys??data.state.sys??120),pendingDia:Number(data.state.pendingDia??data.state.dia??80),alarms:true};audioEnabled=state.soundEnabled!==false;loadTaHistory();render();if(state.scenarioElapsedEpoch!==null)setTraineeHeaderCollapsed(true);}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
  if(!payload.new?.state)return;
  const incoming=payload.new.state;
- if(role==='display'){const isRunning=incoming.scenarioElapsedEpoch!==null&&Number.isFinite(Number(incoming.scenarioElapsedEpoch));state={...defaults,...incoming,scopeAlarmRevision:Number(incoming.scopeAlarmRevision)||0,pendingSys:Number(incoming.pendingSys??incoming.sys??120),pendingDia:Number(incoming.pendingDia??incoming.dia??80),glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};normalizePulseOxState();audioEnabled=state.soundEnabled!==false;render();if(currentModule==='ecg'||currentModule==='ecg-next'){if(state.ecgStep===2&&currentModule!=='ecg-next')setECGView('next');else if(state.ecgStep===1&&currentModule!=='ecg')setECGView('ecg');else if(currentModule==='ecg')renderECG();else if(currentModule==='ecg-next')renderECGV();}if(isRunning)setTraineeHeaderCollapsed(true);}
+ if(role==='display'){const isRunning=incoming.scenarioElapsedEpoch!==null&&Number.isFinite(Number(incoming.scenarioElapsedEpoch));state={...defaults,...incoming,scopeAlarmRevision:Number(incoming.scopeAlarmRevision)||0,pendingSys:Number(incoming.pendingSys??incoming.sys??120),pendingDia:Number(incoming.pendingDia??incoming.dia??80),glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};normalizePulseOxState();audioEnabled=state.soundEnabled!==false;render();if(currentModule==='ecg'||currentModule==='ecg-next'){if(state.ecgStep===2&&currentModule!=='ecg-next')setECGView('next');else if(state.ecgStep===1&&currentModule!=='ecg')setECGView('ecg');else if(currentModule==='ecg')renderECG();else if(currentModule==='ecg-next')renderECGV();}else if(currentModule==='ecg-record'&&!$('ecgTraceView').classList.contains('hidden')&&!ecgFrozen){ecgCapturedHR=Math.max(0,Number(state.fc)||0);$('ecgTraceHR').textContent=ecgCapturedHR;drawECG12((performance.now()-ecgTraceStart)/1000);}if(isRunning)setTraineeHeaderCollapsed(true);}
  else if(role==='control'){
+ const previousAcquisitionEpoch=Number(state.ecgAcquisitionEpoch||0);
  const activeId=document.activeElement?.id||'';
  const editingGas=/^gas(O2|LIE|CO|H2S)(Input|Range)$/.test(activeId)||/^coSingle(Input|Range)$/.test(activeId);
  const preservedGas=editingGas?{...(state.gas||{})}:null;
  state={...state,...incoming,gas:{...gasDefaults,...(incoming.gas||state.gas||{}),...(preservedGas||{})}};
- render();if(currentModule==='ecg'||currentModule==='ecg-next'){if(state.ecgStep===2&&currentModule!=='ecg-next')setECGView('next');else if(state.ecgStep===1&&currentModule!=='ecg')setECGView('ecg');else if(currentModule==='ecg')renderECG();else if(currentModule==='ecg-next')renderECGV();}
+ render();renderECGArtifactStatus();
+ if(Number(incoming.ecgAcquisitionEpoch||0)>previousAcquisitionEpoch){setECGView('ecg');}
+ else if(currentModule==='ecg'||currentModule==='ecg-next'){if(state.ecgStep===2&&currentModule!=='ecg-next')setECGView('next');else if(state.ecgStep===1&&currentModule!=='ecg')setECGView('ecg');else if(currentModule==='ecg')renderECG();else if(currentModule==='ecg-next')renderECGV();}
  if(currentModule==='co')renderCoSingle();
 }
 }).subscribe();$('status').textContent=`Connecté · session ${room} · ${role==='control'?'formateur':'stagiaire'}`;log('Connexion à la session '+room)}
