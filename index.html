@@ -753,7 +753,7 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
    <div class="monitor-grid">
     <div class="numbers">
      <button class="metric fc" data-metric="FC"><div class="fc-layout"><div class="fc-reading"><div class="name">FC</div><div class="thresholds" id="thFC">Bas 50 · Haut 130</div><div class="value" id="vFC">—</div><div class="unit" id="uFC">bpm · électrodes ECG non posées</div></div><div class="siq-meter-wrap" aria-label="Signal de battement cardiaque"><div class="siq-meter"><div class="siq-meter-fill" id="siqMeterFill"></div></div><div class="siq-reading"><span id="vSIQ">0</span><small>SIQ</small></div></div></div></button>
-     <button class="metric spo" data-metric="SpO₂"><div class="spo-layout"><div class="spo-reading"><div class="name">SpO₂</div><div class="thresholds" id="thSpo">Bas 90 · Haut 100</div><div class="value" id="vSpO2">—</div><div class="unit" id="uSpO2">% · Pince à SAT non posée</div></div><div class="pi-meter-wrap" aria-label="Indice de perfusion"><div class="pi-meter"><div class="pi-meter-fill" id="piMeterFill"></div></div><div class="pi-reading"><span id="vPI">1,0</span><small>I.P. %</small></div></div></div></button>
+     <button class="metric spo" data-metric="SpO₂"><div class="spo-layout"><div class="spo-reading"><div class="name">SpO₂</div><div class="thresholds" id="thSpo">Bas 90 · Haut 100</div><div class="value" id="vSpO2">—</div><div class="unit" id="uSpO2">% · Pince à SAT non posée</div></div><div class="pi-meter-wrap" aria-label="Indice de perfusion"><div class="pi-meter"><div class="pi-meter-fill" id="piMeterFill"></div></div><div class="pi-reading"><span id="vPI">4</span><small>I.P. %</small></div></div></div></button>
      <button class="metric ta ta-wide" data-metric="TA"><div class="ta-main"><div><div class="name">T.A. / P.N.I.</div><div class="value" id="vTA">—/—</div><div class="subvalue" id="vPAM">Brassard non posé</div></div><div class="thresholds" id="thTA">TAS 90–180<br>TAD 50–110</div></div><div class="ta-cycle" id="taCycle"><div class="ta-cycle-info"><strong id="taCyclePhase">Gonflage du brassard</strong><br><span id="taCyclePressure">0 mmHg</span> · <span id="taCycleTime">20 s</span></div><div class="ta-cycle-gauge"><div class="ta-cycle-fill" id="taCycleFill"></div></div></div><div class="ta-history"><div class="ta-history-head">HISTORIQUE DES TENSIONS <span>HEURE · mmHg</span></div><div id="taHistoryList" class="ta-history-list"><div class="ta-empty">En attente de la pose du brassard par le stagiaire</div></div></div></button>
      <button class="metric co2" data-metric="HbCO"><div class="name">HbCO</div><div class="thresholds" id="thHbco">Seuil bas 10</div><div class="value" id="vHbCO">0</div><div class="unit">%</div></button>
      <button class="metric long-metric temp-long" data-metric="Température" id="tempCard"><div class="long-main"><div><div class="name">TEMPÉRATURE</div><div class="subvalue" id="tempStatus">Non mesurée</div></div><div class="long-reading"><span class="value" id="vTemp">—</span><span class="unit">°C</span></div></div></button>
@@ -900,7 +900,7 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
     <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> Activer / désactiver</label></div>
     <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> Activer / désactiver</label></div>
     <div id="variationRanges"></div>
-    <div class="field"><label>Indice de perfusion (I.P.) — 0 à 5 %</label><div class="row"><label>Borne basse (%) <input id="piTrendFrom" type="number" min="0" max="5" step="0,1" value="3"></label><label>Borne haute (%) <input id="piTrendTo" type="number" min="0" max="5" step="0,1" value="5"></label><strong id="piControlValue">3.5 → 5.0 %</strong></div><small class="muted"></small></div>
+    <div class="field"><label>Indice de perfusion (I.P.) — valeur entière de 1 à 5</label><div class="row"><label>Valeur minimale <input id="piTrendFrom" type="number" min="1" max="5" step="1" value="3"></label><label>Valeur maximale <input id="piTrendTo" type="number" min="1" max="5" step="1" value="5"></label><strong id="piControlValue">3 → 5</strong></div><small class="muted">Au démarrage : valeur aléatoire entre 3 et 5. Modifie les bornes pour piloter manuellement la plage.</small></div>
     <div class="field"><label>Intensité du signal SIQ (1 à 5)</label><div class="row"><select id="siqSettingControl"><option value="1">Niveau 1 : Signal très faible</option><option value="2">Niveau 2 : Signal faible</option><option value="3">Niveau 3 : Signal moyen</option><option value="4">Niveau 4 : Signal fort</option><option value="5">Niveau 5 : Signal maximal</option></select></div></div>
    </div>
 
@@ -1011,7 +1011,8 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
 const $=id=>document.getElementById(id);
 const GLYCEMIE_CODES={LO:{operator:'<',value:0.20,label:'LO'},HI:{operator:'>',value:5.00,label:'HI'}}; // Seuils internes uniquement : LO <0,20 g/L ; HI >5,00 g/L
 function glycemiaDisplay(value){const n=Number(value);if(!Number.isFinite(n))return null;if(n<GLYCEMIE_CODES.LO.value)return GLYCEMIE_CODES.LO.label;if(n>GLYCEMIE_CODES.HI.value)return GLYCEMIE_CODES.HI.label;return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});}
-const defaults={siqSetting:3,scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:1,piTrendFrom:1,piTrendTo:1,piTrendStartAt:null,piNextTarget:1,piNextAt:0,taCycleStartAt:null,taCycleAuto:false,taSurveillanceActive:false,taSurveillanceIntervalMin:5,taSurveillanceNextAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
+const initialPI=Math.floor(3+Math.random()*3);
+const defaults={siqSetting:3,scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:initialPI,piTrendFrom:3,piTrendTo:5,piTrendStartAt:null,piNextTarget:initialPI,piNextAt:0,taCycleStartAt:null,taCycleAuto:false,taSurveillanceActive:false,taSurveillanceIntervalMin:5,taSurveillanceNextAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -1081,42 +1082,32 @@ function updateTACycle(){
   render();publish();
  }
 }
-// I.P. : la valeur cible est tirée aléatoirement entre les bornes imposées par le formateur,
-// puis la jauge rejoint progressivement chaque nouvelle cible (montée et descente irrégulières).
+// I.P. : valeur entière uniquement. Une nouvelle valeur aléatoire est choisie
+// dans la plage définie par le formateur, sans décimales.
 function updatePITrend(){
- const lo=Math.max(0,Math.min(5,Number(state.piTrendFrom??state.pi??0)));
- const hi=Math.max(0,Math.min(5,Number(state.piTrendTo??lo)));
- const min=Math.min(lo,hi),max=Math.max(lo,hi);
- const now=Date.now();
- if(state.piTrendStartAt!==null&&Number.isFinite(Number(state.piTrendStartAt))){
-  if(!Number.isFinite(Number(state.piNextAt))||now>=Number(state.piNextAt)){
-   state.piNextTarget=min+Math.random()*(max-min);
-   state.piNextAt=now+2000+Math.random()*2000;
-  }
-  const target=Number.isFinite(Number(state.piNextTarget))?Number(state.piNextTarget):lo;
-  const current=Number(state.pi??lo);
-  state.pi=current+(target-current)*0.04;
-  state.pi=Math.max(min,Math.min(max,state.pi));
- }else state.pi=lo;
- const value=Number(state.pi??0);
- if($('vPI'))$('vPI').textContent=value.toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1});
- if($('piMeterFill'))$('piMeterFill').style.height=(Math.max(0,Math.min(5,value))/5*100)+'%';
+ const rawLo=Number(state.piTrendFrom??3),rawHi=Number(state.piTrendTo??5);
+ const lo=Math.max(1,Math.min(5,Math.round(Number.isFinite(rawLo)?rawLo:3)));
+ const hi=Math.max(1,Math.min(5,Math.round(Number.isFinite(rawHi)?rawHi:5)));
+ const min=Math.min(lo,hi),max=Math.max(lo,hi),now=Date.now();
+ if(!Number.isFinite(Number(state.pi))||Number(state.pi)<1||Number(state.pi)>5)state.pi=Math.floor(min+Math.random()*(max-min+1));
+ if(state.piNextAt===0||!Number.isFinite(Number(state.piNextAt))||now>=Number(state.piNextAt)){
+  state.piNextTarget=Math.floor(min+Math.random()*(max-min+1));
+  state.pi=state.piNextTarget;
+  state.piNextAt=now+2500+Math.random()*2500;
+ }else{
+  state.pi=Math.max(min,Math.min(max,Math.round(Number(state.pi))));
+ }
+ const value=Math.max(1,Math.min(5,Math.round(Number(state.pi)||min)));
+ if($('vPI'))$('vPI').textContent=String(value);
+ if($('piMeterFill'))$('piMeterFill').style.height=(value/5*100)+'%';
 }
 function updateSIQ(){
- // Jauge SIQ : se remplit à chaque battement puis redescend, cadence = 60/FC. Intensité pilotée par formateur (1 à 5).
+ // Le niveau SIQ pilote directement le remplissage : 5 = jauge pleine, 1 = 20 %.
  const fill=$('siqMeterFill'),label=$('vSIQ');
  const active=state.fcMeasured===true&&Number(state.fc)>0&&state.rhythm!=='asystole'&&state.rhythm!=='fv';
- if(!active){siqLevel=Math.max(0,siqLevel-0.08);}
- else{
-  const beatMs=60000/Math.max(1,Number(state.fc));
-  const now=Date.now();
-  if(now-siqLastBeatAt>=beatMs){siqLastBeatAt=now;siqLevel=1;}
-  else siqLevel=Math.max(0,siqLevel-(1/Math.max(1,beatMs/50))*1.6);
- }
- const setting=Math.max(1,Math.min(5,Number(state.siqSetting??3)));
- const targetHeight=(siqLevel*(setting/5)*100);
- if(fill)fill.style.height=targetHeight.toFixed(1)+'%';
- if(label)label.textContent=active?setting:'0';
+ const setting=Math.max(1,Math.min(5,Math.round(Number(state.siqSetting??3))));
+ if(fill)fill.style.height=(active?(setting/5*100):0)+'%';
+ if(label)label.textContent=active?String(setting):'0';
 }
 function render(){
  updatePITrend();
@@ -1128,10 +1119,10 @@ function render(){
  if($('manualSys')&&document.activeElement!==$('manualSys'))$('manualSys').value=Number(state.pendingSys??state.sys);
  if($('manualDia')&&document.activeElement!==$('manualDia'))$('manualDia').value=Number(state.pendingDia??state.dia);
  if($('nextTAValue'))$('nextTAValue').textContent=`${fmt(Number(state.pendingSys??state.sys))}/${fmt(Number(state.pendingDia??state.dia))} mmHg`;
- if($('piTrendFrom')&&document.activeElement!==$('piTrendFrom'))$('piTrendFrom').value=Number(state.piTrendFrom??state.pi??0).toFixed(1);
- if($('piTrendTo')&&document.activeElement!==$('piTrendTo'))$('piTrendTo').value=Number(state.piTrendTo??state.pi??0).toFixed(1);
+ if($('piTrendFrom')&&document.activeElement!==$('piTrendFrom'))$('piTrendFrom').value=String(Math.max(1,Math.min(5,Math.round(Number(state.piTrendFrom??3)))));
+ if($('piTrendTo')&&document.activeElement!==$('piTrendTo'))$('piTrendTo').value=String(Math.max(1,Math.min(5,Math.round(Number(state.piTrendTo??5)))));
  if($('siqSettingControl')&&document.activeElement!==$('siqSettingControl'))$('siqSettingControl').value=String(state.siqSetting??3);
- if($('piControlValue'))$('piControlValue').textContent=Number(state.piTrendFrom??state.pi??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})+' → '+Number(state.piTrendTo??state.pi??0).toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})+' %';
+ if($('piControlValue'))$('piControlValue').textContent=Math.round(Number(state.piTrendFrom??3))+' → '+Math.round(Number(state.piTrendTo??5));
  ['lowFC','highFC','lowSys','highSys','lowDia','highDia','lowSpo','highSpo','lowTemp','highTemp'].forEach(id=>{if($(id)&&document.activeElement!==$(id))$(id).value=state[id]});
  if(document.activeElement!==$('controlNotes'))$('controlNotes').value=state.notes||'';
  $('patient').value=state.patient;if($('condition'))$('condition').value=state.condition||'normal';
@@ -1317,7 +1308,7 @@ $('manualSys').addEventListener('input',e=>{const v=e.target.value.trim();if(v!=
 $('manualDia').addEventListener('input',e=>{const v=e.target.value.trim();if(v!==''&&Number.isFinite(Number(v)))state.pendingDia=Math.max(0,Math.min(200,Number(v)));});
 $('manualSys').addEventListener('change',()=>publish());$('manualDia').addEventListener('change',()=>publish());
 $('applyTA').onclick=()=>{const sys=$('manualSys').value.trim(),dia=$('manualDia').value.trim();if(sys===''||dia===''||!Number.isFinite(Number(sys))||!Number.isFinite(Number(dia))){alert('Saisis une TAS et une TAD valides.');return}state.pendingSys=Math.max(0,Math.min(300,Number(sys)));state.pendingDia=Math.max(0,Math.min(200,Number(dia)));log(`Nouvelle tension préparée : ${state.pendingSys}/${state.pendingDia} mmHg — elle sera affichée à la prochaine mesure du stagiaire`);render();publish()};
-function applyPITrend(){const fromRaw=$('piTrendFrom').value.trim(),toRaw=$('piTrendTo').value.trim();if(fromRaw===''||toRaw===''||!Number.isFinite(Number(fromRaw))||!Number.isFinite(Number(toRaw))){alert('Saisis deux valeurs d’I.P. valides entre 0 et 5 %.');render();return}state.piTrendFrom=Math.max(0,Math.min(5,Number(fromRaw)));state.piTrendTo=Math.max(0,Math.min(5,Number(toRaw)));state.piTrendStartAt=Date.now();state.piNextAt=0;state.pi=state.piTrendFrom;log(`Variation I.P. réglée : entre ${state.piTrendFrom.toFixed(1)} et ${state.piTrendTo.toFixed(1)} %`);render();publish()}
+function applyPITrend(){const fromRaw=$('piTrendFrom').value.trim(),toRaw=$('piTrendTo').value.trim();if(fromRaw===''||toRaw===''||!Number.isFinite(Number(fromRaw))||!Number.isFinite(Number(toRaw))){alert('Saisis deux valeurs entières d’I.P. entre 1 et 5.');render();return}state.piTrendFrom=Math.max(1,Math.min(5,Math.round(Number(fromRaw))));state.piTrendTo=Math.max(1,Math.min(5,Math.round(Number(toRaw))));state.piNextAt=0;state.piNextTarget=Math.floor(Math.min(state.piTrendFrom,state.piTrendTo)+Math.random()*(Math.abs(state.piTrendTo-state.piTrendFrom)+1));state.pi=state.piNextTarget;log(`Plage I.P. réglée : entre ${Math.min(state.piTrendFrom,state.piTrendTo)} et ${Math.max(state.piTrendFrom,state.piTrendTo)} (valeurs entières)`);render();publish()}
 $('siqSettingControl').onchange=e=>{state.siqSetting=Number(e.target.value);log('Intensité du signal SIQ réglée à le niveau '+state.siqSetting);render();publish()};
 $('piTrendFrom').onchange=applyPITrend;$('piTrendTo').onchange=applyPITrend;
 $('soundToggle').onchange=e=>{audioEnabled=e.target.checked;state.soundEnabled=audioEnabled;if(!audioEnabled)stopFlatlineTone();publish()};
