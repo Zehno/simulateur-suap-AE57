@@ -61,7 +61,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .fc-reading .value{margin-top:8px!important;}
 .siq-meter-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;align-self:stretch;padding:4px 3px 4px 8px;border-left:1px solid #ffffff55;}
 .siq-meter{position:relative;width:15px;height:86px;border:2px solid #d5ffe6;border-radius:9px;background:#063a22;overflow:hidden;box-shadow:inset 0 0 5px #00190e;}
-.siq-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#b8ffd2,#3ef08a 55%,#0f9d4f);border-radius:0 0 5px 5px;transition:height .08s linear;transform-origin:bottom;}.siq-meter-fill.siq-pulse{animation:siqHeartbeat var(--siq-beat-duration,800ms) ease-in-out infinite;}@keyframes siqHeartbeat{0%,22%,100%{filter:brightness(1);opacity:.92;}7%{filter:brightness(1.9);opacity:1;box-shadow:0 0 9px #62ff9d;}}
+.siq-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#b8ffd2,#3ef08a 55%,#0f9d4f);border-radius:0 0 5px 5px;transition:height .08s linear;transform:scaleY(1);transform-origin:bottom;will-change:transform;}.siq-meter-fill.siq-pulse{animation:siqHeartbeat var(--siq-beat-duration,800ms) ease-in-out infinite;}@keyframes siqHeartbeat{0%,100%{transform:scaleY(.70);filter:brightness(1);opacity:.88;box-shadow:none;}8%{transform:scaleY(1);filter:brightness(1.9);opacity:1;box-shadow:0 0 9px #62ff9d;}22%{transform:scaleY(.76);filter:brightness(1.12);opacity:.96;}}
 .siq-reading{min-width:43px;text-align:center;font-size:12px;font-weight:850;color:#e9fff1;font-variant-numeric:tabular-nums;}
 .siq-reading small{display:block;font-size:9px;font-weight:700;opacity:.85;letter-spacing:.05em;}
 .ta-cycle{display:none;align-items:center;gap:9px;margin:7px 0 2px;padding:7px 9px;border:1px solid #83929c;border-radius:7px;background:#252d33;text-align:left;}
@@ -1032,6 +1032,8 @@ const fmt=n=>Math.round(n);
 const normalizePI=n=>Math.max(1,Math.min(5,Math.round((Number(n)||1)*2)/2));
 const fmtPI=n=>normalizePI(n).toLocaleString('fr-FR',{minimumFractionDigits:0,maximumFractionDigits:1});
 function randomPIInRange(a,b){const lo=normalizePI(Math.min(a,b)),hi=normalizePI(Math.max(a,b));const steps=Math.round((hi-lo)*2);return Number((lo+Math.floor(Math.random()*(steps+1))*0.5).toFixed(1));}
+function randomDifferentPI(a,b,current){const lo=normalizePI(Math.min(a,b)),hi=normalizePI(Math.max(a,b)),choices=[];for(let v=lo;v<=hi+0.001;v+=0.5){const rounded=Number(v.toFixed(1));if(rounded!==normalizePI(current))choices.push(rounded)}return choices.length?choices[Math.floor(Math.random()*choices.length)]:lo;}
+function nextPIDelay(){return 1000+Math.random()*800;}
 function normalizePulseOxState(){const connected=state.spoMeasured===true||state.fcMeasured===true;state.spoMeasured=connected;state.fcMeasured=connected;return connected;}
 function pam(){return Math.round((state.sys+2*state.dia)/3)}
 function log(msg){state.events.unshift({t:new Date().toLocaleTimeString('fr-FR'),msg});state.events=state.events.slice(0,100);renderEvents();publish()}
@@ -1093,9 +1095,11 @@ function updatePITrend(){
  const min=Math.min(lo,hi),max=Math.max(lo,hi),now=Date.now();
  if(!Number.isFinite(Number(state.pi))||Number(state.pi)<1||Number(state.pi)>5)state.pi=randomPIInRange(min,max);
  if(state.piNextAt===0||!Number.isFinite(Number(state.piNextAt))||now>=Number(state.piNextAt)){
-  state.piNextTarget=randomPIInRange(min,max);
+  // Fluctuations plus rapprochées, par demi-points, en évitant de répéter
+  // la même valeur lorsque la plage autorise un changement.
+  state.piNextTarget=randomDifferentPI(min,max,state.pi);
   state.pi=state.piNextTarget;
-  state.piNextAt=now+2500+Math.random()*2500;
+  state.piNextAt=now+nextPIDelay();
  }else{
   state.pi=Math.max(min,Math.min(max,normalizePI(state.pi)));
  }
@@ -1321,7 +1325,7 @@ $('manualSys').addEventListener('input',e=>{const v=e.target.value.trim();if(v!=
 $('manualDia').addEventListener('input',e=>{const v=e.target.value.trim();if(v!==''&&Number.isFinite(Number(v)))state.pendingDia=Math.max(0,Math.min(200,Number(v)));});
 $('manualSys').addEventListener('change',()=>publish());$('manualDia').addEventListener('change',()=>publish());
 $('applyTA').onclick=()=>{const sys=$('manualSys').value.trim(),dia=$('manualDia').value.trim();if(sys===''||dia===''||!Number.isFinite(Number(sys))||!Number.isFinite(Number(dia))){alert('Saisis une TAS et une TAD valides.');return}state.pendingSys=Math.max(0,Math.min(300,Number(sys)));state.pendingDia=Math.max(0,Math.min(200,Number(dia)));log(`Nouvelle tension préparée : ${state.pendingSys}/${state.pendingDia} mmHg — elle sera affichée à la prochaine mesure du stagiaire`);render();publish()};
-function applyPITrend(){const fromRaw=$('piTrendFrom').value.trim(),toRaw=$('piTrendTo').value.trim();if(fromRaw===''||toRaw===''||!Number.isFinite(Number(fromRaw))||!Number.isFinite(Number(toRaw))){alert('Saisis deux valeurs d’I.P. entre 1 et 5, par paliers de 0,5.');render();return}state.piTrendFrom=normalizePI(fromRaw);state.piTrendTo=normalizePI(toRaw);state.piNextTarget=randomPIInRange(state.piTrendFrom,state.piTrendTo);state.pi=state.piNextTarget;state.piNextAt=Date.now()+2500+Math.random()*2500;log(`Plage I.P. réglée : entre ${fmtPI(Math.min(state.piTrendFrom,state.piTrendTo))} et ${fmtPI(Math.max(state.piTrendFrom,state.piTrendTo))} (paliers de 0,5)`);render();publish()}
+function applyPITrend(){const fromRaw=$('piTrendFrom').value.trim(),toRaw=$('piTrendTo').value.trim();if(fromRaw===''||toRaw===''||!Number.isFinite(Number(fromRaw))||!Number.isFinite(Number(toRaw))){alert('Saisis deux valeurs d’I.P. entre 1 et 5, par paliers de 0,5.');render();return}state.piTrendFrom=normalizePI(fromRaw);state.piTrendTo=normalizePI(toRaw);state.piNextTarget=randomDifferentPI(state.piTrendFrom,state.piTrendTo,state.pi);state.pi=state.piNextTarget;state.piNextAt=Date.now()+nextPIDelay();log(`Plage I.P. réglée : entre ${fmtPI(Math.min(state.piTrendFrom,state.piTrendTo))} et ${fmtPI(Math.max(state.piTrendFrom,state.piTrendTo))} (paliers de 0,5)`);render();publish()}
 $('piTrendFrom').onchange=applyPITrend;$('piTrendTo').onchange=applyPITrend;
 $('soundToggle').onchange=e=>{audioEnabled=e.target.checked;state.soundEnabled=audioEnabled;if(!audioEnabled)stopFlatlineTone();publish()};
 $('menuBtn').onclick=()=>setPage('settings');
