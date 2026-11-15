@@ -765,6 +765,25 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
 .ecg-run-wrap{width:100%;display:flex;justify-content:center;margin-top:14px}
 .ecg-run-wrap button{min-width:190px;padding:14px 28px;font-size:18px;font-weight:900;letter-spacing:.08em}
 @media(max-width:560px){.ecg-lead-controls{grid-template-columns:1fr}.ecg-card{min-height:60vh;padding:8px}.ecg-body-image{max-height:68vh}}
+
+/* Acquisition et tracé ECG 12 dérivations — papier standard 25 mm/s, 10 mm/mV */
+#ecgRecordPage{max-width:1320px;margin:12px auto;padding:10px}
+.ecg-record-card{background:#f8f8f3;color:#111;border-radius:12px;padding:12px;box-shadow:0 2px 14px #0003}
+.ecg-loading-card{min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ecg-loading-track{width:min(560px,88%);height:18px;border:1px solid #52616a;border-radius:20px;overflow:hidden;background:#dce1df;margin:22px 0 10px}
+#ecgLoadingBar{height:100%;width:0%;background:#208a61;transition:width .12s linear}
+#ecgLoadingPercent{font:800 22px ui-monospace,monospace;color:#1e6048}
+.ecg-paper-wrap{overflow:auto;background:#fff;border:1px solid #bbb;border-radius:5px}
+#ecg12Canvas{display:block;width:100%;min-width:900px;height:auto;background:#fff}
+.ecg-record-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:10px;font:700 13px ui-monospace,monospace}
+.ecg-record-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.ecg-record-actions button{padding:11px 20px;border-radius:8px;font-weight:900}
+#ecgFreezeBtn{background:#173b56;color:#fff;border:1px solid #315e7c}
+#ecgExitBtn{background:#333f46;color:#fff;border:1px solid #66737a}
+.ecg-calibration-note{font:11px ui-monospace,monospace;color:#4a555a;text-align:center;margin:8px 0 0}
+.ecg-live-dot{color:#14864d;font-weight:900}
+@media(max-width:650px){#ecgRecordPage{padding:5px}.ecg-record-card{padding:7px}.ecg-record-head{font-size:11px}}
+
 </style>
 </head>
 <body>
@@ -820,6 +839,20 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
    </div>
    <div id="ecgRunWrap" class="ecg-run-wrap hidden"><button type="button" class="primary" id="ecgRunBtn">ECG</button></div>
    <p id="ecgVWaitText" class="ecg-wait">En attente de la validation des 6 électrodes précordiales par le formateur…</p>
+  </div>
+ </section>
+ <section id="ecgRecordPage" class="hidden">
+  <div class="ecg-topline"><strong>ÉLECTROCARDIOGRAMME — 12 DÉRIVATIONS</strong></div>
+  <div id="ecgLoadingView" class="ecg-record-card ecg-loading-card">
+   <h2>ACQUISITION DE L’E.C.G.</h2><p>Enregistrement des 12 dérivations en cours…</p>
+   <div class="ecg-loading-track"><div id="ecgLoadingBar"></div></div>
+   <div id="ecgLoadingPercent">0 %</div><p class="ecg-calibration-note">Veuillez patienter — durée estimée : 20 secondes</p>
+  </div>
+  <div id="ecgTraceView" class="ecg-record-card hidden">
+   <div class="ecg-record-head"><span>ECG 12 DÉRIVATIONS · FC : <strong id="ecgTraceHR">—</strong> bpm</span><span id="ecgTraceStatus" class="ecg-live-dot">● ENREGISTREMENT EN COURS</span></div>
+   <div class="ecg-paper-wrap"><canvas id="ecg12Canvas" width="1200" height="760" aria-label="Tracé ECG simulé à 12 dérivations"></canvas></div>
+   <p class="ecg-calibration-note">Vitesse papier : 25 mm/s · Gain : 10 mm/mV · Grille : 1 mm / 5 mm · Tracé pédagogique simulé, non destiné au diagnostic</p>
+   <div class="ecg-record-actions"><button type="button" id="ecgFreezeBtn">⏸ ARRÊT SUR IMAGE</button><button type="button" id="ecgExitBtn">FERMER L’E.C.G.</button></div>
   </div>
  </section>
  <section id="ecgControlPanel" class="panel hidden">
@@ -1823,6 +1856,8 @@ function setECGView(view){
  if($('coPage'))$('coPage').classList.toggle('hidden',isECG||isNext);
  $('ecgPage').classList.toggle('hidden',!isECG);
  $('ecgNextPage').classList.toggle('hidden',!isNext);
+ $('ecgRecordPage').classList.add('hidden');
+ stopECGAcquisition();
  $('controlPanel').classList.add('hidden');
  $('gasControlPanel').classList.add('hidden');
  $('coControlPanel').classList.add('hidden');
@@ -1872,6 +1907,53 @@ function renderECGV(){
  $('ecgVWaitText').classList.toggle('hidden',role!=='display'||all);
  $('ecgTrainerVStatus').textContent=count+' / 6 électrodes précordiales validées'+(all?' — bouton ECG disponible côté stagiaire':'');
 }
+let ecgLoadingTimer=null,ecgTraceTimer=null,ecgTraceStart=0,ecgFrozen=false,ecgFrozenAt=0,ecgCapturedHR=72;
+function stopECGAcquisition(){if(ecgLoadingTimer){clearInterval(ecgLoadingTimer);ecgLoadingTimer=null;}if(ecgTraceTimer){clearInterval(ecgTraceTimer);ecgTraceTimer=null;}}
+function openECGAcquisition(){
+ const vLeads={V1:false,V2:false,V3:false,V4:false,V5:false,V6:false,...(state.ecgVLeads||{})};
+ if(!Object.values(vLeads).every(Boolean)||role!=='display')return;
+ stopECGAcquisition();$('monitorPage').classList.add('hidden');$('gasPage').classList.add('hidden');if($('coPage'))$('coPage').classList.add('hidden');
+ $('ecgPage').classList.add('hidden');$('ecgNextPage').classList.add('hidden');$('ecgRecordPage').classList.remove('hidden');$('ecgControlPanel').classList.add('hidden');
+ currentModule='ecg-record';document.title='E.C.G. — Acquisition 12 dérivations';
+ $('ecgLoadingView').classList.remove('hidden');$('ecgTraceView').classList.add('hidden');$('ecgLoadingBar').style.width='0%';$('ecgLoadingPercent').textContent='0 %';
+ ecgCapturedHR=Math.max(0,Number(state.fc)||0);ecgFrozen=false;ecgTraceStart=0;
+ const start=Date.now();ecgLoadingTimer=setInterval(()=>{const elapsed=Date.now()-start,p=Math.min(100,elapsed/20000*100);$('ecgLoadingBar').style.width=p+'%';$('ecgLoadingPercent').textContent=Math.floor(p)+' %';if(p>=100){clearInterval(ecgLoadingTimer);ecgLoadingTimer=null;showECGTrace();}},100);
+}
+function showECGTrace(){
+ $('ecgLoadingView').classList.add('hidden');$('ecgTraceView').classList.remove('hidden');$('ecgTraceHR').textContent=ecgCapturedHR||'0';
+ ecgTraceStart=performance.now();drawECG12(0);ecgTraceTimer=setInterval(()=>{if(!ecgFrozen)drawECG12((performance.now()-ecgTraceStart)/1000);},100);
+}
+function ecgWave(t,hr,leadIndex){
+ if(hr<=0)return 0;
+ const rr=60/hr,phase=((t%rr)+rr)%rr,scale=[1,.85,.9,.75,.8,.8,.9,.8,.75,.85,1,.9][leadIndex];
+ const g=(x,m,w,a)=>a*Math.exp(-.5*((x-m)/w)**2);
+ let y=g(phase,.16,.035,.12)+g(phase,.31,.012,-.16)+g(phase,.34,.010,1.05)+g(phase,.37,.014,-.28)+g(phase,.58,.075,.30);
+ if(leadIndex===1||leadIndex===4||leadIndex===7)y*=-.75;
+ if(leadIndex===2||leadIndex===5||leadIndex===8)y*=.55;
+ if(leadIndex===3||leadIndex===6||leadIndex===9)y*=1.12;
+ if(leadIndex===10)y*=.9;
+ return y*scale;
+}
+function drawECG12(elapsed){
+ const c=$('ecg12Canvas'),ctx=c.getContext('2d'),W=c.width,H=c.height,pxPerSec=100,mm=4,hr=ecgCapturedHR;
+ ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+ // Papier ECG : petits carreaux 1 mm, grands carreaux 5 mm.
+ for(let x=0;x<=W;x+=mm){ctx.beginPath();ctx.strokeStyle=(x%(mm*5)===0)?'#e9a4a8':'#f6dadd';ctx.lineWidth=(x%(mm*5)===0)?1.05:.45;ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+ for(let y=0;y<=H;y+=mm){ctx.beginPath();ctx.strokeStyle=(y%(mm*5)===0)?'#e9a4a8':'#f6dadd';ctx.lineWidth=(y%(mm*5)===0)?1.05:.45;ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+ const names=['I','aVR','V1','V4','II','aVL','V2','V5','III','aVF','V3','V6'];
+ const rowY=[115,295,475],left=45,cellW=280,segmentDuration=2.5;
+ ctx.font='bold 17px ui-monospace,monospace';ctx.fillStyle='#222';
+ names.forEach((name,i)=>{const row=Math.floor(i/4),col=i%4,x0=left+col*cellW,y0=rowY[row];ctx.fillText(name,x0,y0-52);ctx.beginPath();ctx.strokeStyle='#202020';ctx.lineWidth=1.7;for(let x=0;x<=cellW;x+=2){const t=col*segmentDuration+x/pxPerSec+(elapsed%12);const y=y0-ecgWave(t,hr,i)*40; if(x===0)ctx.moveTo(x0+x,y);else ctx.lineTo(x0+x,y);}ctx.stroke();});
+ // Dérivation II longue sur 10 secondes, comme sur un ECG standard.
+ const y0=665,x0=left,w=1000;ctx.fillStyle='#222';ctx.fillText('II',x0,y0-48);ctx.beginPath();ctx.strokeStyle='#111';ctx.lineWidth=1.8;for(let x=0;x<=w;x+=2){const t=x/pxPerSec+(elapsed%12);const y=y0-ecgWave(t,hr,4)*40;if(x===0)ctx.moveTo(x0+x,y);else ctx.lineTo(x0+x,y);}ctx.stroke();
+ // Impulsion de calibration 1 mV / 200 ms.
+ ctx.beginPath();ctx.strokeStyle='#111';ctx.lineWidth=2;ctx.moveTo(8,690);ctx.lineTo(8,650);ctx.lineTo(28,650);ctx.lineTo(28,690);ctx.lineTo(42,690);ctx.stroke();
+ // Curseur discret de balayage, correspondant à 25 mm/s.
+ const cursor=(elapsed*pxPerSec)%w;ctx.beginPath();ctx.strokeStyle='#248b70';ctx.lineWidth=1;ctx.moveTo(left+cursor,28);ctx.lineTo(left+cursor,H-18);ctx.stroke();
+}
+$('ecgRunBtn').onclick=openECGAcquisition;
+$('ecgFreezeBtn').onclick=()=>{if(!ecgTraceTimer)return;ecgFrozen=!ecgFrozen;if(ecgFrozen){ecgFrozenAt=(performance.now()-ecgTraceStart)/1000;$('ecgFreezeBtn').textContent='▶ REPRENDRE LE TRACÉ';$('ecgTraceStatus').textContent='Ⅱ IMAGE FIGÉE';$('ecgTraceStatus').style.color='#b66a16';drawECG12(ecgFrozenAt);}else{ecgTraceStart=performance.now()-ecgFrozenAt*1000;$('ecgFreezeBtn').textContent='⏸ ARRÊT SUR IMAGE';$('ecgTraceStatus').textContent='● ENREGISTREMENT EN COURS';$('ecgTraceStatus').style.color='#14864d';}};
+$('ecgExitBtn').onclick=()=>{stopECGAcquisition();$('ecgRecordPage').classList.add('hidden');setModule('scope');};
 document.querySelectorAll('[data-ecg-lead]').forEach(input=>input.addEventListener('change',()=>{
  if(role!=='control')return;
  const leads={R:false,L:false,N:false,F:false,...(state.ecgLeads||{})};
@@ -1886,7 +1968,7 @@ $('openECGBtn').onclick=()=>{setECGView('ecg');publish();};
 $('ecgBackBtn').onclick=()=>{setECGView('scope');publish();};
 $('ecgNextBtn').onclick=()=>{if(Object.values(state.ecgLeads||{}).length===4&&Object.values(state.ecgLeads).every(Boolean)){setECGView('next');publish();}};
 $('ecgNextBackBtn').onclick=()=>{setECGView('ecg');publish();};
-$('ecgRunBtn').onclick=()=>{log('Lancement de l’enregistrement ECG 12 dérivations par le stagiaire');};
+// Le bouton ECG déclenche désormais l'acquisition de 20 secondes puis l'affichage du tracé.
 $('scopeModeBtn').onclick=()=>setModule('scope');
 $('gasModeBtn').onclick=()=>setModule('gas');
 if($('coModeBtn')) $('coModeBtn').onclick=()=>setModule('co');
