@@ -61,7 +61,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .fc-reading .value{margin-top:8px!important;}
 .siq-meter-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;align-self:stretch;padding:4px 3px 4px 8px;border-left:1px solid #ffffff55;}
 .siq-meter{position:relative;width:15px;height:86px;border:2px solid #d5ffe6;border-radius:9px;background:#063a22;overflow:hidden;box-shadow:inset 0 0 5px #00190e;}
-.siq-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#b8ffd2,#3ef08a 55%,#0f9d4f);border-radius:0 0 5px 5px;transition:height .08s linear;transform:scaleY(1);transform-origin:bottom;will-change:transform;}.siq-meter-fill.siq-pulse{height:0!important;animation:siqHeartbeat var(--siq-beat-duration,800ms) linear infinite;}@keyframes siqHeartbeat{0%,100%{height:0;filter:brightness(1);opacity:.88;box-shadow:none;}12%{height:var(--siq-peak-height,50%);filter:brightness(1.9);opacity:1;box-shadow:0 0 9px #62ff9d;}18%{height:var(--siq-peak-height,50%);filter:brightness(1.35);opacity:1;box-shadow:0 0 6px #62ff9d;} }
+.siq-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#b8ffd2,#3ef08a 55%,#0f9d4f);border-radius:0 0 5px 5px;transition:height .08s linear;transform:scaleY(1);transform-origin:bottom;will-change:transform;}.siq-meter-fill.siq-pulse{animation:siqHeartbeat var(--siq-beat-duration,800ms) linear infinite;}@keyframes siqHeartbeat{0%,100%{filter:brightness(1);opacity:.82;transform:scaleY(.72);box-shadow:none;}12%{filter:brightness(1.9);opacity:1;transform:scaleY(1);box-shadow:0 0 9px #62ff9d;}18%{filter:brightness(1.35);opacity:1;transform:scaleY(.94);box-shadow:0 0 6px #62ff9d;} }
 .siq-reading{min-width:43px;text-align:center;font-size:12px;font-weight:850;color:#e9fff1;font-variant-numeric:tabular-nums;}
 .siq-reading small{display:block;font-size:9px;font-weight:700;opacity:.85;letter-spacing:.05em;}
 .ta-cycle{display:none;align-items:center;gap:9px;margin:7px 0 2px;padding:7px 9px;border:1px solid #83929c;border-radius:7px;background:#252d33;text-align:left;}
@@ -894,34 +894,11 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
    <p id="ecgTrainerVStatus" class="ecg-wait">0 / 6 électrodes précordiales validées</p>
   </div>
   <div id="ecgArtifactPanel" class="ecg-artifact-panel">
-   <h3>Simulation d’artefacts ECG</h3>
-   <p class="muted">Les artefacts perturbent uniquement le signal affiché. Ils ne modifient pas la fréquence cardiaque imposée.</p>
-   <div class="ecg-artifact-grid">
-    <label>Type d’artefact
-     <select id="ecgArtifactType">
-      <option value="movement">Mouvement du patient</option>
-      <option value="tremor">Tremblements musculaires</option>
-      <option value="contact">Mauvais contact électrode</option>
-      <option value="displacement">Déplacement d’électrode</option>
-      <option value="intermittent">Artefacts intermittents</option>
-     </select>
-    </label>
-    <label>Intensité
-     <input id="ecgArtifactIntensity" type="range" min="10" max="100" value="55" step="5">
-    </label>
-    <label>Durée
-     <select id="ecgArtifactDuration">
-      <option value="5">5 secondes</option>
-      <option value="10" selected>10 secondes</option>
-      <option value="20">20 secondes</option>
-      <option value="0">Jusqu’à arrêt manuel</option>
-     </select>
-    </label>
-   </div>
-   <div class="ecg-artifact-actions">
-    <button type="button" id="ecgArtifactApply">ACTIVER L’ARTEFACT</button>
-    <button type="button" id="ecgArtifactStop">ARRÊTER L’ARTEFACT</button>
-   </div>
+   <h3>Artefact ECG</h3>
+   <label style="display:flex;align-items:center;gap:12px;font-weight:800;color:#fff;min-height:42px">
+    <input type="checkbox" id="ecgArtifactToggle" style="width:22px;height:22px;accent-color:#ff9d45">
+    ARTEFACT — appliquer à l’ensemble des tracés
+   </label>
    <p id="ecgArtifactStatus">Aucun artefact actif.</p>
   </div>
  </section>
@@ -1173,7 +1150,7 @@ const $=id=>document.getElementById(id);
 const GLYCEMIE_CODES={LO:{operator:'<',value:0.20,label:'LO'},HI:{operator:'>',value:5.00,label:'HI'}}; // Seuils internes uniquement : LO <0,20 g/L ; HI >5,00 g/L
 function glycemiaDisplay(value){const n=Number(value);if(!Number.isFinite(n))return null;if(n<GLYCEMIE_CODES.LO.value)return GLYCEMIE_CODES.LO.label;if(n>GLYCEMIE_CODES.HI.value)return GLYCEMIE_CODES.HI.label;return n.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 const initialPI=Number((3+Math.floor(Math.random()*5)*0.5).toFixed(1));
-const defaults={ecgLeads:{R:false,L:false,N:false,F:false},ecgVLeads:{V1:false,V2:false,V3:false,V4:false,V5:false,V6:false},ecgStep:1,ecgAcquisitionEpoch:0,ecgArtifacts:{active:false,type:'movement',intensity:0.55,startedAt:0,until:0},scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:initialPI,piTrendFrom:3,piTrendTo:5,piTrendStartAt:null,piNextTarget:initialPI,piNextAt:0,taCycleStartAt:null,taCycleAuto:false,taSurveillanceActive:false,taSurveillanceIntervalMin:5,taSurveillanceNextAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
+const defaults={ecgLeads:{R:false,L:false,N:false,F:false},ecgVLeads:{V1:false,V2:false,V3:false,V4:false,V5:false,V6:false},ecgStep:1,ecgRequestEpoch:0,ecgAcquisitionEpoch:0,ecgArtifacts:{active:false,type:'movement',intensity:0.55,startedAt:0,until:0},scenarioElapsedEpoch:null,scenarioElapsedAccumulated:0,scopeAlarmRevision:0,fc:72,sys:120,dia:80,pendingSys:120,pendingDia:80,spo:98,pi:initialPI,piTrendFrom:3,piTrendTo:5,piTrendStartAt:null,piNextTarget:initialPI,piNextAt:0,taCycleStartAt:null,taCycleAuto:false,taSurveillanceActive:false,taSurveillanceIntervalMin:5,taSurveillanceNextAt:null,fcMeasured:false,spoMeasured:false,taMeasured:false,hbco:0,gly:0,glyMeasured:false,temp:0,lowTemp:35.0,highTemp:38.0,tempMeasured:false,patient:'adulte',name:'PATIENT SIMULÉ',rhythm:'sinusal',condition:'normal',alarms:true,soundEnabled:true,lowFC:60,highFC:100,lowSys:90,highSys:140,lowDia:70,highDia:90,lowSpo:94,highSpo:100,lowHbco:10,irregularFC:false,variationFCEnabled:true,variationSpoEnabled:true,fcMin:65,fcMax:85,spoMin:96,spoMax:99,events:[],notes:'',taHistory:[],gas:{o2:20.9,lie:0,co:0,h2s:0,lowO2:19,highO2:23,highLIE:40,highCO:50,highH2S:30}};
 let state={...defaults};
 const requestedMode=new URLSearchParams(location.search).get('mode');
 let role=requestedMode==='control'?'control':'display';
@@ -1277,18 +1254,15 @@ function updateSIQ(){
  const fill=$('siqMeterFill'),label=$('vSIQ');
  const active=state.fcMeasured===true&&state.spoMeasured===true&&Number(state.fc)>0&&state.rhythm!=='asystole'&&state.rhythm!=='fv';
  const value=normalizePI(state.pi??3);
- // Chaque cycle correspond à un battement : montée rapide jusqu'au niveau
- // I.P., puis retour complet à zéro avant le battement suivant.
+ // La jauge conserve sa hauteur lors des changements manuels/de variation de FC.
  if(fill){
-  fill.style.height='0%';
-  fill.style.setProperty('--siq-peak-height',(value/5*100)+'%');
+  const height=Math.max(0,Math.min(100,value/5*100));
+  fill.style.height=height+'%';
+  fill.style.setProperty('--siq-peak-height',height+'%');
   fill.classList.toggle('siq-pulse',active);
-  if(active){
-   const bpm=Math.max(1,Math.round(Number(state.fc)||1));
-   const duration=Math.max(250,60000/bpm);
-   const durationText=duration.toFixed(0)+'ms';
-   if(fill.style.getPropertyValue('--siq-beat-duration')!==durationText)fill.style.setProperty('--siq-beat-duration',durationText);
-  }
+  const bpm=Math.max(1,Math.round(Number(state.fc)||1));
+  const duration=Math.max(250,60000/bpm)+'ms';
+  if(fill.style.getPropertyValue('--siq-beat-duration')!==duration)fill.style.setProperty('--siq-beat-duration',duration);
  }
  if(label)label.textContent=active?fmtPI(value):'0';
 }
@@ -1961,24 +1935,15 @@ function stopECGAcquisition(){
  if(ecgTraceTimer){clearInterval(ecgTraceTimer);ecgTraceTimer=null;}
 }
 function renderECGArtifactStatus(){
- const a=state.ecgArtifacts||{},active=!!a.active&&(!a.until||Date.now()<Number(a.until));
- const names={movement:'Mouvement du patient',tremor:'Tremblements musculaires',contact:'Mauvais contact électrode',displacement:'Déplacement électrode',intermittent:'Artefacts intermittents'};
- const el=$('ecgArtifactStatus');
- if(el)el.textContent=active?'Actif : '+(names[a.type]||'Artefact')+' · intensité '+Math.round((Number(a.intensity)||.55)*100)+' %'+(a.until?' · arrêt automatique':' · arrêt manuel'):'Aucun artefact actif.';
+ const active=!!(state.ecgArtifacts&&state.ecgArtifacts.active);
+ const el=$('ecgArtifactStatus'),toggle=$('ecgArtifactToggle');
+ if(toggle)toggle.checked=active;
+ if(el)el.textContent=active?'ARTEFACT ACTIVÉ — appliqué aux 12 dérivations':'Aucun artefact actif.';
 }
 function setECGArtifact(active){
  if(role!=='control')return;
- if(ecgArtifactTimeout){clearTimeout(ecgArtifactTimeout);ecgArtifactTimeout=null;}
- if(!active){
-  state.ecgArtifacts={...(state.ecgArtifacts||{}),active:false,until:0};
-  publish();renderECGArtifactStatus();return;
- }
- const duration=Number($('ecgArtifactDuration').value)||0,now=Date.now();
- state.ecgArtifacts={active:true,type:$('ecgArtifactType').value,intensity:Number($('ecgArtifactIntensity').value)/100,startedAt:now,until:duration?now+duration*1000:0};
+ state.ecgArtifacts={active:!!active,type:'movement',intensity:.55,startedAt:Date.now(),until:0};
  publish();renderECGArtifactStatus();
- if(duration)ecgArtifactTimeout=setTimeout(()=>{
-  state.ecgArtifacts={...(state.ecgArtifacts||{}),active:false,until:0};publish();renderECGArtifactStatus();ecgArtifactTimeout=null;
- },duration*1000);
 }
 function currentECGArtifact(){
  const a=state.ecgArtifacts||{};
@@ -2066,21 +2031,10 @@ function drawECG12(elapsed){
   drawLead(leftNames[r],leftX,y,r,0);
   drawLead(rightNames[r],rightX,y,r+6,0);
  }
- const rhythmX=54,rhythmY=755,rhythmW=1280;
- ctx.font='bold 18px Arial,sans-serif';ctx.fillStyle='#202020';ctx.fillText('II',rhythmX-34,rhythmY-26);
- ctx.beginPath();ctx.strokeStyle='#151515';ctx.lineWidth=1.9;
- for(let x=0;x<=rhythmW;x+=2){
-  const t=elapsed+x/pxPerSec;
-  const y=rhythmY-ecgWave(t,hr,1,artifact,artifactAge)*38;
-  if(x===0)ctx.moveTo(rhythmX,y);else ctx.lineTo(rhythmX+x,y);
- }
- ctx.stroke();
- // Jauge verte toujours visible, qui balaie la feuille à 25 mm/s (100 px/s).
+ // Jauge verte synchronisée sur les 12 dérivations (aucune ligne longue DII).
  const sweep=(elapsed*pxPerSec)%(traceW);
  ctx.save();ctx.strokeStyle='#12a05c';ctx.lineWidth=2.5;ctx.globalAlpha=.95;
  [leftX,rightX].forEach(x0=>{ctx.beginPath();ctx.moveTo(x0+sweep,26);ctx.lineTo(x0+sweep,625);ctx.stroke();});
- const rhythmSweep=(elapsed*pxPerSec)%rhythmW;
- ctx.beginPath();ctx.moveTo(rhythmX+rhythmSweep,665);ctx.lineTo(rhythmX+rhythmSweep,810);ctx.stroke();
  ctx.restore();
  // Calibration 1 mV / 200 ms.
  ctx.beginPath();ctx.strokeStyle='#111';ctx.lineWidth=2;
@@ -2121,14 +2075,25 @@ $('ecgFreezeBtn').onclick=()=>{
   try{localStorage.setItem('scopeLastFrozenECG',ecgLastSnapshot);localStorage.setItem('scopeLastFrozenECG_HR',String(ecgCapturedHR));}catch(e){}
   $('ecgFreezeBtn').textContent='▶ REPRENDRE LE TRACÉ';$('ecgTraceStatus').textContent='Ⅱ IMAGE FIGÉE';$('ecgTraceStatus').style.color='#b66a16';$('ecgReviewBtn').classList.remove('hidden');
  }else{
-  ecgFrozen=false;ecgTraceStart=performance.now()-ecgFrozenAt*1000;
-  $('ecgFreezeBtn').textContent='⏸ ARRÊT SUR IMAGE';$('ecgTraceStatus').textContent='● ENREGISTREMENT EN COURS';$('ecgTraceStatus').style.color='#14864d';
+  ecgFrozen=false;
+  ecgTraceStart=performance.now()-ecgFrozenAt*1000;
+  $('ecgReviewBtn').classList.add('hidden');
+  $('ecgFreezeBtn').textContent='⏸ ARRÊT SUR IMAGE';
+  $('ecgTraceStatus').textContent='● ENREGISTREMENT EN COURS';$('ecgTraceStatus').style.color='#14864d';
+  // Réarme explicitement l'animation si un changement de vue a interrompu son intervalle.
+  if(ecgTraceTimer)clearInterval(ecgTraceTimer);
+  drawECG12(ecgFrozenAt);
+  ecgTraceTimer=setInterval(()=>{
+   if(ecgFrozen)return;
+   ecgCapturedHR=Math.max(0,Number(state.fc)||0);
+   $('ecgTraceHR').textContent=ecgCapturedHR;
+   drawECG12((performance.now()-ecgTraceStart)/1000);
+  },40);
  }
 };
 $('ecgReviewBtn').onclick=reviewLastECG;
 $('ecgExitBtn').onclick=leaveECGToMonitor;
-$('ecgArtifactApply').onclick=()=>setECGArtifact(true);
-$('ecgArtifactStop').onclick=()=>setECGArtifact(false);
+if($('ecgArtifactToggle'))$('ecgArtifactToggle').onchange=e=>setECGArtifact(e.target.checked);
 renderECGArtifactStatus();
 document.querySelectorAll('[data-ecg-lead]').forEach(input=>input.addEventListener('change',()=>{
  if(role!=='control')return;
@@ -2140,7 +2105,7 @@ document.querySelectorAll('[data-ecg-v-lead]').forEach(input=>input.addEventList
  const vLeads={V1:false,V2:false,V3:false,V4:false,V5:false,V6:false,...(state.ecgVLeads||{})};
  vLeads[input.dataset.ecgVLead]=input.checked;state.ecgVLeads=vLeads;renderECGV();publish();
 }));
-$('openECGBtn').onclick=()=>{setECGView('ecg');publish();};
+$('openECGBtn').onclick=()=>{state.ecgRequestEpoch=Date.now();setECGView('ecg');publish();};
 $('ecgBackBtn').onclick=()=>{setECGView('scope');publish();};
 $('ecgNextBtn').onclick=()=>{if(Object.values(state.ecgLeads||{}).length===4&&Object.values(state.ecgLeads).every(Boolean)){setECGView('next');publish();}};
 $('ecgNextBackBtn').onclick=()=>{setECGView('ecg');publish();};
@@ -2205,12 +2170,14 @@ async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room)
  if(role==='display'){const isRunning=incoming.scenarioElapsedEpoch!==null&&Number.isFinite(Number(incoming.scenarioElapsedEpoch));state={...defaults,...incoming,scopeAlarmRevision:Number(incoming.scopeAlarmRevision)||0,pendingSys:Number(incoming.pendingSys??incoming.sys??120),pendingDia:Number(incoming.pendingDia??incoming.dia??80),glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};normalizePulseOxState();audioEnabled=state.soundEnabled!==false;render();if(currentModule==='ecg'||currentModule==='ecg-next'){if(state.ecgStep===2&&currentModule!=='ecg-next')setECGView('next');else if(state.ecgStep===1&&currentModule!=='ecg')setECGView('ecg');else if(currentModule==='ecg')renderECG();else if(currentModule==='ecg-next')renderECGV();}else if(currentModule==='ecg-record'&&!$('ecgTraceView').classList.contains('hidden')&&!ecgFrozen){ecgCapturedHR=Math.max(0,Number(state.fc)||0);$('ecgTraceHR').textContent=ecgCapturedHR;drawECG12((performance.now()-ecgTraceStart)/1000);}if(isRunning)setTraineeHeaderCollapsed(true);}
  else if(role==='control'){
  const previousAcquisitionEpoch=Number(state.ecgAcquisitionEpoch||0);
+ const previousRequestEpoch=Number(state.ecgRequestEpoch||0);
  const activeId=document.activeElement?.id||'';
  const editingGas=/^gas(O2|LIE|CO|H2S)(Input|Range)$/.test(activeId)||/^coSingle(Input|Range)$/.test(activeId);
  const preservedGas=editingGas?{...(state.gas||{})}:null;
  state={...state,...incoming,gas:{...gasDefaults,...(incoming.gas||state.gas||{}),...(preservedGas||{})}};
  render();renderECGArtifactStatus();
- if(Number(incoming.ecgAcquisitionEpoch||0)>previousAcquisitionEpoch){setECGView('ecg');}
+ if(Number(incoming.ecgRequestEpoch||0)>previousRequestEpoch){setECGView('ecg');}
+ else if(Number(incoming.ecgAcquisitionEpoch||0)>previousAcquisitionEpoch){setECGView('ecg');}
  else if(currentModule==='ecg'||currentModule==='ecg-next'){if(state.ecgStep===2&&currentModule!=='ecg-next')setECGView('next');else if(state.ecgStep===1&&currentModule!=='ecg')setECGView('ecg');else if(currentModule==='ecg')renderECG();else if(currentModule==='ecg-next')renderECGV();}
  if(currentModule==='co')renderCoSingle();
 }
