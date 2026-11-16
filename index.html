@@ -61,7 +61,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .fc-reading .value{margin-top:8px!important;}
 .siq-meter-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;align-self:stretch;padding:4px 3px 4px 8px;border-left:1px solid #ffffff55;}
 .siq-meter{position:relative;width:15px;height:86px;border:2px solid #d5ffe6;border-radius:9px;background:#063a22;overflow:hidden;box-shadow:inset 0 0 5px #00190e;}
-.siq-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#b8ffd2,#3ef08a 55%,#0f9d4f);border-radius:0 0 5px 5px;transition:height .08s linear;transform:scaleY(1);transform-origin:bottom;will-change:transform;}.siq-meter-fill.siq-pulse{animation:siqHeartbeat var(--siq-beat-duration,800ms) linear infinite;}@keyframes siqHeartbeat{0%,8%,30%,100%{filter:brightness(1);opacity:.2;transform:scaleY(0);box-shadow:none;}12%{filter:brightness(1.9);opacity:1;transform:scaleY(1);box-shadow:0 0 9px #62ff9d;}18%{filter:brightness(1.35);opacity:.8;transform:scaleY(.35);box-shadow:0 0 4px #62ff9d;}}
+.siq-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#b8ffd2,#3ef08a 55%,#0f9d4f);border-radius:0 0 5px 5px;transition:height .18s ease-out;transform:scaleY(1);transform-origin:bottom;will-change:transform,opacity;}.siq-meter-fill.siq-pulse{animation:siqHeartbeat var(--siq-beat-duration,800ms) linear infinite;}@keyframes siqHeartbeat{0%,100%{filter:brightness(1);opacity:0;transform:scaleY(0);box-shadow:none;}8%{filter:brightness(1.45);opacity:.85;transform:scaleY(.72);box-shadow:0 0 4px #62ff9d;}16%,24%{filter:brightness(1.9);opacity:1;transform:scaleY(1);box-shadow:0 0 9px #62ff9d;}40%{filter:brightness(1.25);opacity:.72;transform:scaleY(.42);box-shadow:0 0 3px #62ff9d;}52%{filter:brightness(1);opacity:0;transform:scaleY(0);box-shadow:none;}}
 .siq-reading{min-width:43px;text-align:center;font-size:12px;font-weight:850;color:#e9fff1;font-variant-numeric:tabular-nums;}
 .siq-reading small{display:block;font-size:9px;font-weight:700;opacity:.85;letter-spacing:.05em;}
 .ta-cycle{display:none;align-items:center;gap:9px;margin:7px 0 2px;padding:7px 9px;border:1px solid #83929c;border-radius:7px;background:#252d33;text-align:left;}
@@ -864,7 +864,7 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
   </div>
   <div id="ecgTraceView" class="ecg-record-card hidden">
    <div class="ecg-record-head"><span>ECG 12 DÉRIVATIONS · FC : <strong id="ecgTraceHR">—</strong> bpm</span><span id="ecgTraceStatus" class="ecg-live-dot">● ENREGISTREMENT EN COURS</span></div>
-   <div class="ecg-paper-wrap"><canvas id="ecg12Canvas" width="1400" height="860" aria-label="Tracé ECG simulé à 12 dérivations"></canvas></div>
+   <div class="ecg-paper-wrap"><canvas id="ecg12Canvas" width="1400" height="680" aria-label="Tracé ECG simulé à 12 dérivations"></canvas></div>
    <p class="ecg-calibration-note">Vitesse papier : 25 mm/s · Gain : 10 mm/mV · Grille : 1 mm / 5 mm · Tracé pédagogique simulé, non destiné au diagnostic</p>
    <div class="ecg-record-actions"><button type="button" id="ecgFreezeBtn">⏸ ARRÊT SUR IMAGE</button><button type="button" id="ecgReviewBtn" class="hidden">REVOIR LE DERNIER ECG</button><button type="button" id="ecgExitBtn">RETOUR</button></div>
   </div>
@@ -2093,7 +2093,7 @@ function drawECG12(elapsed){
  ctx.restore();
  // Calibration 1 mV / 200 ms.
  ctx.beginPath();ctx.strokeStyle='#111';ctx.lineWidth=2;
- ctx.moveTo(8,825);ctx.lineTo(8,785);ctx.lineTo(28,785);ctx.lineTo(28,825);ctx.lineTo(42,825);ctx.stroke();
+ ctx.moveTo(8,650);ctx.lineTo(8,610);ctx.lineTo(28,610);ctx.lineTo(28,650);ctx.lineTo(42,650);ctx.stroke();
 }
 function saveFrozenECG(){
  if(!$('ecgTraceView').classList.contains('hidden')){
