@@ -969,6 +969,16 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
     .trainer-tabs button.active{background:#12683c;border-color:#218c56;color:#fff;box-shadow:0 0 10px #12683c66}
     .trainer-tab-content{display:block}
     .trainer-tab-content.hidden{display:none!important}
+    .trainer-range-dropdown{margin-top:10px;padding:12px;border:1px solid #344653;border-radius:10px;background:#101d26}
+    .trainer-range-dropdown summary{cursor:pointer;font-weight:800;color:#e6f0f5;list-style:none}
+    .trainer-range-dropdown summary::-webkit-details-marker{display:none}
+    .trainer-range-dropdown summary:after{content:'＋';float:right;color:#8fc9a9}
+    .trainer-range-dropdown[open] summary:after{content:'−'}
+    .trainer-range-dropdown #variationRanges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+    .trainer-range-dropdown #variationRanges .field{margin:0}
+    .trainer-range-dropdown #variationRanges .row{gap:8px}
+    .trainer-range-dropdown #variationRanges input{min-width:0;width:100%}
+    @media(max-width:600px){.trainer-range-dropdown #variationRanges{grid-template-columns:1fr}}
    
 
 /* Orientation réelle du smartphone : paysage même si sa largeur dépasse 760 px.
@@ -1038,7 +1048,11 @@ body.trainee-gas-ui #scopeAlarmAckBtn:disabled{opacity:1;background:#ffd600;bord
    <div id="tTabVar" class="trainer-tab-content hidden">
     <div class="field"><label>Variation FC</label><label><input id="variationFCToggle" type="checkbox" checked> Activer / désactiver</label></div>
     <div class="field"><label>Variation SpO₂</label><label><input id="variationSpoToggle" type="checkbox" checked> Activer / désactiver</label></div>
-    <div id="variationRanges"></div>
+    <details class="trainer-range-dropdown" id="trainerRangeDropdown">
+     <summary>Paramètres des plages de variation FC / SpO₂</summary>
+     <p class="muted">Définis les limites minimales et maximales utilisées lorsque les variations automatiques sont activées.</p>
+     <div id="variationRanges"></div>
+    </details>
     <div class="field"><label>Indice de perfusion (I.P.) — de 1 à 5, par paliers de 0,5</label><div class="row"><label>Valeur minimale <input id="piTrendFrom" type="number" min="1" max="5" step="0.5" value="3"></label><label>Valeur maximale <input id="piTrendTo" type="number" min="1" max="5" step="0.5" value="5"></label><strong id="piControlValue">3 → 5</strong></div><small class="muted">Au démarrage : valeur aléatoire entre 3 et 5. Modifie les bornes pour piloter la plage. La jauge SIQ reprend la même hauteur et pulse au rythme de la FC.</small></div>
    </div>
 
@@ -1399,11 +1413,12 @@ function renderSliders(){
  const defs=[['fc','FC',0,240,'bpm'],['spo','SpO₂',0,100,'%']];
  $('sliders').innerHTML=defs.map(([k,l,min,max,u])=>`<div class="field"><label>${l} (${u})</label><input type="number" data-key="${k}" min="${min}" max="${max}" value="${fmt(state[k])}"></div>`).join('');
  $('variationRanges').innerHTML=
- `<div class="field"><label>Plage de variation FC — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="0" max="240" value="${state.fcMin}"><input id="fcMax" type="number" min="0" max="240" value="${state.fcMax}"></div></div>`+
- `<div class="field"><label>Plage de variation SpO₂ — minimum / maximum (%)</label><div class="row"><input id="spoMin" type="number" min="0" max="100" value="${state.spoMin}"><input id="spoMax" type="number" min="0" max="100" value="${state.spoMax}"></div></div>`;
+ `<div class="field"><label>Plage de variation FC — minimum / maximum (bpm)</label><div class="row"><input id="fcMin" type="number" min="1" max="200" step="1" value="${Math.max(1,Math.min(200,Number(state.fcMin)||1))}" aria-label="FC minimale"><input id="fcMax" type="number" min="1" max="200" step="1" value="${Math.max(1,Math.min(200,Number(state.fcMax)||1))}" aria-label="FC maximale"></div></div>`+
+ `<div class="field"><label>Plage de variation SpO₂ — minimum / maximum (%)</label><div class="row"><input id="spoMin" type="number" min="50" max="100" step="1" value="${Math.max(50,Math.min(100,Number(state.spoMin)||50))}" aria-label="SpO2 minimale"><input id="spoMax" type="number" min="50" max="100" step="1" value="${Math.max(50,Math.min(100,Number(state.spoMax)||50))}" aria-label="SpO2 maximale"></div></div>`;
  $('sliders').querySelectorAll('input[data-key]').forEach(el=>{el.addEventListener('change',e=>{const k=e.target.dataset.key;const max=k==='fc'?240:100;state[k]=Math.max(0,Math.min(max,Number(e.target.value)||0));smoothTarget[k]=state[k];render();publish()});el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();e.target.blur()}})});
+ const rangeBounds={fcMin:[1,200],fcMax:[1,200],spoMin:[50,100],spoMax:[50,100]};
  ['fcMin','fcMax','spoMin','spoMax'].forEach(id=>$(id).onchange=e=>{
-  state[id]=Number(e.target.value);
+  const [min,max]=rangeBounds[id];state[id]=Math.max(min,Math.min(max,Math.round(Number(e.target.value)||min)));
   if(state.fcMin>state.fcMax){if(id==='fcMin')state.fcMax=state.fcMin;else state.fcMin=state.fcMax}
   if(state.spoMin>state.spoMax){if(id==='spoMin')state.spoMax=state.spoMin;else state.spoMin=state.spoMax}
   $('fcMin').value=state.fcMin;$('fcMax').value=state.fcMax;$('spoMin').value=state.spoMin;$('spoMax').value=state.spoMax;publish()
