@@ -2219,25 +2219,71 @@ function updateRole(){
 function config(){return {url:localStorage.sbUrl||'',key:localStorage.sbKey||''}}
 function initSupabase(){let c=config();if(!c.url||!c.key||!window.supabase){$('status').textContent='Mode local — configure Supabase pour la liaison distante';return}try{sb=window.supabase.createClient(c.url,c.key);$('status').textContent='Supabase prêt — code de session requis'}catch(e){$('status').textContent='Configuration Supabase invalide'}}
 function publish(){if(!sb||!room)return;sb.from('scope_rooms').upsert({code:room,state:state,updated_at:new Date().toISOString()},{onConflict:'code'}).then(({error})=>{if(error)$('status').textContent='Erreur de synchronisation : '+error.message})}
-async function connect(){room=$('roomCode').value.trim().toUpperCase();if(!room){alert('Saisis un code de session.');return}loadTaHistory();if(!sb){initSupabase()}if(!sb){alert('Configure d’abord Supabase dans les réglages.');return}let {data,error}=await sb.from('scope_rooms').select('state').eq('code',room).maybeSingle();if(error){alert('Connexion impossible. Vérifie la table SQL et les politiques Supabase. '+error.message);return}if(data?.state){if(role==='display'){state={...defaults,...data.state,pendingSys:Number(data.state.pendingSys??data.state.sys??120),pendingDia:Number(data.state.pendingDia??data.state.dia??80),alarms:true};audioEnabled=state.soundEnabled!==false;loadTaHistory();render();if(state.scenarioElapsedEpoch!==null)setTraineeHeaderCollapsed(true);}}else if(role==='control'){await sb.from('scope_rooms').upsert({code:room,state:state},{onConflict:'code'})}channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
- if(!payload.new?.state)return;
- const incoming=payload.new.state;
- if(role==='display'){const isRunning=incoming.scenarioElapsedEpoch!==null&&Number.isFinite(Number(incoming.scenarioElapsedEpoch));state={...defaults,...incoming,scopeAlarmRevision:Number(incoming.scopeAlarmRevision)||0,pendingSys:Number(incoming.pendingSys??incoming.sys??120),pendingDia:Number(incoming.pendingDia??incoming.dia??80),glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};normalizePulseOxState();audioEnabled=state.soundEnabled!==false;render();if(currentModule==='ecg'||currentModule==='ecg-next'){if(state.ecgStep===2&&currentModule!=='ecg-next')setECGView('next');else if(state.ecgStep===1&&currentModule!=='ecg')setECGView('ecg');else if(currentModule==='ecg')renderECG();else if(currentModule==='ecg-next')renderECGV();}else if(currentModule==='ecg-record'&&!$('ecgTraceView').classList.contains('hidden')&&!ecgFrozen){ecgCapturedHR=Math.max(0,Number(state.fc)||0);$('ecgTraceHR').textContent=ecgCapturedHR;drawECG12((performance.now()-ecgTraceStart)/1000);}if(isRunning)setTraineeHeaderCollapsed(true);}
- else if(role==='control'){
- const previousAcquisitionEpoch=Number(state.ecgAcquisitionEpoch||0);
- const previousRequestEpoch=Number(state.ecgRequestEpoch||0);
- const activeId=document.activeElement?.id||'';
- const editingGas=/^gas(O2|LIE|CO|H2S)(Input|Range)$/.test(activeId)||/^coSingle(Input|Range)$/.test(activeId);
- const preservedGas=editingGas?{...(state.gas||{})}:null;
- state={...state,...incoming,gas:{...gasDefaults,...(incoming.gas||state.gas||{}),...(preservedGas||{})}};
- render();renderECGArtifactStatus();
- if(Number(incoming.ecgRequestEpoch||0)>previousRequestEpoch){setECGView('ecg');}
- else if(Number(incoming.ecgAcquisitionEpoch||0)>previousAcquisitionEpoch){setECGView('ecg');}
- else if(currentModule==='ecg'||currentModule==='ecg-next'){if(state.ecgStep===2&&currentModule!=='ecg-next')setECGView('next');else if(state.ecgStep===1&&currentModule!=='ecg')setECGView('ecg');else if(currentModule==='ecg')renderECG();else if(currentModule==='ecg-next')renderECGV();}
- if(currentModule==='co')renderCoSingle();
+function normalizeRoomCode(value){return String(value||'').trim().toUpperCase().replace(/\s+/g,'')}
+$('roomCode').addEventListener('input',()=>{const el=$('roomCode');const pos=el.selectionStart;el.value=normalizeRoomCode(el.value);try{el.setSelectionRange(pos,pos)}catch(e){}});
+async function connect(){
+ const code=normalizeRoomCode($('roomCode').value);
+ $('roomCode').value=code;
+ if(!code){alert('Saisis un code de session ou génère-en un avec « Nouveau code ».');$('roomCode').focus();return}
+ if(code.length<4){alert('Le code de session doit contenir au moins 4 caractères.');$('roomCode').focus();return}
+ loadTaHistory();
+ if(!sb)initSupabase();
+ if(!sb){alert('Configure d’abord Supabase dans les réglages, puis enregistre la configuration.');return}
+ $('status').textContent='Connexion à la session '+code+'…';
+ try{
+  if(channel){await sb.removeChannel(channel);channel=null}
+  let {data,error}=await sb.from('scope_rooms').select('code,state').eq('code',code).maybeSingle();
+  if(error)throw new Error('Lecture de la session impossible : '+error.message);
+  if(role==='control'){
+   if(data?.state){
+    state={...defaults,...data.state,gas:{...gasDefaults,...(data.state.gas||{})}};
+    audioEnabled=state.soundEnabled!==false;
+    render();
+   }else{
+    const created=await sb.from('scope_rooms').upsert({code,state,updated_at:new Date().toISOString()},{onConflict:'code'}).select('code').single();
+    if(created.error)throw new Error('Création de la session impossible : '+created.error.message);
+   }
+  }else if(!data){
+   throw new Error('Cette session n’existe pas encore. Demande au formateur de générer un code, puis de se connecter avec ce même code avant de réessayer.');
+  }else{
+   state={...defaults,...(data.state||{}),pendingSys:Number(data.state?.pendingSys??data.state?.sys??120),pendingDia:Number(data.state?.pendingDia??data.state?.dia??80),alarms:true,gas:{...gasDefaults,...(data.state?.gas||{})}};
+   audioEnabled=state.soundEnabled!==false;
+   loadTaHistory();render();
+   if(state.scenarioElapsedEpoch!==null)setTraineeHeaderCollapsed(true);
+  }
+  room=code;
+  channel=sb.channel('scope-'+room).on('postgres_changes',{event:'*',schema:'public',table:'scope_rooms',filter:'code=eq.'+room},payload=>{
+   if(!payload.new?.state)return;
+   const incoming=payload.new.state;
+   if(role==='display'){
+    const isRunning=incoming.scenarioElapsedEpoch!==null&&Number.isFinite(Number(incoming.scenarioElapsedEpoch));
+    state={...defaults,...incoming,scopeAlarmRevision:Number(incoming.scopeAlarmRevision)||0,pendingSys:Number(incoming.pendingSys??incoming.sys??120),pendingDia:Number(incoming.pendingDia??incoming.dia??80),glyMeasured:incoming.glyMeasured===true,tempMeasured:incoming.tempMeasured===true,fcMeasured:incoming.fcMeasured===true,spoMeasured:incoming.spoMeasured===true,taMeasured:incoming.taMeasured===true,gas:{...gasDefaults,...(incoming.gas||{})},alarms:true};
+    normalizePulseOxState();audioEnabled=state.soundEnabled!==false;render();
+    if(currentModule==='ecg'||currentModule==='ecg-next'){if(state.ecgStep===2&&currentModule!=='ecg-next')setECGView('next');else if(state.ecgStep===1&&currentModule!=='ecg')setECGView('ecg');else if(currentModule==='ecg')renderECG();else if(currentModule==='ecg-next')renderECGV();}
+    else if(currentModule==='ecg-record'&&!$('ecgTraceView').classList.contains('hidden')&&!ecgFrozen){ecgCapturedHR=Math.max(0,Number(state.fc)||0);$('ecgTraceHR').textContent=ecgCapturedHR;drawECG12((performance.now()-ecgTraceStart)/1000);}
+    if(isRunning)setTraineeHeaderCollapsed(true);
+   }else{
+    const previousAcquisitionEpoch=Number(state.ecgAcquisitionEpoch||0),previousRequestEpoch=Number(state.ecgRequestEpoch||0);
+    const activeId=document.activeElement?.id||'';
+    const editingGas=/^gas(O2|LIE|CO|H2S)(Input|Range)$/.test(activeId)||/^coSingle(Input|Range)$/.test(activeId);
+    const preservedGas=editingGas?{...(state.gas||{})}:null;
+    state={...state,...incoming,gas:{...gasDefaults,...(incoming.gas||state.gas||{}),...(preservedGas||{})}};
+    render();renderECGArtifactStatus();
+    if(Number(incoming.ecgRequestEpoch||0)>previousRequestEpoch)setECGView('ecg');
+    else if(Number(incoming.ecgAcquisitionEpoch||0)>previousAcquisitionEpoch)setECGView('ecg');
+    else if(currentModule==='ecg'||currentModule==='ecg-next'){if(state.ecgStep===2&&currentModule!=='ecg-next')setECGView('next');else if(state.ecgStep===1&&currentModule!=='ecg')setECGView('ecg');else if(currentModule==='ecg')renderECG();else if(currentModule==='ecg-next')renderECGV();}
+    if(currentModule==='co')renderCoSingle();
+   }
+  }).subscribe((status,err)=>{
+   if(status==='SUBSCRIBED')$('status').textContent=`Connecté · session ${room} · ${role==='control'?'formateur':'stagiaire'}`;
+   else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')$('status').textContent='Session créée/repérée, mais liaison temps réel indisponible. Vérifie Supabase Realtime et les droits SELECT.'+(err?.message?' '+err.message:'');
+   else if(status==='CLOSED')$('status').textContent='Liaison à la session fermée.';
+  });
+  $('status').textContent=`Session ${room} trouvée · établissement de la liaison…`;
+  log('Connexion à la session '+room);
+ }catch(e){room='';$('status').textContent='Connexion impossible';alert(e.message||'Une erreur est survenue pendant la connexion à la session.');}
 }
-}).subscribe();$('status').textContent=`Connecté · session ${room} · ${role==='control'?'formateur':'stagiaire'}`;log('Connexion à la session '+room)}
-$('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{$('roomCode').value=String(Math.floor(100000+Math.random()*900000))};
+$('connectBtn').onclick=connect;$('newCodeBtn').onclick=()=>{const code=String(Math.floor(100000+Math.random()*900000));$('roomCode').value=code;$('roomCode').focus();$('roomCode').select();$('status').textContent='Nouveau code généré. Clique sur « Connecter / rejoindre » pour créer la session.'};
 // Toute action réelle du formateur dans le panneau de pilotage réarme les alarmes côté stagiaire.
 ['click','change'].forEach(eventName=>$('controlPanel').addEventListener(eventName,e=>{
  if(role!=='control')return;
