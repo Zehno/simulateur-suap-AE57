@@ -61,7 +61,7 @@ input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-ou
 .fc-reading .value{margin-top:8px!important;}
 .siq-meter-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;align-self:stretch;padding:4px 3px 4px 8px;border-left:1px solid #ffffff55;}
 .siq-meter{position:relative;width:15px;height:86px;border:2px solid #d5ffe6;border-radius:9px;background:#063a22;overflow:hidden;box-shadow:inset 0 0 5px #00190e;}
-.siq-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#b8ffd2,#3ef08a 55%,#0f9d4f);border-radius:0 0 5px 5px;transition:height .08s linear;transform:scaleY(1);transform-origin:bottom;will-change:transform;}.siq-meter-fill.siq-pulse{animation:siqHeartbeat var(--siq-beat-duration,800ms) linear infinite;}@keyframes siqHeartbeat{0%,100%{filter:brightness(1);opacity:.82;transform:scaleY(.72);box-shadow:none;}12%{filter:brightness(1.9);opacity:1;transform:scaleY(1);box-shadow:0 0 9px #62ff9d;}18%{filter:brightness(1.35);opacity:1;transform:scaleY(.94);box-shadow:0 0 6px #62ff9d;} }
+.siq-meter-fill{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,#b8ffd2,#3ef08a 55%,#0f9d4f);border-radius:0 0 5px 5px;transition:height .08s linear;transform:scaleY(1);transform-origin:bottom;will-change:transform;}.siq-meter-fill.siq-pulse{animation:siqHeartbeat var(--siq-beat-duration,800ms) linear infinite;}@keyframes siqHeartbeat{0%,8%,30%,100%{filter:brightness(1);opacity:.2;transform:scaleY(0);box-shadow:none;}12%{filter:brightness(1.9);opacity:1;transform:scaleY(1);box-shadow:0 0 9px #62ff9d;}18%{filter:brightness(1.35);opacity:.8;transform:scaleY(.35);box-shadow:0 0 4px #62ff9d;}}
 .siq-reading{min-width:43px;text-align:center;font-size:12px;font-weight:850;color:#e9fff1;font-variant-numeric:tabular-nums;}
 .siq-reading small{display:block;font-size:9px;font-weight:700;opacity:.85;letter-spacing:.05em;}
 .ta-cycle{display:none;align-items:center;gap:9px;margin:7px 0 2px;padding:7px 9px;border:1px solid #83929c;border-radius:7px;background:#252d33;text-align:left;}
@@ -1252,16 +1252,15 @@ function updatePITrend(){
 }
 function updateSIQ(){
  const fill=$('siqMeterFill'),label=$('vSIQ');
- const active=state.fcMeasured===true&&state.spoMeasured===true&&Number(state.fc)>0&&state.rhythm!=='asystole'&&state.rhythm!=='fv';
+ const bpm=Math.max(0,Number(state.fc)||0);
+ const active=state.fcMeasured===true&&bpm>0&&!['asystole','fv'].includes(state.rhythm);
  const value=normalizePI(state.pi??3);
- // La jauge conserve sa hauteur lors des changements manuels/de variation de FC.
  if(fill){
-  const height=Math.max(0,Math.min(100,value/5*100));
+  // Sans fréquence mesurée (ou en arrêt), la jauge reste réellement vide.
+  const height=active?Math.max(0,Math.min(100,value/5*100)):0;
   fill.style.height=height+'%';
-  fill.style.setProperty('--siq-peak-height',height+'%');
   fill.classList.toggle('siq-pulse',active);
-  const bpm=Math.max(1,Math.round(Number(state.fc)||1));
-  const duration=Math.max(250,60000/bpm)+'ms';
+  const duration=Math.max(250,60000/Math.max(1,bpm))+'ms';
   if(fill.style.getPropertyValue('--siq-beat-duration')!==duration)fill.style.setProperty('--siq-beat-duration',duration);
  }
  if(label)label.textContent=active?fmtPI(value):'0';
@@ -1984,20 +1983,76 @@ function showECGTrace(){
  },40);
 }
 function ecgWave(t,hr,leadIndex,artifact,artifactAge){
- if(hr<=0)return 0;
- const rr=60/hr,phase=((t%rr)+rr)%rr;
- const g=(x,m,w,a)=>a*Math.exp(-.5*((x-m)/w)**2);
- // Onde P-QRS-T, même horloge pour toutes les dérivations : le R suit exactement le RR = 60 / FC.
- let y=g(phase,.16,.035,.12)+g(phase,.30,.012,-.16)+g(phase,.32,.009,1.05)+g(phase,.35,.013,-.28)+g(phase,.58,.075,.30);
- const gains=[.78,1,.62,-.72,.48,.78,-.42,-.22,.48,1.02,1.08,.88,1];
- y*=gains[leadIndex]||.8;
+ if(!state.fcMeasured||state.rhythm==='asystole'||(hr<=0&&state.rhythm!=='fv'))return 0;
+ const rhythm=state.rhythm||'sinusal',condition=state.condition||'normal';
+ const leadNames=['I','II','III','aVR','aVL','aVF','V1','V2','V3','V4','V5','V6'];
+ const lead=leadNames[leadIndex]||'II';
+ const rr=60/Math.max(1,hr);
+ // Irrégularité RR simplifiée pour la FA, sans modifier la FC moyenne affichée.
+ let phaseTime=t;
+ if(rhythm==='fa'||state.irregularFC){phaseTime=t+.10*Math.sin(t*2.7)+.045*Math.sin(t*5.3+1.1);}
+ const phase=((phaseTime%rr)+rr)%rr,beat=phase/rr;
+ const g=(x,m,w,a)=>a*Math.exp(-.5*Math.pow((x-m)/w,2));
+ const gains=[.78,1,.62,-.72,.48,.78,-.42,-.22,.48,1.02,1.08,.88];
+ let amp=gains[leadIndex]||.8;
+ let y=0;
+ if(rhythm==='fv'){
+  y=.18*Math.sin(t*31+leadIndex*2.3)+.12*Math.sin(t*47+leadIndex)+.08*Math.sin(t*67+leadIndex*1.7);
+ }else if(rhythm==='flutter'){
+  y=((beat*4)%1<.5?((beat*4)%1)*2:(1-(beat*4)%1)*2)*.18-.09;
+  y+=g(beat,.32,.018,.85*amp)-g(beat,.29,.018,.18*amp)-g(beat,.36,.022,.25*amp)+g(beat,.70,.09,.12*amp);
+ }else{
+  const isFA=rhythm==='fa'||state.irregularFC;
+  const wide=rhythm==='tv';
+  if(!isFA&&!['svt','fv'].includes(rhythm))y+=g(beat,.16,.035,.12*amp);
+  const center=wide?.34:.32,width=wide?.035:.012;
+  y+=g(beat,center-width*1.6,width*.9,-.18*amp);
+  y+=g(beat,center,width,wide?1.05*amp:1.05*amp);
+  y+=g(beat,center+width*1.8,width*1.1,-.28*amp);
+  y+=g(beat,.60,.075,.30*amp);
+  if(isFA)y+=.018*Math.sin(t*27)+.012*Math.sin(t*39);
+  if(rhythm==='svt')y*=1.03;
+ }
+ // Modifications morphologiques pédagogiques selon le scénario sélectionné.
+ const inferior=['II','III','aVF'].includes(lead),lateral=['I','aVL','V5','V6'].includes(lead),anterior=['V2','V3','V4'].includes(lead);
+ const qrsEnd=(rhythm==='tv'?.39:.37);
+ if(condition==='acs'){
+  // Exemple de SCA avec sus-décalage inférieur et miroir latéral.
+  if(inferior)y+=g(beat,.49,.095,.30);
+  if(lead==='I'||lead==='aVL')y-=g(beat,.49,.09,.16);
+  if(anterior)y+=g(beat,.49,.09,.10);
+ }else if(condition==='angina'){
+  // Sous-décalage ST latéral dans cet exemple pédagogique d'ischémie.
+  if(lateral||lead==='V4')y-=g(beat,.49,.085,.22);
+ }else if(condition==='pe'){
+  // S1Q3T3 simplifié, inversion de T antérieure et aspect de surcharge droite.
+  if(lead==='I')y-=g(beat,.29,.018,.25);
+  if(lead==='III')y-=g(beat,.29,.018,.28);
+  if(lead==='III')y+=g(beat,.49,.09,.12);
+  if(['V1','V2','V3','V4'].includes(lead))y-=g(beat,.60,.07,.20);
+  if(lead==='V1')y+=g(beat,.32,.025,.28);
+ }else if(condition==='hypothermia_moderate'||condition==='hypothermia_severe'){
+  // Onde J d'Osborn après le QRS, plus marquée en hypothermie sévère.
+  const jAmp=condition==='hypothermia_severe'?.34:.20;
+  y+=g(beat,qrsEnd+.025,.018,jAmp*amp);
+  if(condition==='hypothermia_severe')y-=g(beat,.60,.08,.10*amp);
+ }else if(condition==='decomp'||condition==='cardiogenic'){
+  if(lateral||anterior)y-=g(beat,.49,.09,.12);
+ }
  if(artifact){
-  const k=Math.max(.1,Math.min(1,Number(artifact.intensity)||.55)),age=Math.max(0,artifactAge||0);
-  if(artifact.type==='movement')y+=k*(.34*Math.sin(age*2.1+leadIndex*.55)+.18*Math.sin(age*.57+leadIndex)+.10*Math.sin(t*17+leadIndex));
-  else if(artifact.type==='tremor')y+=k*(.12*Math.sin(t*2*Math.PI*22+leadIndex)+.07*Math.sin(t*2*Math.PI*31+leadIndex*.7));
-  else if(artifact.type==='contact'){const burst=Math.max(0,Math.sin(age*5.2+leadIndex*.8));y+=k*(.22*Math.sin(age*3.1+leadIndex)+burst*.30*Math.sin(t*2*Math.PI*13+leadIndex));}
-  else if(artifact.type==='displacement')y+=k*(age>1.1?.42:.04)*(leadIndex<6?1:.55);
-  else if(artifact.type==='intermittent'){const burst=Math.max(0,Math.sin(age*1.7+leadIndex*.9));y+=k*burst*(.30*Math.sin(t*2*Math.PI*18+leadIndex)+.20*Math.sin(age*8));}
+  // Grésillement électrique : bruit rapide, irrégulier et centré sur la ligne de base.
+  // Aucun déplacement lent de la ligne isoélectrique : la morphologie ECG reste lisible.
+  const k=Math.max(.1,Math.min(1,Number(artifact.intensity)||.55));
+  const age=Math.max(0,artifactAge||0);
+  const sample=Math.floor(t*180);
+  const hash=(n,seed)=>{const v=Math.sin(n*127.1+seed*311.7+74.7)*43758.5453;return (v-Math.floor(v))*2-1;};
+  const envelope=.72+.28*Math.abs(Math.sin(age*8.3+leadIndex*.37));
+  const fineNoise=hash(sample,leadIndex+1)*.105;
+  const fastNoise=Math.sin(t*2*Math.PI*47+leadIndex*1.9)*.045
+                  +Math.sin(t*2*Math.PI*73+leadIndex*.73)*.028;
+  const spikeSeed=(hash(sample*3+11,leadIndex+17)+1)/2;
+  const spike=spikeSeed>.965?Math.sign(hash(sample+29,leadIndex+4))*.22:0;
+  y+=k*envelope*(fineNoise+fastNoise+spike);
  }
  return y;
 }
@@ -2012,7 +2067,7 @@ function drawECG12(elapsed){
  }
  ctx.clearRect(0,0,W,H);ctx.drawImage(ecgGridCache,0,0);
  // Présentation standard en deux colonnes : I / V1, II / V2, III / V3,
- // aVR / V4, aVL / V5, aVF / V6, puis DII longue en bas.
+ // aVR / V4, aVL / V5, aVF / V6.
  const leftNames=['I','II','III','aVR','aVL','aVF'],rightNames=['V1','V2','V3','V4','V5','V6'];
  const leftX=54,rightX=738,traceW=600,rowBase=76,rowGap=91;
  const artifact=currentECGArtifact(),artifactAge=artifact?(Date.now()-Number(artifact.startedAt||Date.now()))/1000:0;
